@@ -14,7 +14,8 @@ public class SensorRecord {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    public String sensor_type;
+    @ColumnInfo(name = "sensor_type")
+    public String sensorType;
     @ColumnInfo(name = "value_id")
     public int valueId;
     public double value;

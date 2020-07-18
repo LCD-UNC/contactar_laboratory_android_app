@@ -6,7 +6,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "bluetooth_scan_le_configuration",
+@Entity(tableName = "bluetooth_le_scan_configuration",
         foreignKeys = @ForeignKey(entity = Experiment.class,
                 parentColumns = "id",
                 childColumns = "experiment_id",
