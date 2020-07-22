@@ -10,7 +10,7 @@ import com.rfdetke.digitriadlaboratory.entities.SensorRecord;
 public interface SensorRecordDao {
 
     @Insert
-    void insert(SensorRecord sensorRecord);
+    long insert(SensorRecord sensorRecord);
 
     @Delete
     void delete(SensorRecord sensorRecord);

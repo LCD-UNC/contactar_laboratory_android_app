@@ -4,30 +4,35 @@ package com.rfdetke.digitriadlaboratory.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "bluetooth_le_scan_configuration",
-        foreignKeys = @ForeignKey(entity = Experiment.class,
-                parentColumns = "id",
-                childColumns = "experiment_id",
-                onDelete = ForeignKey.CASCADE))
-public class BluetoothLeScanConfiguration {
+@Entity(tableName = "scan_configuration",
+        indices = {@Index(value = "id", unique = true),
+                   @Index(value = "experiment_id"),
+                   @Index(value = "source_type")},
+        foreignKeys = {@ForeignKey(entity = Experiment.class,
+                            parentColumns = "id",
+                            childColumns = "experiment_id",
+                            onDelete = ForeignKey.CASCADE),
+                       @ForeignKey(entity = SourceType.class,
+                            parentColumns = "id",
+                            childColumns = "source_type",
+                            onDelete = ForeignKey.CASCADE)})
+public class ScanConfiguration {
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
 
     @ColumnInfo(name = "active_time")
-    public int activeTime;
+    public long activeTime;
     @ColumnInfo(name = "inactive_time")
-    public int inactiveTime;
+    public long inactiveTime;
     @ColumnInfo(name = "windows")
-    public int windows;
+    public long windows;
+    @ColumnInfo(name = "source_type")
+    public long sourceType;
+
 
     @ColumnInfo(name = "experiment_id")
-    public int experimentId;
-
-    public BluetoothLeScanConfiguration(int scanPeriod, int scanInterval, int experimentId) {
-        this.scanPeriod = scanPeriod;
-        this.scanInterval = scanInterval;
-        this.experimentId = experimentId;
-    }
+    public long experimentId;
 }

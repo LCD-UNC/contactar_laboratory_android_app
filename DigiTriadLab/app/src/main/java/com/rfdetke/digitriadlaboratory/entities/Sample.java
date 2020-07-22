@@ -8,24 +8,32 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "wifi_sample",
+@Entity(tableName = "sample",
         indices = {@Index(value = "id", unique = true),
-                   @Index(value = "run_id")},
-        foreignKeys = @ForeignKey(entity = Run.class,
-                parentColumns = "id",
-                childColumns = "run_id",
-                onDelete = ForeignKey.CASCADE))
-public class WifiSample {
+                   @Index(value = "run_id"),
+                   @Index(value = "source_type")},
+        foreignKeys = {@ForeignKey(entity = Run.class,
+                            parentColumns = "id",
+                            childColumns = "run_id",
+                            onDelete = ForeignKey.CASCADE),
+                       @ForeignKey(entity = SourceType.class,
+                            parentColumns = "id",
+                            childColumns = "source_type",
+                            onDelete = ForeignKey.CASCADE)})
+public class Sample {
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
 
     public Date timestamp;
 
     @ColumnInfo(name = "run_id")
-    public int runId;
+    public long runId;
+    @ColumnInfo(name = "source_type")
+    public long sourceType;
 
-    public WifiSample(Date timestamp, int runId) {
+    public Sample(Date timestamp, int runId, int sourceType) {
         this.timestamp = timestamp;
         this.runId = runId;
+        this.sourceType = sourceType;
     }
 }

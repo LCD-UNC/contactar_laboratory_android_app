@@ -7,14 +7,19 @@ import androidx.room.Query;
 
 import com.rfdetke.digitriadlaboratory.entities.Device;
 
+import java.util.List;
+
 @Dao
 public interface DeviceDao {
 
     @Query("SELECT * FROM device WHERE id == (:deviceId) LIMIT 1")
     Device getDeviceById(int deviceId);
 
+    @Query("SELECT * FROM device")
+    List<Device> getAllDevices();
+
     @Insert
-    void insert(Device device);
+    long insert(Device device);
 
     @Delete
     void delete(Device device);

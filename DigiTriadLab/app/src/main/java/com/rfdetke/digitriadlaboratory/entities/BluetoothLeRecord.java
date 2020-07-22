@@ -3,16 +3,19 @@ package com.rfdetke.digitriadlaboratory.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "bluetooth_le_record",
-        foreignKeys = @ForeignKey(entity = BluetoothLeSample.class,
+        indices = {@Index(value = "id", unique = true),
+                   @Index(value = "sample_id")},
+        foreignKeys = @ForeignKey(entity = Sample.class,
                 parentColumns = "id",
-                childColumns = "bluetooth_le_sample_id",
+                childColumns = "sample_id",
                 onDelete = ForeignKey.CASCADE))
 public class BluetoothLeRecord {
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
 
     public String address;
     public double rssi;
@@ -29,6 +32,7 @@ public class BluetoothLeRecord {
     public int connectable;
     public int legacy;
 
-    @ColumnInfo(name = "bluetooth_le_sample_id")
-    public int bluetoothLeSampleId;
+    @ColumnInfo(name = "sample_id")
+    public long sampleId;
+
 }

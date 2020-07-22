@@ -19,7 +19,7 @@ public interface ExperimentDao {
     Experiment getExperimentByCodename(String codename);
 
     @Insert
-    void insert(Experiment experiment);
+    long insert(Experiment experiment);
 
     @Delete
     void delete(Experiment experiment);

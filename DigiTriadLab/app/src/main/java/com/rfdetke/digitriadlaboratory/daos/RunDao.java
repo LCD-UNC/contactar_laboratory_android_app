@@ -12,14 +12,17 @@ import java.util.List;
 @Dao
 public interface RunDao {
 
+    @Query("SELECT * FROM run")
+    List<Run> getAllRuns();
+
     @Query("SELECT * FROM run WHERE experiment_id==(:experimentId)")
-    List<Run> getAllRunsByExperimentId(int experimentId);
+    List<Run> getRunsByExperimentId(long experimentId);
 
     @Query("SELECT * FROM run WHERE id==(:runId) LIMIT 1")
-    List<Run> getRunById(int runId);
+    Run getRunById(int runId);
 
     @Insert
-    void insert(Run run);
+    long insert(Run run);
 
     @Delete
     void delete(Run run);

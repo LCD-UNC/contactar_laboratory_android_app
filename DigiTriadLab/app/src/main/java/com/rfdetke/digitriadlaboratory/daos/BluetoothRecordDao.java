@@ -10,7 +10,7 @@ import com.rfdetke.digitriadlaboratory.entities.BluetoothRecord;
 public interface BluetoothRecordDao {
 
     @Insert
-    void insert(BluetoothRecord bluetoothRecord);
+    long insert(BluetoothRecord bluetoothRecord);
 
     @Delete
     void delete(BluetoothRecord bluetoothRecord);

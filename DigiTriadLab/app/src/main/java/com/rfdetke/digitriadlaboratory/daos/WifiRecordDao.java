@@ -10,7 +10,7 @@ import com.rfdetke.digitriadlaboratory.entities.WifiRecord;
 public interface WifiRecordDao {
 
     @Insert
-    void insert(WifiRecord wifiRecord);
+    long insert(WifiRecord wifiRecord);
 
     @Delete
     void delete(WifiRecord wifiRecord);

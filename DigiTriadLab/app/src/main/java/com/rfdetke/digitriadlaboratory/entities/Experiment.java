@@ -11,13 +11,19 @@ import androidx.room.PrimaryKey;
                 parentColumns = "id",
                 childColumns = "device_id",
                 onDelete = ForeignKey.CASCADE),
-        indices = @Index(value = {"codename"}, unique = true))
+        indices = {@Index(value = {"id","codename", }, unique = true), @Index(value = "device_id")})
 public class Experiment {
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    public long id;
     public String codename;
     public String description;
 
     @ColumnInfo(name = "device_id")
-    public int deviceId;
+    public long deviceId;
+
+    public Experiment(String codename, String description, long deviceId) {
+        this.codename = codename;
+        this.description = description;
+        this.deviceId = deviceId;
+    }
 }
