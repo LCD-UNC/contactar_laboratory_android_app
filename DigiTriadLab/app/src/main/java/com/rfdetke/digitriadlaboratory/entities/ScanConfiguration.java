@@ -15,11 +15,19 @@ public class BluetoothLeScanConfiguration {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    @ColumnInfo(name = "scan_period")
-    public int scanPeriod;
-    @ColumnInfo(name = "scan_interval")
-    public int scanInterval;
+    @ColumnInfo(name = "active_time")
+    public int activeTime;
+    @ColumnInfo(name = "inactive_time")
+    public int inactiveTime;
+    @ColumnInfo(name = "windows")
+    public int windows;
 
     @ColumnInfo(name = "experiment_id")
     public int experimentId;
+
+    public BluetoothLeScanConfiguration(int scanPeriod, int scanInterval, int experimentId) {
+        this.scanPeriod = scanPeriod;
+        this.scanInterval = scanInterval;
+        this.experimentId = experimentId;
+    }
 }
