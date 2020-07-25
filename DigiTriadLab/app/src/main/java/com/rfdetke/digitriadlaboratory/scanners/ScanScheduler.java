@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory;
+package com.rfdetke.digitriadlaboratory.scanners;
 
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
@@ -10,6 +10,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public abstract class ScanScheduler implements ObservableScanner{
+
+    private static final int initialDelay = 500;
+
     protected final SampleDao sampleDao;
     protected final SourceTypeDao sourceTypeDao;
     protected List<ScanObserver> observers;
@@ -52,8 +55,8 @@ public abstract class ScanScheduler implements ObservableScanner{
             }
         };
 
-        activeTimer.scheduleAtFixedRate(activeTask, 0, period);
-        inactiveTimer.scheduleAtFixedRate(inactiveTask, scanConfiguration.activeTime, period);
+        activeTimer.scheduleAtFixedRate(activeTask, initialDelay, period);
+        inactiveTimer.scheduleAtFixedRate(inactiveTask, scanConfiguration.activeTime+initialDelay, period);
 
     }
 

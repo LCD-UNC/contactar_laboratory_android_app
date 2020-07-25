@@ -1,0 +1,787 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "d39f0dbb226027e53107947141563d38",
+    "entities": [
+      {
+        "tableName": "bluetooth_le_record",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `rssi` REAL NOT NULL, `tx_power` REAL NOT NULL, `advertising_set_id` INTEGER NOT NULL, `primary_physical_layer` TEXT, `seconary_physical_layer` TEXT, `periodic_advertising_interval` REAL NOT NULL, `connectable` INTEGER NOT NULL, `legacy` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rssi",
+            "columnName": "rssi",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "txPower",
+            "columnName": "tx_power",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "advertisingSetId",
+            "columnName": "advertising_set_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "primaryPhysicalLayer",
+            "columnName": "primary_physical_layer",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "secondaryPhysicalLayer",
+            "columnName": "seconary_physical_layer",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "periodicAdvertisingInterval",
+            "columnName": "periodic_advertising_interval",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "connectable",
+            "columnName": "connectable",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "legacy",
+            "columnName": "legacy",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sampleId",
+            "columnName": "sample_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_bluetooth_le_record_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bluetooth_le_record_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_bluetooth_le_record_sample_id",
+            "unique": false,
+            "columnNames": [
+              "sample_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_le_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "sample",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sample_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "scan_configuration",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `active_time` INTEGER NOT NULL, `inactive_time` INTEGER NOT NULL, `windows` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activeTime",
+            "columnName": "active_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "inactiveTime",
+            "columnName": "inactive_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windows",
+            "columnName": "windows",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceType",
+            "columnName": "source_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "experimentId",
+            "columnName": "experiment_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_scan_configuration_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_scan_configuration_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_scan_configuration_experiment_id",
+            "unique": false,
+            "columnNames": [
+              "experiment_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scan_configuration_experiment_id` ON `${TABLE_NAME}` (`experiment_id`)"
+          },
+          {
+            "name": "index_scan_configuration_source_type",
+            "unique": false,
+            "columnNames": [
+              "source_type"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scan_configuration_source_type` ON `${TABLE_NAME}` (`source_type`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "experiment",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "experiment_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "source_type",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "source_type"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "bluetooth_record",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `bluetooth_class` TEXT, `bluetooth_major_class` TEXT, `bond_state` INTEGER NOT NULL, `type` TEXT, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bluetoothClass",
+            "columnName": "bluetooth_class",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bluetoothMajorClass",
+            "columnName": "bluetooth_major_class",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bondState",
+            "columnName": "bond_state",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sampleId",
+            "columnName": "sample_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_bluetooth_record_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bluetooth_record_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_bluetooth_record_sample_id",
+            "unique": false,
+            "columnNames": [
+              "sample_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "sample",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sample_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "sensor_record",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sensor_type` TEXT, `value_id` INTEGER NOT NULL, `value` REAL NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sensorType",
+            "columnName": "sensor_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "valueId",
+            "columnName": "value_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sampleId",
+            "columnName": "sample_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_sensor_record_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_sensor_record_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_sensor_record_sample_id",
+            "unique": false,
+            "columnNames": [
+              "sample_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sensor_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "sample",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sample_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "wifi_record",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `channel_width` TEXT, `center_frequency_0` INTEGER NOT NULL, `center_frequency_1` INTEGER NOT NULL, `frequency` INTEGER NOT NULL, `level` INTEGER NOT NULL, `passpoint` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "channelWidth",
+            "columnName": "channel_width",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "centerFrequency0",
+            "columnName": "center_frequency_0",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "centerFrequency1",
+            "columnName": "center_frequency_1",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "frequency",
+            "columnName": "frequency",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "level",
+            "columnName": "level",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "passpoint",
+            "columnName": "passpoint",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sampleId",
+            "columnName": "sample_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_wifi_record_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_wifi_record_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_wifi_record_sample_id",
+            "unique": false,
+            "columnNames": [
+              "sample_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_wifi_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "sample",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sample_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "sample",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `run_id` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, FOREIGN KEY(`run_id`) REFERENCES `run`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "runId",
+            "columnName": "run_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceType",
+            "columnName": "source_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_sample_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_sample_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_sample_run_id",
+            "unique": false,
+            "columnNames": [
+              "run_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sample_run_id` ON `${TABLE_NAME}` (`run_id`)"
+          },
+          {
+            "name": "index_sample_source_type",
+            "unique": false,
+            "columnNames": [
+              "source_type"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sample_source_type` ON `${TABLE_NAME}` (`source_type`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "run",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "run_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "source_type",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "source_type"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `codename` TEXT, `brand` TEXT, `model` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codename",
+            "columnName": "codename",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "brand",
+            "columnName": "brand",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_device_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_device_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "experiment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `codename` TEXT, `description` TEXT, `device_id` INTEGER NOT NULL, FOREIGN KEY(`device_id`) REFERENCES `device`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codename",
+            "columnName": "codename",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "deviceId",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_experiment_id_codename",
+            "unique": true,
+            "columnNames": [
+              "id",
+              "codename"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_experiment_id_codename` ON `${TABLE_NAME}` (`id`, `codename`)"
+          },
+          {
+            "name": "index_experiment_device_id",
+            "unique": false,
+            "columnNames": [
+              "device_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_experiment_device_id` ON `${TABLE_NAME}` (`device_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "device",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "run",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` INTEGER, `number` INTEGER NOT NULL, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "experimentId",
+            "columnName": "experiment_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_run_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_run_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_run_experiment_id",
+            "unique": false,
+            "columnNames": [
+              "experiment_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_run_experiment_id` ON `${TABLE_NAME}` (`experiment_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "experiment",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "experiment_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "source_type",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_source_type_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_source_type_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_source_type_type",
+            "unique": true,
+            "columnNames": [
+              "type"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_source_type_type` ON `${TABLE_NAME}` (`type`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd39f0dbb226027e53107947141563d38')"
+    ]
+  }
+}

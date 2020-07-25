@@ -1,13 +1,7 @@
-package com.rfdetke.digitriadlaboratory;
+package com.rfdetke.digitriadlaboratory.scanners;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface DataBucket {
-    List<Object> records = new ArrayList<>();
-
-    void operateDataToList();
-    default List<Object> getRecordsList() {
-        return records;
-    };
+    List<Object> getRecordsList();
 }
