@@ -1,10 +1,10 @@
-package com.rfdetke.digitriadlaboratory.daos;
+package com.rfdetke.digitriadlaboratory.database.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 
-import com.rfdetke.digitriadlaboratory.entities.BluetoothLeRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
 
 @Dao
 public interface BluetoothLeRecordDao {

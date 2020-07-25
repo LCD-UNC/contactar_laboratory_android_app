@@ -1,4 +1,5 @@
-package com.rfdetke.digitriadlaboratory.entities;
+package com.rfdetke.digitriadlaboratory.database.entities;
+
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -6,34 +7,32 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
-
-@Entity(tableName = "sample",
+@Entity(tableName = "scan_configuration",
         indices = {@Index(value = "id", unique = true),
-                   @Index(value = "run_id"),
+                   @Index(value = "experiment_id"),
                    @Index(value = "source_type")},
-        foreignKeys = {@ForeignKey(entity = Run.class,
+        foreignKeys = {@ForeignKey(entity = Experiment.class,
                             parentColumns = "id",
-                            childColumns = "run_id",
+                            childColumns = "experiment_id",
                             onDelete = ForeignKey.CASCADE),
                        @ForeignKey(entity = SourceType.class,
                             parentColumns = "id",
                             childColumns = "source_type",
                             onDelete = ForeignKey.CASCADE)})
-public class Sample {
+public class ScanConfiguration {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-    public Date timestamp;
-
-    @ColumnInfo(name = "run_id")
-    public long runId;
+    @ColumnInfo(name = "active_time")
+    public long activeTime;
+    @ColumnInfo(name = "inactive_time")
+    public long inactiveTime;
+    @ColumnInfo(name = "windows")
+    public long windows;
     @ColumnInfo(name = "source_type")
     public long sourceType;
 
-    public Sample(Date timestamp, int runId, int sourceType) {
-        this.timestamp = timestamp;
-        this.runId = runId;
-        this.sourceType = sourceType;
-    }
+
+    @ColumnInfo(name = "experiment_id")
+    public long experimentId;
 }

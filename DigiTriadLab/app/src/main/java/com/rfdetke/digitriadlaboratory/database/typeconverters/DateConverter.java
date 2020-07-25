@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.typeconverters;
+package com.rfdetke.digitriadlaboratory.database.typeconverters;
 
 import androidx.room.TypeConverter;
 

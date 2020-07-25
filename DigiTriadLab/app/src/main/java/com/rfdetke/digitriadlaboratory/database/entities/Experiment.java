@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.entities;
+package com.rfdetke.digitriadlaboratory.database.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

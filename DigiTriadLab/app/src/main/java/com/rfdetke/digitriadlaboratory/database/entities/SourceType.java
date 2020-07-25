@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.entities;
+package com.rfdetke.digitriadlaboratory.database.entities;
 
 import androidx.room.Entity;
 import androidx.room.Index;
@@ -12,4 +12,8 @@ public class SourceType {
     public long id;
 
     public String type;
+
+    public SourceType(String type) {
+        this.type = type;
+    }
 }

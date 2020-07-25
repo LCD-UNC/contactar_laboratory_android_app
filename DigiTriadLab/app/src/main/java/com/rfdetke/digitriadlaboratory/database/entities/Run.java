@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.entities;
+package com.rfdetke.digitriadlaboratory.database.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -25,4 +25,10 @@ public class Run {
 
     @ColumnInfo(name = "experiment_id")
     public long experimentId;
+
+    public Run(Date start, long number, long experimentId) {
+        this.start = start;
+        this.number = number;
+        this.experimentId = experimentId;
+    }
 }

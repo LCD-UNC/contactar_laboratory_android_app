@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.entities;
+package com.rfdetke.digitriadlaboratory.database.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -26,4 +26,9 @@ public class SensorRecord {
     @ColumnInfo(name = "sample_id")
     public long sampleId;
 
+    public SensorRecord(String sensorType, int valueId, double value) {
+        this.sensorType = sensorType;
+        this.valueId = valueId;
+        this.value = value;
+    }
 }
