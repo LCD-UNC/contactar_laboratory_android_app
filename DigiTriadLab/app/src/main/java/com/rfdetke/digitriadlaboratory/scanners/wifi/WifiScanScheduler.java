@@ -22,20 +22,17 @@ import java.util.List;
 
 public class WifiScanScheduler extends ScanScheduler {
 
-    private final long runId;
-    private final Context context;
     private final WifiRecordDao wifiRecordDao;
     private final SensorRecordDao sensorRecordDao;
     WifiScanDataBucket wifiDataBucket;
     SensorDataBucket sensorDataBucket;
 
+    public WifiScanScheduler(long runId, ScanConfiguration scanConfiguration, Context context,
+                             SampleDao sampleDao, SourceTypeDao sourceTypeDao,
+                             WifiRecordDao wifiRecordDao,
+                             SensorRecordDao sensorRecordDao) {
 
-    public WifiScanScheduler(SampleDao sampleDao, SourceTypeDao sourceTypeDao,
-                             ScanConfiguration scanConfiguration, WifiRecordDao wifiRecordDao,
-                             SensorRecordDao sensorRecordDao, long runId, Context context) {
-        super(sampleDao, sourceTypeDao, scanConfiguration);
-        this.runId = runId;
-        this.context = context;
+        super(runId, context, scanConfiguration, sampleDao, sourceTypeDao);
         this.wifiRecordDao = wifiRecordDao;
         this.sensorRecordDao = sensorRecordDao;
         this.key = SourceTypeEnum.WIFI.toString();
@@ -44,7 +41,8 @@ public class WifiScanScheduler extends ScanScheduler {
 
     @Override
     protected void registerScanDataBucket() {
-        long sampleId = sampleDao.insert(new Sample(new Date(), runId, sourceTypeDao.getSourceTypeByType(key).id));
+        long sampleId = sampleDao.insert(new Sample(new Date(), runId,
+                sourceTypeDao.getSourceTypeByType(key).id));
         IntentFilter wifiIntentFilter = new IntentFilter();
         wifiIntentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         wifiDataBucket = new WifiScanDataBucket(sampleId, context);
@@ -66,8 +64,10 @@ public class WifiScanScheduler extends ScanScheduler {
         }
         sensorRecordDao.insert(sensorRecords);
 
+        context.unregisterReceiver(wifiDataBucket);
         wifiDataBucket = null;
         sensorDataBucket.setSampleId(0);
+
     };
 
 }

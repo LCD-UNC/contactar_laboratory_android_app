@@ -1,0 +1,43 @@
+package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
+
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
+import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BluetoothScanDataBucket extends BroadcastReceiver implements DataBucket {
+
+    private final long sampleId;
+    private List<Object> records;
+
+    public BluetoothScanDataBucket(long sampleId, Context context) {
+        this.sampleId = sampleId;
+        records = new ArrayList<>();
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            if(device != null) {
+                Log.d("found", String.format("nombre: %s",device.getName()));
+                records.add(new BluetoothRecord(device, sampleId));
+            }
+
+        }
+    }
+
+    @Override
+    public List<Object> getRecordsList() {
+        return records;
+    }
+}

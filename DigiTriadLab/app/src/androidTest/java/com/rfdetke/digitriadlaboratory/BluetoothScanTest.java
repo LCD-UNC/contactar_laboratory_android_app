@@ -1,32 +1,33 @@
 package com.rfdetke.digitriadlaboratory;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import android.util.Log;
 
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
+import com.rfdetke.digitriadlaboratory.database.daos.BluetoothRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
-import com.rfdetke.digitriadlaboratory.database.daos.WifiRecordDao;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.ScanConfiguration;
+import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanDataBucket;
+import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-@RunWith(AndroidJUnit4.class)
-public class WifiScanTest extends DatabaseTest{
+public class BluetoothScanTest extends DatabaseTest{
 
     SampleDao sampleDao;
     SourceTypeDao sourceTypeDao;
-    WifiRecordDao wifiRecordDao;
+    BluetoothRecordDao bluetoothRecordDao;
     SensorRecordDao sensorRecordDao;
 
     long deviceId;
@@ -38,7 +39,7 @@ public class WifiScanTest extends DatabaseTest{
         super.setUp();
         sampleDao = db.getSampleDao();
         sourceTypeDao = db.getSourceTypeDao();
-        wifiRecordDao = db.getWifiRecordDao();
+        bluetoothRecordDao = db.getBluetoothRecordDao();
         sensorRecordDao = db.getSensorRecordDao();
 
         deviceId = db.getDeviceDao().insert(new Device("T-1", "SAMSUNG", "A50"));
@@ -46,25 +47,26 @@ public class WifiScanTest extends DatabaseTest{
         runId = db.getRunDao().insert(new Run(new Date(), 1, experimentId));
 
         ScanConfiguration scanConfiguration = new ScanConfiguration();
-        scanConfiguration.activeTime = 1000;
-        scanConfiguration.inactiveTime = 1000;
-        scanConfiguration.windows = 2;
+        scanConfiguration.activeTime = 10000;
+        scanConfiguration.inactiveTime = 2000;
+        scanConfiguration.windows = 1;
 
-        WifiScanScheduler scanScheduler = new WifiScanScheduler(runId, scanConfiguration, context,
-                sampleDao, sourceTypeDao, wifiRecordDao, sensorRecordDao);
+        BluetoothScanScheduler scanScheduler = new BluetoothScanScheduler(runId, scanConfiguration,
+                context, sampleDao, sourceTypeDao, bluetoothRecordDao, sensorRecordDao);
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(20000);
+            Log.d("h","k");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testWifiRecordsInsertion() {
+    public void testBluetoothRecordsInsertion() {
         long[] runs = {runId};
 
-        List<SampleDao.WifiSampleRecord> samples = db.getSampleDao().getWifiSamplesRecords(runs);
+        List<SampleDao.BluetoothSampleRecord> samples = db.getSampleDao().getBluetoothSamplesRecords(runs);
 
         assertFalse(samples.isEmpty());
     }
@@ -73,7 +75,7 @@ public class WifiScanTest extends DatabaseTest{
     public void testSensorRecordsInsertion() {
         long[] runs = {runId};
 
-        List<SampleDao.SensorSampleRecord> sensorSampleRecords = db.getSampleDao().getSensorSamplesRecords(runs, SourceTypeEnum.WIFI.name());
+        List<SampleDao.SensorSampleRecord> sensorSampleRecords = db.getSampleDao().getSensorSamplesRecords(runs, SourceTypeEnum.BLUETOOTH.name());
 
         assertFalse(sensorSampleRecords.isEmpty());
     }
@@ -81,19 +83,19 @@ public class WifiScanTest extends DatabaseTest{
     @Test
     public void testSameSamplesLength() {
         long[] runs = {runId};
-        long[] wifiSampleIds = db.getSampleDao().getDistinctWifiSampleIds(runs);
-        long[] sensorSampleIds = db.getSampleDao().getDistinctSensorSampleIds(runs, SourceTypeEnum.WIFI.name());
+        long[] bluetoothSampleIds = db.getSampleDao().getDistinctBluetoothSampleIds(runs);
+        long[] sensorSampleIds = db.getSampleDao().getDistinctSensorSampleIds(runs, SourceTypeEnum.BLUETOOTH.name());
 
-        assertEquals(sensorSampleIds.length, wifiSampleIds.length);
+        assertEquals(sensorSampleIds.length, bluetoothSampleIds.length);
     }
 
     @Test
     public void testSameSampleIds() {
         long[] runs = {runId};
-        long[] wifiSampleIds = db.getSampleDao().getDistinctWifiSampleIds(runs);
-        long[] sensorSampleIds = db.getSampleDao().getDistinctSensorSampleIds(runs, SourceTypeEnum.WIFI.name());
+        long[] bluetoothSampleIds = db.getSampleDao().getDistinctBluetoothSampleIds(runs);
+        long[] sensorSampleIds = db.getSampleDao().getDistinctSensorSampleIds(runs, SourceTypeEnum.BLUETOOTH.name());
 
-        assertEquals(sensorSampleIds[0], wifiSampleIds[0]);
+        assertEquals(sensorSampleIds[0], bluetoothSampleIds[0]);
     }
 
 }

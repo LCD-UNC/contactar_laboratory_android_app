@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d39f0dbb226027e53107947141563d38",
+    "identityHash": "37432595cb2fe40dc78af5c6008058b6",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -213,7 +213,7 @@
       },
       {
         "tableName": "bluetooth_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `bluetooth_class` TEXT, `bluetooth_major_class` TEXT, `bond_state` INTEGER NOT NULL, `type` TEXT, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `address` TEXT, `bluetooth_major_class` TEXT, `bond_state` INTEGER NOT NULL, `type` TEXT, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -224,12 +224,6 @@
           {
             "fieldPath": "address",
             "columnName": "address",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "bluetoothClass",
-            "columnName": "bluetooth_class",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -781,7 +775,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd39f0dbb226027e53107947141563d38')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37432595cb2fe40dc78af5c6008058b6')"
     ]
   }
 }

@@ -15,12 +15,19 @@ import java.util.List;
 public interface SampleDao {
 
     @Query("SELECT s.run_id, r.sample_id, s.timestamp, r.id as record_id, r.address, r.bluetooth_major_class, " +
-            "r.bluetooth_class, r.bond_state, r.type " +
+            "r.bond_state, r.type " +
             "FROM bluetooth_record as r " +
             "INNER JOIN sample as s ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH\" ORDER BY run_id, sample_id, record_id")
     List<BluetoothSampleRecord> getBluetoothSamplesRecords(long[] runId);
+
+    @Query("SELECT DISTINCT r.sample_id " +
+            "FROM bluetooth_record as r " +
+            "INNER JOIN sample as s ON r.sample_id=s.id " +
+            "INNER JOIN source_type AS st ON s.source_type=st.id " +
+            "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH\" ORDER BY run_id, sample_id")
+    long[] getDistinctBluetoothSampleIds(long[] runId);
 
     @Query("SELECT s.run_id, r.sample_id, s.timestamp, r.id as record_id, r.address, r.rssi, r.tx_power, " +
             "r.advertising_set_id, r.primary_physical_layer, r.seconary_physical_layer, " +
@@ -75,8 +82,6 @@ public interface SampleDao {
         @ColumnInfo(name = "record_id")
         public String recordId;
         public String address;
-        @ColumnInfo(name = "bluetooth_class")
-        public String bluetoothClass;
         @ColumnInfo(name = "bluetooth_major_class")
         public String bluetoothMajorClass;
         @ColumnInfo(name = "bond_state")

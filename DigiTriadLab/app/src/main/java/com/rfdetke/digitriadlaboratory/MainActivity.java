@@ -34,13 +34,11 @@ public class MainActivity extends AppCompatActivity {
         long runId = DatabaseSingleton.getMemoryInstance(getApplicationContext()).getRunDao().insert(new Run(new Date(), 1, experimentId));
 
         WifiScanScheduler scanScheduler = new WifiScanScheduler(
-                DatabaseSingleton.getMemoryInstance(getApplicationContext()).getSampleDao(),
+                runId, scanConfiguration, getApplicationContext(), DatabaseSingleton.getMemoryInstance(getApplicationContext()).getSampleDao(),
                 DatabaseSingleton.getMemoryInstance(getApplicationContext()).getSourceTypeDao(),
-                scanConfiguration,
                 DatabaseSingleton.getMemoryInstance(getApplicationContext()).getWifiRecordDao(),
-                DatabaseSingleton.getMemoryInstance(getApplicationContext()).getSensorRecordDao(),
-                runId,
-                getApplicationContext());
+                DatabaseSingleton.getMemoryInstance(getApplicationContext()).getSensorRecordDao()
+        );
 
         SensorDataBucket bucket = new SensorDataBucket(getApplicationContext());
         try {

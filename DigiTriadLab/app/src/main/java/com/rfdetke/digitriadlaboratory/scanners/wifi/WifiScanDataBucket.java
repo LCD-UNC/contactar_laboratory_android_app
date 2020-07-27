@@ -16,10 +16,11 @@ public class WifiScanDataBucket extends BroadcastReceiver implements DataBucket 
 
     private final long sampleId;
     private WifiManager wifiManager;
-    private List<Object> records = new ArrayList<>();
+    private List<Object> records;
 
     public WifiScanDataBucket(long sampleId, Context context) {
         this.sampleId = sampleId;
+        records = new ArrayList<>();
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         saveScanResults();
     }
