@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "37432595cb2fe40dc78af5c6008058b6",
+    "identityHash": "768b97aa7db5063993152f9a3e12f53d",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -462,7 +462,7 @@
       },
       {
         "tableName": "sample",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `run_id` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, FOREIGN KEY(`run_id`) REFERENCES `run`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `run_id` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, FOREIGN KEY(`run_id`) REFERENCES `run`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -473,7 +473,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -663,7 +663,7 @@
       },
       {
         "tableName": "run",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` INTEGER, `number` INTEGER NOT NULL, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` TEXT, `number` INTEGER NOT NULL, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -674,7 +674,7 @@
           {
             "fieldPath": "start",
             "columnName": "start",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -775,7 +775,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37432595cb2fe40dc78af5c6008058b6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '768b97aa7db5063993152f9a3e12f53d')"
     ]
   }
 }

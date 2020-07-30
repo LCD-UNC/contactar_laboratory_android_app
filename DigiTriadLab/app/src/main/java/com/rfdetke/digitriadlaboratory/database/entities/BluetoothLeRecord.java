@@ -1,5 +1,8 @@
 package com.rfdetke.digitriadlaboratory.database.entities;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.ScanResult;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -34,5 +37,57 @@ public class BluetoothLeRecord {
 
     @ColumnInfo(name = "sample_id")
     public long sampleId;
+
+    public BluetoothLeRecord(ScanResult result, long sampleId) {
+        this.address = result.getDevice().getAddress();
+        this.rssi = result.getRssi();
+        this.txPower = result.getScanRecord().getTxPowerLevel();
+        this.advertisingSetId = result.getAdvertisingSid();
+        this.primaryPhysicalLayer = parsePhysicalLayer(result.getPrimaryPhy());
+        this.secondaryPhysicalLayer = parsePhysicalLayer(result.getSecondaryPhy());
+        this.periodicAdvertisingInterval = 1.25*result.getPeriodicAdvertisingInterval();
+
+        if(result.isConnectable())
+            this.connectable = 1;
+        else
+            this.connectable = 0;
+
+        if(result.isLegacy())
+            this.legacy = 1;
+        else
+            this.legacy = 0;
+
+        this.sampleId = sampleId;
+    }
+
+    private String parsePhysicalLayer(int layer) {
+        switch (layer) {
+            case BluetoothDevice.PHY_LE_1M:
+                return "LE 1M";
+            case BluetoothDevice.PHY_LE_2M:
+                return "LE 2M";
+            case BluetoothDevice.PHY_LE_CODED:
+                return "LE CODED";
+            default:
+                return "UNUSED";
+        }
+    }
+
+    public BluetoothLeRecord(String address, double rssi, double txPower, int advertisingSetId,
+                             String primaryPhysicalLayer, String secondaryPhysicalLayer,
+                             double periodicAdvertisingInterval, int connectable,
+                             int legacy, long sampleId) {
+        this.address = address;
+        this.rssi = rssi;
+        this.txPower = txPower;
+        this.advertisingSetId = advertisingSetId;
+        this.primaryPhysicalLayer = primaryPhysicalLayer;
+        this.secondaryPhysicalLayer = secondaryPhysicalLayer;
+        this.periodicAdvertisingInterval = periodicAdvertisingInterval;
+        this.connectable = connectable;
+        this.legacy = legacy;
+        this.sampleId = sampleId;
+    }
+
 
 }

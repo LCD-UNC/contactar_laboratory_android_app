@@ -46,15 +46,15 @@ public class WifiScanTest extends DatabaseTest{
         runId = db.getRunDao().insert(new Run(new Date(), 1, experimentId));
 
         ScanConfiguration scanConfiguration = new ScanConfiguration();
-        scanConfiguration.activeTime = 1000;
-        scanConfiguration.inactiveTime = 1000;
-        scanConfiguration.windows = 2;
+        scanConfiguration.activeTime = 1;
+        scanConfiguration.inactiveTime = 2;
+        scanConfiguration.windows = 4;
 
         WifiScanScheduler scanScheduler = new WifiScanScheduler(runId, scanConfiguration, context,
                 sampleDao, sourceTypeDao, wifiRecordDao, sensorRecordDao);
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(((scanConfiguration.activeTime+scanConfiguration.inactiveTime)*scanConfiguration.windows)+5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

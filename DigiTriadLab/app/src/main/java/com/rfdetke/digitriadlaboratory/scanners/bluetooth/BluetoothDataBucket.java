@@ -13,12 +13,12 @@ import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BluetoothScanDataBucket extends BroadcastReceiver implements DataBucket {
+public class BluetoothDataBucket extends BroadcastReceiver implements DataBucket {
 
     private final long sampleId;
     private List<Object> records;
 
-    public BluetoothScanDataBucket(long sampleId, Context context) {
+    public BluetoothDataBucket(long sampleId, Context context) {
         this.sampleId = sampleId;
         records = new ArrayList<>();
     }
@@ -29,7 +29,6 @@ public class BluetoothScanDataBucket extends BroadcastReceiver implements DataBu
         if (BluetoothDevice.ACTION_FOUND.equals(action)) {
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if(device != null) {
-                Log.d("found", String.format("nombre: %s",device.getName()));
                 records.add(new BluetoothRecord(device, sampleId));
             }
 

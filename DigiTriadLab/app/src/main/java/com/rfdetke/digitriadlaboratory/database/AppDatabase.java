@@ -27,6 +27,10 @@ import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.typeconverters.DateConverter;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Database(entities = {BluetoothLeRecord.class,
                         ScanConfiguration.class,
                         BluetoothRecord.class,
@@ -41,6 +45,10 @@ import com.rfdetke.digitriadlaboratory.database.typeconverters.DateConverter;
 
 @TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
+
+    private static final int NUMBER_OF_THREADS = 4;
+    public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
     public abstract BluetoothLeRecordDao getBluetoothLeRecordDao();
     public abstract BluetoothRecordDao getBluetoothRecordDao();
     public abstract SensorRecordDao getSensorRecordDao();

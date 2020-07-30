@@ -12,11 +12,14 @@ import java.util.List;
 @Dao
 public interface DeviceDao {
 
-    @Query("SELECT * FROM device WHERE id == (:deviceId) LIMIT 1")
-    Device getDeviceById(int deviceId);
+    @Query("SELECT * FROM device LIMIT 1")
+    Device getDevice();
 
     @Query("SELECT * FROM device")
     List<Device> getAllDevices();
+
+    @Query("DELETE FROM device")
+    void deleteAll();
 
     @Insert
     long insert(Device device);

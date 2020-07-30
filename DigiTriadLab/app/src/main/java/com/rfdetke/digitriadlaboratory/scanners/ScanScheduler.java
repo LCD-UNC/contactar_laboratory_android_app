@@ -29,8 +29,7 @@ public abstract class ScanScheduler implements ObservableScanner{
 
     private int windowCount;
 
-    public ScanScheduler(long runId, Context context,
-                         final ScanConfiguration scanConfiguration,
+    public ScanScheduler(long runId, final ScanConfiguration scanConfiguration, Context context,
                          SampleDao sampleDao, SourceTypeDao sourceTypeDao) {
 
         this.runId = runId;
@@ -39,7 +38,7 @@ public abstract class ScanScheduler implements ObservableScanner{
         this.sourceTypeDao = sourceTypeDao;
         activeTimer = new Timer();
         inactiveTimer = new Timer();
-        long period = scanConfiguration.activeTime + scanConfiguration.inactiveTime;
+        long period =  (scanConfiguration.activeTime + scanConfiguration.inactiveTime)*1000;
         windowCount = 0;
         observers = new ArrayList<>();
 
@@ -66,7 +65,7 @@ public abstract class ScanScheduler implements ObservableScanner{
         };
 
         activeTimer.scheduleAtFixedRate(activeTask, initialDelay, period);
-        inactiveTimer.scheduleAtFixedRate(inactiveTask, scanConfiguration.activeTime+initialDelay, period);
+        inactiveTimer.scheduleAtFixedRate(inactiveTask, (scanConfiguration.activeTime*1000)+initialDelay, period);
 
     }
 

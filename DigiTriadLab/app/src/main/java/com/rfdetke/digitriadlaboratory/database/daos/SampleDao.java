@@ -14,53 +14,60 @@ import java.util.List;
 @Dao
 public interface SampleDao {
 
-    @Query("SELECT s.run_id, r.sample_id, s.timestamp, r.id as record_id, r.address, r.bluetooth_major_class, " +
+    @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.address, r.bluetooth_major_class, " +
             "r.bond_state, r.type " +
-            "FROM bluetooth_record as r " +
-            "INNER JOIN sample as s ON r.sample_id=s.id " +
+            "FROM sample as s " +
+            "LEFT JOIN bluetooth_record as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH\" ORDER BY run_id, sample_id, record_id")
     List<BluetoothSampleRecord> getBluetoothSamplesRecords(long[] runId);
 
-    @Query("SELECT DISTINCT r.sample_id " +
-            "FROM bluetooth_record as r " +
-            "INNER JOIN sample as s ON r.sample_id=s.id " +
+    @Query("SELECT DISTINCT s.id as sample_id " +
+            "FROM sample as s " +
+            "LEFT JOIN bluetooth_record as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH\" ORDER BY run_id, sample_id")
     long[] getDistinctBluetoothSampleIds(long[] runId);
 
-    @Query("SELECT s.run_id, r.sample_id, s.timestamp, r.id as record_id, r.address, r.rssi, r.tx_power, " +
+    @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.address, r.rssi, r.tx_power, " +
             "r.advertising_set_id, r.primary_physical_layer, r.seconary_physical_layer, " +
             "r.periodic_advertising_interval, r.connectable, r.legacy " +
-            "FROM bluetooth_le_record as r " +
-            "INNER JOIN sample as s ON r.sample_id=s.id " +
+            "FROM sample as s " +
+            "LEFT JOIN bluetooth_le_record as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH_LE\" ORDER BY run_id, sample_id, record_id")
     List<BluetoothLeSampleRecord> getBluetoothLeSamplesRecords(long[] runId);
 
-    @Query("SELECT s.run_id, r.sample_id, s.timestamp, r.id as record_id, r.address, r.channel_width, " +
+    @Query("SELECT DISTINCT s.id as sample_id " +
+            "FROM sample as s " +
+            "LEFT JOIN bluetooth_le_record as r ON r.sample_id=s.id " +
+            "INNER JOIN source_type AS st ON s.source_type=st.id " +
+            "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH_LE\" ORDER BY run_id, sample_id")
+    long[] getDistinctBluetoothLeSampleIds(long[] runId);
+
+    @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.address, r.channel_width, " +
             "r.center_frequency_0, r.center_frequency_1, r.frequency, r.level, r.passpoint " +
-            "FROM wifi_record as r " +
-            "INNER JOIN sample as s ON r.sample_id=s.id " +
+            "FROM sample as s " +
+            "LEFT JOIN wifi_record as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"WIFI\" ORDER BY run_id, sample_id, record_id")
     List<WifiSampleRecord> getWifiSamplesRecords(long[] runId);
 
-    @Query("SELECT DISTINCT r.sample_id " +
-            "FROM wifi_record as r " +
-            "INNER JOIN sample as s ON r.sample_id=s.id " +
+    @Query("SELECT DISTINCT s.id as sample_id " +
+            "FROM sample as s " +
+            "LEFT JOIN wifi_record as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"WIFI\" ORDER BY run_id, sample_id")
     long[] getDistinctWifiSampleIds(long[] runId);
 
-    @Query("SELECT s.run_id, r.sample_id, s.timestamp, r.id as record_id, r.sensor_type, r.value_id, r.value " +
+    @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.sensor_type, r.value_id, r.value " +
             "FROM sensor_record as r " +
             "INNER JOIN sample as s ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=(:type) ORDER BY run_id, sample_id, record_id")
     List<SensorSampleRecord> getSensorSamplesRecords(long[] runId, String type);
 
-    @Query("SELECT DISTINCT r.sample_id " +
+    @Query("SELECT DISTINCT s.id as sample_id " +
             "FROM sensor_record as r " +
             "INNER JOIN sample as s ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +

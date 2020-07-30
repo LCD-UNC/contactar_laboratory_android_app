@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">DigiTriad Lab</string>
+    <string name="title_goes_here">Title goes here</string>
+    <string name="add_word">Add Experiment</string>
+    <string name="experiments">Experiments</string>
+    <string name="new_experiment">New Experiment</string>
+    <string name="codename">Codename</string>
+    <string name="description">Description</string>
+    <string name="save">Save</string>
+    <string name="empty_not_saved">Not saved...</string>
+    <string name="required_field_empty">Required field empty</string>
 </resources>

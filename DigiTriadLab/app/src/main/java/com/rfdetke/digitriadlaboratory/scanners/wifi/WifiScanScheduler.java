@@ -24,7 +24,7 @@ public class WifiScanScheduler extends ScanScheduler {
 
     private final WifiRecordDao wifiRecordDao;
     private final SensorRecordDao sensorRecordDao;
-    WifiScanDataBucket wifiDataBucket;
+    WifiDataBucket wifiDataBucket;
     SensorDataBucket sensorDataBucket;
 
     public WifiScanScheduler(long runId, ScanConfiguration scanConfiguration, Context context,
@@ -32,7 +32,7 @@ public class WifiScanScheduler extends ScanScheduler {
                              WifiRecordDao wifiRecordDao,
                              SensorRecordDao sensorRecordDao) {
 
-        super(runId, context, scanConfiguration, sampleDao, sourceTypeDao);
+        super(runId, scanConfiguration, context, sampleDao, sourceTypeDao);
         this.wifiRecordDao = wifiRecordDao;
         this.sensorRecordDao = sensorRecordDao;
         this.key = SourceTypeEnum.WIFI.toString();
@@ -45,7 +45,7 @@ public class WifiScanScheduler extends ScanScheduler {
                 sourceTypeDao.getSourceTypeByType(key).id));
         IntentFilter wifiIntentFilter = new IntentFilter();
         wifiIntentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        wifiDataBucket = new WifiScanDataBucket(sampleId, context);
+        wifiDataBucket = new WifiDataBucket(sampleId, context);
         sensorDataBucket.setSampleId(sampleId);
         context.registerReceiver(wifiDataBucket, wifiIntentFilter);
     };

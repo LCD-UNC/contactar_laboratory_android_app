@@ -26,4 +26,7 @@ public interface RunDao {
 
     @Delete
     void delete(Run run);
+
+    @Query("DELETE FROM run")
+    void deleteAll();
 }

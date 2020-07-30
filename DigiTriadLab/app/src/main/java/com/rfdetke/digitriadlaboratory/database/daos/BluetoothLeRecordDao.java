@@ -6,8 +6,13 @@ import androidx.room.Insert;
 
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
 
+import java.util.List;
+
 @Dao
 public interface BluetoothLeRecordDao {
+
+    @Insert
+    long[] insert(List<BluetoothLeRecord> bluetoothLeRecord);
 
     @Insert
     long insert(BluetoothLeRecord bluetoothLeRecord);
