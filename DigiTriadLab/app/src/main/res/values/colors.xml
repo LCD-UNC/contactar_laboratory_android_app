@@ -3,9 +3,10 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#4CAF50</color>
-    <color name="warning">#d50000</color>
-    <color name="done">#00c853</color>
-    <color name="scheduled">#ffab00</color>
+    <color name="red">#d50000</color>
+    <color name="green">#00c853</color>
+    <color name="yellow">#ffab00</color>
     <color name="white">#ffffff</color>
     <color name="black">#212121</color>
+    <color name="grey">#757575</color>
 </resources>

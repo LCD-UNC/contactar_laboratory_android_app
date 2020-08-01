@@ -10,13 +10,13 @@ import com.rfdetke.digitriadlaboratory.database.daos.DeviceDao;
 import com.rfdetke.digitriadlaboratory.database.daos.ExperimentDao;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
-import com.rfdetke.digitriadlaboratory.database.daos.ScanConfigurationDao;
+import com.rfdetke.digitriadlaboratory.database.daos.WindowConfigurationDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WifiRecordDao;
 
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.ScanConfiguration;
+import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
@@ -27,12 +27,11 @@ import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.typeconverters.DateConverter;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Database(entities = {BluetoothLeRecord.class,
-                        ScanConfiguration.class,
+                        WindowConfiguration.class,
                         BluetoothRecord.class,
                         SensorRecord.class,
                         WifiRecord.class,
@@ -58,6 +57,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract RunDao getRunDao();
     public abstract SampleDao getSampleDao();
     public abstract SourceTypeDao getSourceTypeDao();
-    public abstract ScanConfigurationDao getScanConfigurationDao();
+    public abstract WindowConfigurationDao getWindowConfigurationDao();
 
 }

@@ -33,4 +33,6 @@ public class ExperimentRepository {
     public Experiment getLast() {
         return experimentDao.getLastExperiment();
     }
+
+    public Experiment getById(long id) { return experimentDao.getExperimentById(id); }
 }

@@ -23,7 +23,10 @@ public interface ExperimentDao {
 
 
     @Query("SELECT e.*, d.done, t.total FROM experiment as e " +
-            "LEFT JOIN (SELECT COUNT(r.id) as done, r.experiment_id FROM run as r WHERE datetime('now', 'localtime')>datetime(r.start) GROUP BY r.experiment_id) as d " +
+            "LEFT JOIN (SELECT COUNT(id) as done, experiment_id " +
+                        "FROM (SELECT r.id, r.experiment_id " +
+                                "FROM run as r WHERE r.state=\"DONE\") " +
+                                "GROUP BY experiment_id) as d " +
             "ON e.id=d.experiment_id " +
             "LEFT JOIN (SELECT COUNT(r.id) as total, r.experiment_id FROM run as r GROUP BY r.experiment_id) as t " +
             "ON e.id=t.experiment_id")
@@ -36,6 +39,9 @@ public interface ExperimentDao {
 
     @Query("SELECT * FROM experiment ORDER BY id DESC LIMIT 1")
     Experiment getLastExperiment();
+
+    @Query("SELECT * FROM experiment WHERE id == (:id) LIMIT 1")
+    Experiment getExperimentById(long id);
 
     @Insert
     long insert(Experiment experiment);

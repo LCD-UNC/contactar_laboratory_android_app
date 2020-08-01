@@ -4,9 +4,23 @@
     <string name="add_word">Add Experiment</string>
     <string name="experiments">Experiments</string>
     <string name="new_experiment">New Experiment</string>
+    <string name="experiment_detail">"Experiment: %s"</string>
     <string name="codename">Codename</string>
     <string name="description">Description</string>
+    <string name="run_label">"Run %d"</string>
+    <string name="run_date">"Scheduled: %s"</string>
     <string name="save">Save</string>
-    <string name="empty_not_saved">Not saved...</string>
-    <string name="required_field_empty">Required field empty</string>
+    <string name="empty_not_saved">Not saved…</string>
+    <string name="error">"Error: %s"</string>
+    <string name="no_description">No description found</string>
+    <string name="description_text">"Description:\n%s\n\nConfigurations:\n%s"</string>
+    <string name="no_entries_found">No entries found</string>
+    <string name="loading_data">Loading data…</string>
+    <string name="scheduled_runs">Scheduled Runs</string>
+    <string name="wifi_configuration">WiFi Configuration</string>
+    <string name="active_time">Active [s]</string>
+    <string name="inactive_time">Inactive [s]</string>
+    <string name="bluetooth_configuration">Bluetooth Configuration</string>
+    <string name="windows">Windows</string>
+    <string name="bluetooth_le_configuration">Bluetooth LE Configuration</string>
 </resources>

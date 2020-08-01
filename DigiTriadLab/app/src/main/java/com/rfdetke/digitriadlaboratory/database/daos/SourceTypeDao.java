@@ -19,4 +19,7 @@ public interface SourceTypeDao {
 
     @Delete
     void delete(SourceType sourceType);
+
+    @Query("SELECT * FROM source_type WHERE id==(:id)")
+    SourceType getSourceTypeById(long id);
 }

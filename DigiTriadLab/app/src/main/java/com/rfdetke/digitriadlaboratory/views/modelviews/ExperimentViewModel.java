@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory;
+package com.rfdetke.digitriadlaboratory.views.modelviews;
 
 import android.app.Application;
 
@@ -17,7 +17,6 @@ import java.util.List;
 public class ExperimentViewModel extends AndroidViewModel {
 
     private ExperimentRepository experimentRepository;
-
     private LiveData<List<ExperimentDone>> allExperimentDone;
 
     public ExperimentViewModel(@NonNull Application application) {
@@ -32,7 +31,9 @@ public class ExperimentViewModel extends AndroidViewModel {
     }
 
     public long insert(Experiment experiment) { return experimentRepository.insert(experiment); }
+
     public void delete(Experiment experiment) { experimentRepository.delete(experiment); }
+
     public Experiment getLast() { return experimentRepository.getLast(); }
 
 }

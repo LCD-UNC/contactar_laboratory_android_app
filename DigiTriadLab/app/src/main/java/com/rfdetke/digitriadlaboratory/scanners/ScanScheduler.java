@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
-import com.rfdetke.digitriadlaboratory.database.entities.ScanConfiguration;
+import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class ScanScheduler implements ObservableScanner{
 
     private int windowCount;
 
-    public ScanScheduler(long runId, final ScanConfiguration scanConfiguration, Context context,
+    public ScanScheduler(long runId, final WindowConfiguration windowConfiguration, Context context,
                          SampleDao sampleDao, SourceTypeDao sourceTypeDao) {
 
         this.runId = runId;
@@ -38,7 +38,7 @@ public abstract class ScanScheduler implements ObservableScanner{
         this.sourceTypeDao = sourceTypeDao;
         activeTimer = new Timer();
         inactiveTimer = new Timer();
-        long period =  (scanConfiguration.activeTime + scanConfiguration.inactiveTime)*1000;
+        long period =  (windowConfiguration.activeTime + windowConfiguration.inactiveTime)*1000;
         windowCount = 0;
         observers = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public abstract class ScanScheduler implements ObservableScanner{
             @Override
             public void run() {
                 unregisterScanDataBucket();
-                if (windowCount == scanConfiguration.windows) {
+                if (windowCount == windowConfiguration.windows) {
                     activeTimer.cancel();
                     activeTimer.purge();
                     inactiveTimer.cancel();
@@ -65,7 +65,7 @@ public abstract class ScanScheduler implements ObservableScanner{
         };
 
         activeTimer.scheduleAtFixedRate(activeTask, initialDelay, period);
-        inactiveTimer.scheduleAtFixedRate(inactiveTask, (scanConfiguration.activeTime*1000)+initialDelay, period);
+        inactiveTimer.scheduleAtFixedRate(inactiveTask, (windowConfiguration.activeTime*1000)+initialDelay, period);
 
     }
 

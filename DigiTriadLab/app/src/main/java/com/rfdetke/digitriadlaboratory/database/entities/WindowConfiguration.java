@@ -7,7 +7,7 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "scan_configuration",
+@Entity(tableName = "window_configuration",
         indices = {@Index(value = "id", unique = true),
                    @Index(value = "experiment_id"),
                    @Index(value = "source_type")},
@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey;
                             parentColumns = "id",
                             childColumns = "source_type",
                             onDelete = ForeignKey.CASCADE)})
-public class ScanConfiguration {
+public class WindowConfiguration {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
@@ -35,4 +35,12 @@ public class ScanConfiguration {
 
     @ColumnInfo(name = "experiment_id")
     public long experimentId;
+
+    public WindowConfiguration(long activeTime, long inactiveTime, long windows, long sourceType, long experimentId) {
+        this.activeTime = activeTime;
+        this.inactiveTime = inactiveTime;
+        this.windows = windows;
+        this.sourceType = sourceType;
+        this.experimentId = experimentId;
+    }
 }

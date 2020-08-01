@@ -12,7 +12,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
-import com.rfdetke.digitriadlaboratory.database.entities.ScanConfiguration;
+import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.scanners.ScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
@@ -29,11 +29,11 @@ public class BluetoothScanScheduler extends ScanScheduler {
     BluetoothDataBucket bluetoothDataBucket;
     SensorDataBucket sensorDataBucket;
 
-    public BluetoothScanScheduler(long runId, ScanConfiguration scanConfiguration, Context context,
+    public BluetoothScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
                                   SampleDao sampleDao, SourceTypeDao sourceTypeDao,
                                   BluetoothRecordDao bluetoothRecordDao,
                                   SensorRecordDao sensorRecordDao) {
-        super(runId, scanConfiguration, context, sampleDao, sourceTypeDao);
+        super(runId, windowConfiguration, context, sampleDao, sourceTypeDao);
 
         this.bluetoothRecordDao = bluetoothRecordDao;
         this.sensorRecordDao = sensorRecordDao;

@@ -1,5 +1,6 @@
 package com.rfdetke.digitriadlaboratory.database.daos;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -18,8 +19,14 @@ public interface RunDao {
     @Query("SELECT * FROM run WHERE experiment_id==(:experimentId)")
     List<Run> getRunsByExperimentId(long experimentId);
 
+    @Query("SELECT * FROM run WHERE experiment_id==(:experimentId)")
+    LiveData<List<Run>> getLiveDataRunsByExperimentId(long experimentId);
+
     @Query("SELECT * FROM run WHERE id==(:runId) LIMIT 1")
     Run getRunById(int runId);
+
+    @Query("UPDATE run SET state=(:state) WHERE id=(:id)")
+    void updateRunState(long id, String state);
 
     @Insert
     long insert(Run run);

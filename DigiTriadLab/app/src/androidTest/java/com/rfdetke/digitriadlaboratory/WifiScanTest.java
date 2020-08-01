@@ -2,6 +2,7 @@ package com.rfdetke.digitriadlaboratory;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
@@ -10,7 +11,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.WifiRecordDao;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
-import com.rfdetke.digitriadlaboratory.database.entities.ScanConfiguration;
+import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 
 import org.junit.Test;
@@ -43,18 +44,18 @@ public class WifiScanTest extends DatabaseTest{
 
         deviceId = db.getDeviceDao().insert(new Device("T-1", "SAMSUNG", "A50"));
         experimentId = db.getExperimentDao().insert(new Experiment("EXP-001", "aaaa", deviceId));
-        runId = db.getRunDao().insert(new Run(new Date(), 1, experimentId));
+        runId = db.getRunDao().insert(new Run(new Date(), 1, RunStateEnum.SCHEDULED.name(), experimentId));
 
-        ScanConfiguration scanConfiguration = new ScanConfiguration();
-        scanConfiguration.activeTime = 1;
-        scanConfiguration.inactiveTime = 2;
-        scanConfiguration.windows = 4;
+        WindowConfiguration windowConfiguration = new WindowConfiguration();
+        windowConfiguration.activeTime = 1;
+        windowConfiguration.inactiveTime = 2;
+        windowConfiguration.windows = 4;
 
-        WifiScanScheduler scanScheduler = new WifiScanScheduler(runId, scanConfiguration, context,
+        WifiScanScheduler scanScheduler = new WifiScanScheduler(runId, windowConfiguration, context,
                 sampleDao, sourceTypeDao, wifiRecordDao, sensorRecordDao);
 
         try {
-            Thread.sleep(((scanConfiguration.activeTime+scanConfiguration.inactiveTime)*scanConfiguration.windows)+5000);
+            Thread.sleep(((windowConfiguration.activeTime+ windowConfiguration.inactiveTime)* windowConfiguration.windows)+5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

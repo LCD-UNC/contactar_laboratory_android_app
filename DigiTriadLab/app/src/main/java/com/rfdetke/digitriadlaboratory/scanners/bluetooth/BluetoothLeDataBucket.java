@@ -23,8 +23,7 @@ public class BluetoothLeDataBucket extends ScanCallback implements DataBucket {
     @Override
     public void onScanResult(int callbackType, ScanResult result) {
         super.onScanResult(callbackType, result);
-        if(result.getDevice().getName().equals("R"))
-            records.add(new BluetoothLeRecord(result, sampleId));
+        records.add(new BluetoothLeRecord(result, sampleId));
     }
 
     @Override

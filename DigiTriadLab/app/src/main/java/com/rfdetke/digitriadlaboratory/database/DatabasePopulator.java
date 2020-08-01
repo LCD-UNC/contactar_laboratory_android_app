@@ -5,6 +5,7 @@ import android.content.Context;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.entities.SourceType;
+import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
 
 public class DatabasePopulator {
 
@@ -20,9 +21,9 @@ public class DatabasePopulator {
     }
 
     private static void populateSourceTypes(AppDatabase db) {
-        SourceTypeDao dao = db.getSourceTypeDao();
+        SourceTypeRepository repository = new SourceTypeRepository(db);
         for (SourceTypeEnum sourceType : SourceTypeEnum.values()) {
-            dao.insert(new SourceType(sourceType.toString()));
+            repository.insert(new SourceType(sourceType.toString()));
         }
     }
 }

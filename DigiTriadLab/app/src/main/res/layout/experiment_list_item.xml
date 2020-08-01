@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:id="@+id/list_item"
+        android:id="@+id/experiment_list_item"
         >
 
         <ImageView
@@ -26,11 +26,11 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="16dp"
             app:srcCompat="@drawable/ic_baseline_warning_24"
-            android:tint="@color/warning"
+            android:tint="@color/red"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/label"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:layout_width="wrap_content"

@@ -2,6 +2,7 @@ package com.rfdetke.digitriadlaboratory;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.database.daos.DeviceDao;
 import com.rfdetke.digitriadlaboratory.database.daos.ExperimentDao;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
@@ -49,7 +50,7 @@ public class RunExperimentRelationTest extends DatabaseTest {
 
                 startDate.setTime(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * j));
 
-                Run run = new Run(startDate, j, experimentList.get(i).id);
+                Run run = new Run(startDate, j, RunStateEnum.SCHEDULED.name(), experimentList.get(i).id);
                 runDao.insert(run);
             }
         }

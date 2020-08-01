@@ -12,7 +12,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WifiRecordDao;
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
-import com.rfdetke.digitriadlaboratory.database.entities.ScanConfiguration;
+import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
 import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
@@ -27,12 +27,12 @@ public class WifiScanScheduler extends ScanScheduler {
     WifiDataBucket wifiDataBucket;
     SensorDataBucket sensorDataBucket;
 
-    public WifiScanScheduler(long runId, ScanConfiguration scanConfiguration, Context context,
+    public WifiScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
                              SampleDao sampleDao, SourceTypeDao sourceTypeDao,
                              WifiRecordDao wifiRecordDao,
                              SensorRecordDao sensorRecordDao) {
 
-        super(runId, scanConfiguration, context, sampleDao, sourceTypeDao);
+        super(runId, windowConfiguration, context, sampleDao, sourceTypeDao);
         this.wifiRecordDao = wifiRecordDao;
         this.sensorRecordDao = sensorRecordDao;
         this.key = SourceTypeEnum.WIFI.toString();

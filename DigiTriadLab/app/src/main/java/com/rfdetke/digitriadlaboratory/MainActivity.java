@@ -7,18 +7,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabasePopulator;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
+import com.rfdetke.digitriadlaboratory.views.NewExperimentActivity;
+import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
+import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentViewModel;
 
 import java.util.Date;
 import java.util.Objects;
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private ExperimentViewModel experimentViewModel;
     ExperimentListAdapter adapter;
     private Device device;
+    private long runId;
+    private AppDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         DatabasePopulator.prepopulate(getApplicationContext(),false);
-        AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());
+        database = DatabaseSingleton.getInstance(getApplicationContext());
         database.getRunDao().deleteAll();
         database.getExperimentDao().deleteAll();
 
@@ -74,42 +81,60 @@ public class MainActivity extends AppCompatActivity {
             device = database.getDeviceDao().getDevice();
         }
 
-        long exp1 = experimentViewModel.insert(new Experiment("EXP-001", "aaaa", device.id));
-        long exp2 = experimentViewModel.insert(new Experiment("EXP-002", "bbbb", device.id));
-        long exp3 = experimentViewModel.insert(new Experiment("EXP-003", "cccc", device.id));
-
+        long exp1 = database.getExperimentDao().insert(new Experiment("EXP-001", "aaaa", device.id));
+        long exp2 = database.getExperimentDao().insert(new Experiment("EXP-002", "bbbb", device.id));
+        long exp3 = database.getExperimentDao().insert(new Experiment("EXP-003", "cccc", device.id));
+        long exp4 = database.getExperimentDao().insert(new Experiment("EXP-004", null, device.id));
 
         Date date = new Date(System.currentTimeMillis()+1000*10);
-        long runId = database.getRunDao().insert(new Run(date, 1, exp1));
+        runId = database.getRunDao().insert(new Run(date, 1, RunStateEnum.DONE.name(), exp1));
 
         date.setTime(date.getTime()+1000*10);
-        runId = database.getRunDao().insert(new Run(date, 2, exp1));
+        runId = database.getRunDao().insert(new Run(date, 2, RunStateEnum.DONE.name(), exp1));
 
         date.setTime(date.getTime()+1000*60*2);
-        runId = database.getRunDao().insert(new Run(date, 1, exp2));
+        runId = database.getRunDao().insert(new Run(date, 1, RunStateEnum.SCHEDULED.name(), exp2));
 
         date.setTime(date.getTime()+1000*60*2);
-        runId = database.getRunDao().insert(new Run(date, 2, exp2));
+        runId = database.getRunDao().insert(new Run(date, 2, RunStateEnum.SCHEDULED.name(), exp2));
 
         date.setTime(date.getTime()+1000*60*2);
-        runId = database.getRunDao().insert(new Run(date, 3, exp2));
+        runId = database.getRunDao().insert(new Run(date, 3, RunStateEnum.SCHEDULED.name(), exp2));
 
-
+        runId = database.getRunDao().insert(new Run(date, 1, RunStateEnum.DONE.name(), exp4));
+        runId = database.getRunDao().insert(new Run(date, 2, RunStateEnum.SCHEDULED.name(), exp4));
+//        new AsyncTask<Integer, Integer, Integer>() {
+//            @Override
+//            protected Integer doInBackground(Integer... integers) {
+//                try {
+//                    Thread.sleep(integers[0]*1000);
+//                    database.getRunDao().updateRunState(runId, RunStateEnum.RUNNING.name());
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                return integers[0];
+//            }
+//        }.execute(10);
+//
+//        new AsyncTask<Integer, Integer, Integer>() {
+//            @Override
+//            protected Integer doInBackground(Integer... integers) {
+//                try {
+//                    Thread.sleep(integers[0]*1000);
+//                    database.getRunDao().updateRunState(runId, RunStateEnum.DONE.name());
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                return integers[0];
+//            }
+//        }.execute(20);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_EXPERIMENT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            String codename = data.getStringExtra(NewExperimentActivity.EXTRA_CODENAME);
-            String description = data.getStringExtra(NewExperimentActivity.EXTRA_DESCRIPTION);
-            experimentViewModel.insert(new Experiment(codename, description, device.id));
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
+        if (requestCode == NEW_EXPERIMENT_ACTIVITY_REQUEST_CODE && resultCode != RESULT_OK) {
+            Toast.makeText(getApplicationContext(), R.string.empty_not_saved, Toast.LENGTH_LONG).show();
         }
     }
 

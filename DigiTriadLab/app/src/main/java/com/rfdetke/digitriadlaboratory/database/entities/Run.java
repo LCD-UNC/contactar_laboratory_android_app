@@ -22,13 +22,15 @@ public class Run {
 
     public Date start;
     public long number;
+    public String state;
 
     @ColumnInfo(name = "experiment_id")
     public long experimentId;
 
-    public Run(Date start, long number, long experimentId) {
+    public Run(Date start, long number, String state, long experimentId) {
         this.start = start;
         this.number = number;
+        this.state = state;
         this.experimentId = experimentId;
     }
 }
