@@ -89,7 +89,6 @@ public class NewExperimentActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.save_button);
 
         saveButton.setOnClickListener(v -> {
-            Intent replyIntent = new Intent();
             long experimentId = 0;
             boolean success = true;
             if(validateExperiment()) {
@@ -124,7 +123,6 @@ public class NewExperimentActivity extends AppCompatActivity {
             }
 
             if(success) {
-                setResult(RESULT_OK, replyIntent);
                 finish();
             } else {
                 Toast.makeText(this, getResources().getString(R.string.error, "Required field empty"), Toast.LENGTH_SHORT).show();

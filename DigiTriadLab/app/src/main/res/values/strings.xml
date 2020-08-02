@@ -23,4 +23,14 @@
     <string name="bluetooth_configuration">Bluetooth Configuration</string>
     <string name="windows">Windows</string>
     <string name="bluetooth_le_configuration">Bluetooth LE Configuration</string>
+    <string name="title_activity_new_run">New Run</string>
+    <string name="when_run">Schedule this to:</string>
+    <string name="overlapped_run">Overlapped run error…</string>
+    <string name="device_info_title">Device information</string>
+    <string name="save_update">Save / Update</string>
+    <string name="device_uuid_title">UUID</string>
+    <string name="no_information">No information available.</string>
+    <string name="device_brand_title">Brand</string>
+    <string name="device_model_title">Model</string>
+    <string name="new_uuid">Generate New UUID</string>
 </resources>

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
+import com.rfdetke.digitriadlaboratory.database.daos.RunDao.StartDuration;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 
 import java.util.List;
@@ -18,6 +19,22 @@ public class RunRepository {
 
     public LiveData<List<Run>> getRunsForExperiment(long id) {
         return runDao.getLiveDataRunsByExperimentId(id);
+    }
+
+    public void updateState(long id, String state) {
+        runDao.updateRunState(id, state);
+    }
+
+    public long getLastRunForExperiment(long id) {
+        return runDao.getLastRunNumberByExperimentId(id);
+    }
+
+    public List<StartDuration> getCurrentScheduledOrRunningStartAndDuration() {
+        return runDao.timePerConfiguration();
+    }
+
+    public long getMaxDurationForExperiment(long id) {
+        return runDao.maxDurationByExperimentId(id);
     }
 
     public long insert(Run run) { return runDao.insert(run); }

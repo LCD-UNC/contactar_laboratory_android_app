@@ -7,10 +7,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.rfdetke.digitriadlaboratory.MainActivity;
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
@@ -30,6 +33,7 @@ import java.util.Objects;
 
 public class ExperimentDetailActivity extends AppCompatActivity {
 
+    private static final String EXTRA_ID = "com.rfdetke.digitriadlaboratory.ID";
     private RunListAdapter adapter;
     private RunViewModel runViewModel;
 
@@ -50,9 +54,16 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         List<WindowConfiguration> configurations = configurationRepository.getConfigurationsForExperiment(currentExperiment.id);
         SourceTypeRepository sourceTypeRepository = new SourceTypeRepository(database);
 
-        TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getResources().getString(R.string.experiment_detail, currentExperiment.codename));
         findViewById(R.id.toolbar_button).setVisibility(View.INVISIBLE);
+
+        Button addRunButton = findViewById(R.id.add_run_button);
+        addRunButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ExperimentDetailActivity.this, NewRunActivity.class);
+            intent.putExtra(EXTRA_ID, experimentId);
+            startActivity(intent);
+        });
 
         String configurationString = "";
         for(WindowConfiguration configuration : configurations) {

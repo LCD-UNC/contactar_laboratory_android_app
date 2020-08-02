@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.DeviceInfoActivity">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/codename_input_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/small_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/codename">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/device_codename"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginRight="@dimen/big_padding"
+            android:layout_marginLeft="@dimen/big_padding"
+            style="@android:style/Widget.Material.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/device_uuid_title"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/device_uuid_title"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/codename_input_layout"/>
+
+    <TextView
+        android:id="@+id/device_uuid"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_information"
+        android:textColor="@color/grey"
+        android:layout_marginStart="@dimen/small_padding"
+        android:layout_marginTop="@dimen/small_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/device_uuid_title"/>
+
+    <TextView
+        android:id="@+id/device_brand_title"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/device_brand_title"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/device_uuid"/>
+
+    <TextView
+        android:id="@+id/device_brand"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_information"
+        android:textColor="@color/grey"
+        android:layout_marginStart="@dimen/small_padding"
+        android:layout_marginTop="@dimen/small_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/device_brand_title"/>
+
+    <TextView
+        android:id="@+id/device_model_title"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/device_model_title"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/device_brand"/>
+
+    <TextView
+        android:id="@+id/device_model"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_information"
+        android:textColor="@color/grey"
+        android:layout_marginStart="@dimen/small_padding"
+        android:layout_marginTop="@dimen/small_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/device_model_title"/>
+
+    <Button
+        android:id="@+id/new_uuid_button"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginEnd="@dimen/big_padding"
+        android:layout_marginStart="@dimen/big_padding"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:text="@string/new_uuid"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/save_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <Button
+        android:id="@+id/save_button"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginEnd="@dimen/big_padding"
+        android:layout_marginStart="@dimen/big_padding"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:text="@string/save_update"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

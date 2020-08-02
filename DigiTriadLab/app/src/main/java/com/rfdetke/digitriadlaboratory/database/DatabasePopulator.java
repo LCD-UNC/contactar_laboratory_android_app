@@ -9,14 +9,7 @@ import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
 
 public class DatabasePopulator {
 
-    public static void prepopulate(Context context, boolean inMemory) {
-        AppDatabase db;
-        if(inMemory) {
-            db = DatabaseSingleton.getMemoryInstance(context);
-        } else {
-
-            db = DatabaseSingleton.getInstance(context);
-        }
+    public static void prepopulate(AppDatabase db) {
         populateSourceTypes(db);
     }
 

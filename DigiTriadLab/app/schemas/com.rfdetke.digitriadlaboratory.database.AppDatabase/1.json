@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2ed3e5861352702ca9227b6cadc2768f",
+    "identityHash": "fc99e3eaee5adcdf87c03399b2840bfc",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -548,7 +548,7 @@
       },
       {
         "tableName": "device",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `codename` TEXT, `brand` TEXT, `model` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `codename` TEXT, `brand` TEXT, `model` TEXT, `uuid` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -571,6 +571,12 @@
           {
             "fieldPath": "model",
             "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -781,7 +787,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2ed3e5861352702ca9227b6cadc2768f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fc99e3eaee5adcdf87c03399b2840bfc')"
     ]
   }
 }

@@ -26,6 +26,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.SourceType;
 import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.typeconverters.DateConverter;
+import com.rfdetke.digitriadlaboratory.database.typeconverters.UuidConverter;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,7 +43,7 @@ import java.util.concurrent.Executors;
                         SourceType.class},
           version = 1)
 
-@TypeConverters({DateConverter.class})
+@TypeConverters({DateConverter.class, UuidConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final int NUMBER_OF_THREADS = 4;
