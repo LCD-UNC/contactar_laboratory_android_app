@@ -6,6 +6,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao.BluetoothLeSampleRecord;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 
 import java.util.List;
@@ -31,5 +32,9 @@ public class BluetoothLeRepository {
 
     public List<BluetoothLeSampleRecord> getAllSamples(long[] runs) {
         return sampleDao.getBluetoothLeSamplesRecords(runs);
+    }
+
+    public long[] insertUuids(List<BluetoothLeUuid> bluetoothLeUuids) {
+        return bluetoothLeRecordDao.insertUuids(bluetoothLeUuids);
     }
 }

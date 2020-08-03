@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fc99e3eaee5adcdf87c03399b2840bfc",
+    "identityHash": "b2818dec179ad5a84434b5431c481efa",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -106,6 +106,67 @@
             "onUpdate": "NO ACTION",
             "columns": [
               "sample_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "bluetooth_le_uuid",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT, `record_id` INTEGER NOT NULL, FOREIGN KEY(`record_id`) REFERENCES `bluetooth_le_record`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "recordId",
+            "columnName": "record_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_bluetooth_le_uuid_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bluetooth_le_uuid_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_bluetooth_le_uuid_record_id",
+            "unique": false,
+            "columnNames": [
+              "record_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_le_uuid_record_id` ON `${TABLE_NAME}` (`record_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "bluetooth_le_record",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "record_id"
             ],
             "referencedColumns": [
               "id"
@@ -787,7 +848,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fc99e3eaee5adcdf87c03399b2840bfc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b2818dec179ad5a84434b5431c481efa')"
     ]
   }
 }

@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.experiments));
 
+
         Button toolbarButton = findViewById(R.id.toolbar_button);
         toolbarButton.setOnClickListener(v -> {
             showDeviceInfo();
@@ -122,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
         if (device == null) {
             deviceRepository.insert(new Device(null, Build.MANUFACTURER.toUpperCase(), Build.MODEL.toUpperCase(), new ParcelUuid(UUID.randomUUID())));
         }
+
+        toolbarTitle.setOnClickListener(v -> {
+            database.getExperimentDao().deleteAll();
+        });
     }
 
     private void showEnableWifiDialog() {

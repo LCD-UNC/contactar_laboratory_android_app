@@ -12,7 +12,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
+import com.rfdetke.digitriadlaboratory.contacthandlers.wifi.WifiScanScheduler;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

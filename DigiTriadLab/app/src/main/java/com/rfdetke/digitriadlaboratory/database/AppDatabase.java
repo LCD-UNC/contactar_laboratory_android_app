@@ -16,6 +16,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WifiRecordDao;
 
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
@@ -32,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Database(entities = {BluetoothLeRecord.class,
+                        BluetoothLeUuid.class,
                         WindowConfiguration.class,
                         BluetoothRecord.class,
                         SensorRecord.class,

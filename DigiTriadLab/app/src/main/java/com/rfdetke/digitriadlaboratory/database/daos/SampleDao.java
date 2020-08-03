@@ -1,5 +1,7 @@
 package com.rfdetke.digitriadlaboratory.database.daos;
 
+import android.os.ParcelUuid;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -8,6 +10,7 @@ import androidx.room.Query;
 
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.typeconverters.DateConverter;
+import com.rfdetke.digitriadlaboratory.database.typeconverters.UuidConverter;
 import com.rfdetke.digitriadlaboratory.export.CsvExportable;
 
 import java.lang.reflect.Field;
@@ -35,9 +38,10 @@ public interface SampleDao {
 
     @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.address, r.rssi, r.tx_power, " +
             "r.advertising_set_id, r.primary_physical_layer, r.seconary_physical_layer, " +
-            "r.periodic_advertising_interval, r.connectable, r.legacy " +
+            "r.periodic_advertising_interval, r.connectable, r.legacy, r.uuid " +
             "FROM sample as s " +
-            "LEFT JOIN bluetooth_le_record as r ON r.sample_id=s.id " +
+            "LEFT JOIN (SELECT r.*, uu.uuid FROM bluetooth_le_record as r " +
+                        "LEFT JOIN bluetooth_le_uuid as uu ON r.id=uu.record_id) as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH_LE\" ORDER BY run_id, sample_id, record_id")
     List<BluetoothLeSampleRecord> getBluetoothLeSamplesRecords(long[] runId);
@@ -141,21 +145,22 @@ public interface SampleDao {
         public double periodicAdvertisingInterval;
         public int connectable;
         public int legacy;
+        public ParcelUuid uuid;
 
 
         @Override
         public String csvHeader() {
             return "timestamp,run_id,sample_id,record_id,address,rssi,tx_power,advertising_set_id," +
                     "primary_physical_layer,seconary_physical_layer,periodic_advertising_interval," +
-                    "connectable,legacy\n";
+                    "connectable,legacy,uuid\n";
         }
 
         @Override
         public String toCsv() {
-            return String.format(Locale.ENGLISH, "%s,%d,%d,%d,%s,%f,%f,%d,%s,%s,%f,%d,%d\n",
+            return String.format(Locale.ENGLISH, "%s,%d,%d,%d,%s,%f,%f,%d,%s,%s,%f,%d,%d,%s\n",
                     DateConverter.dateToTimestamp(timestamp), runId, sampleId, recordId, address,
                     rssi, txPower, advertisingSetId, primaryPhysicalLayer, secondaryPhysicalLayer,
-                    periodicAdvertisingInterval, connectable, legacy);
+                    periodicAdvertisingInterval, connectable, legacy, UuidConverter.uuidToString(uuid));
         }
     }
 

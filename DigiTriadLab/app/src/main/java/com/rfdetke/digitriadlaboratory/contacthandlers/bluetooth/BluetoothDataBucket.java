@@ -1,14 +1,12 @@
-package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
+package com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
-import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
+import com.rfdetke.digitriadlaboratory.contacthandlers.DataBucket;
 
 import java.util.ArrayList;
 import java.util.List;

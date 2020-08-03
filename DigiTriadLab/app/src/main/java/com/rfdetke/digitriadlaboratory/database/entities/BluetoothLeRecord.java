@@ -41,7 +41,10 @@ public class BluetoothLeRecord {
     public BluetoothLeRecord(ScanResult result, long sampleId) {
         this.address = result.getDevice().getAddress();
         this.rssi = result.getRssi();
-        this.txPower = result.getScanRecord().getTxPowerLevel();
+        if(result.getScanRecord() != null)
+            this.txPower = result.getScanRecord().getTxPowerLevel();
+        else
+            this.txPower = Integer.MIN_VALUE;
         this.advertisingSetId = result.getAdvertisingSid();
         this.primaryPhysicalLayer = parsePhysicalLayer(result.getPrimaryPhy());
         this.secondaryPhysicalLayer = parsePhysicalLayer(result.getSecondaryPhy());

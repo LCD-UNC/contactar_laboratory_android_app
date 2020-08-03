@@ -1,9 +1,6 @@
-package com.rfdetke.digitriadlaboratory.scanners.sensors;
+package com.rfdetke.digitriadlaboratory.contacthandlers.sensors;
 
-import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 
 import com.rfdetke.digitriadlaboratory.utils.EnumMapper;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;

@@ -1,10 +1,8 @@
-package com.rfdetke.digitriadlaboratory.scanners;
+package com.rfdetke.digitriadlaboratory.contacthandlers;
 
 import android.content.Context;
 
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
-import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.SampleRepository;
 
@@ -13,7 +11,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public abstract class ScanScheduler implements ObservableScanner{
+public abstract class Scheduler implements ObservableScanner{
 
     private static final int initialDelay = 500;
 
@@ -30,8 +28,8 @@ public abstract class ScanScheduler implements ObservableScanner{
 
     private int windowCount;
 
-    public ScanScheduler(long runId, final WindowConfiguration windowConfiguration, Context context,
-                         AppDatabase database) {
+    public Scheduler(long runId, final WindowConfiguration windowConfiguration, Context context,
+                     AppDatabase database) {
 
         this.runId = runId;
         this.context = context;
@@ -46,20 +44,20 @@ public abstract class ScanScheduler implements ObservableScanner{
             @Override
             public void run() {
                 windowCount += 1;
-                registerScanDataBucket();
+                startTask();
             }
         };
 
         TimerTask inactiveTask = new TimerTask() {
             @Override
             public void run() {
-                unregisterScanDataBucket();
+                endTask();
                 if (windowCount == windowConfiguration.windows) {
                     activeTimer.cancel();
                     activeTimer.purge();
                     inactiveTimer.cancel();
                     inactiveTimer.purge();
-                    setDoneScanning();
+                    setDone();
                 }
             }
         };
@@ -73,9 +71,9 @@ public abstract class ScanScheduler implements ObservableScanner{
         return key;
     }
 
-    protected abstract void registerScanDataBucket();
+    protected abstract void startTask();
 
-    protected abstract void unregisterScanDataBucket();
+    protected abstract void endTask();
 
     @Override
     public void addObserver(ScanObserver scanObserver) {
@@ -88,7 +86,7 @@ public abstract class ScanScheduler implements ObservableScanner{
     }
 
     @Override
-    public void setDoneScanning() {
+    public void setDone() {
         for (ScanObserver observer: this.observers) {
             observer.update(this.key);
         }

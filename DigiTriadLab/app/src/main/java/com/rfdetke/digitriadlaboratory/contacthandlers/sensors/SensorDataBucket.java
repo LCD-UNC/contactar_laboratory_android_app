@@ -1,13 +1,12 @@
-package com.rfdetke.digitriadlaboratory.scanners.sensors;
+package com.rfdetke.digitriadlaboratory.contacthandlers.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 
-import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
+import com.rfdetke.digitriadlaboratory.contacthandlers.DataBucket;
 
 import java.util.ArrayList;
 import java.util.HashMap;

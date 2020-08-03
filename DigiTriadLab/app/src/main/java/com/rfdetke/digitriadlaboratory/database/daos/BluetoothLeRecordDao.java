@@ -5,11 +5,18 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
 
 import java.util.List;
 
 @Dao
 public interface BluetoothLeRecordDao {
+
+    @Insert
+    long[] insertUuids(List<BluetoothLeUuid> bluetoothLeUuids);
+
+    @Insert
+    long insertUuid(BluetoothLeUuid bluetoothLeUuid);
 
     @Insert
     long[] insert(List<BluetoothLeRecord> bluetoothLeRecord);

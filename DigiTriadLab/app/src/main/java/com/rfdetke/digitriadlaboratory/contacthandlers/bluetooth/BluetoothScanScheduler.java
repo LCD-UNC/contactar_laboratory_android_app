@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
+package com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,23 +7,17 @@ import android.content.IntentFilter;
 
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
-import com.rfdetke.digitriadlaboratory.database.daos.BluetoothRecordDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothRepository;
-import com.rfdetke.digitriadlaboratory.scanners.ScanScheduler;
-import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
+import com.rfdetke.digitriadlaboratory.contacthandlers.Scheduler;
+import com.rfdetke.digitriadlaboratory.contacthandlers.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class BluetoothScanScheduler extends ScanScheduler {
+public class BluetoothScanScheduler extends Scheduler {
 
     private final BluetoothRepository bluetoothRepository;
     BluetoothDataBucket bluetoothDataBucket;
@@ -39,7 +33,7 @@ public class BluetoothScanScheduler extends ScanScheduler {
     }
 
     @Override
-    protected void registerScanDataBucket() {
+    protected void startTask() {
         long sampleId = sampleRepository.insert(runId, key);
         IntentFilter bluetoothIntentFilter = new IntentFilter();
         bluetoothIntentFilter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -53,7 +47,7 @@ public class BluetoothScanScheduler extends ScanScheduler {
     }
 
     @Override
-    protected void unregisterScanDataBucket() {
+    protected void endTask() {
         BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
 
         List<BluetoothRecord> bluetoothRecords = new ArrayList<>();

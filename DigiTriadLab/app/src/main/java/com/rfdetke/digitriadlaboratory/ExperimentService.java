@@ -26,11 +26,11 @@ import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
-import com.rfdetke.digitriadlaboratory.scanners.ScanObserver;
-import com.rfdetke.digitriadlaboratory.scanners.ScanScheduler;
-import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
-import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
-import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
+import com.rfdetke.digitriadlaboratory.contacthandlers.ScanObserver;
+import com.rfdetke.digitriadlaboratory.contacthandlers.Scheduler;
+import com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth.BluetoothLeScanScheduler;
+import com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth.BluetoothScanScheduler;
+import com.rfdetke.digitriadlaboratory.contacthandlers.wifi.WifiScanScheduler;
 import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
 
 import java.util.HashMap;
@@ -94,6 +94,7 @@ public class ExperimentService extends Service implements ScanObserver {
 
     @Override
     public void onDestroy() {
+        runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         super.onDestroy();
     }
 
@@ -110,7 +111,6 @@ public class ExperimentService extends Service implements ScanObserver {
             if(!done)
                 return;
         }
-        runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         for(String key : doneMap.keySet()) {
             if (key.equals(SourceTypeEnum.WIFI.name())) {
                 new WifiCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
@@ -121,10 +121,11 @@ public class ExperimentService extends Service implements ScanObserver {
             }
         }
         new SensorCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
+        runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);
     }
 
-    private void registerScanner(ScanScheduler scanner) {
+    private void registerScanner(Scheduler scanner) {
         scanner.addObserver(this);
         doneMap.put(scanner.getKey(), Boolean.FALSE);
     }

@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.scanners;
+package com.rfdetke.digitriadlaboratory.contacthandlers;
 
 import java.util.List;
 
