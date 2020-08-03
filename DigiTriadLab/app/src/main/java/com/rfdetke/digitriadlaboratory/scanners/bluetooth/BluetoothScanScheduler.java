@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
+import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.daos.BluetoothRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
@@ -14,6 +15,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
+import com.rfdetke.digitriadlaboratory.repositories.BluetoothRepository;
 import com.rfdetke.digitriadlaboratory.scanners.ScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
@@ -23,29 +25,22 @@ import java.util.List;
 
 public class BluetoothScanScheduler extends ScanScheduler {
 
-    private final BluetoothRecordDao bluetoothRecordDao;
-    private final SensorRecordDao sensorRecordDao;
-
+    private final BluetoothRepository bluetoothRepository;
     BluetoothDataBucket bluetoothDataBucket;
     SensorDataBucket sensorDataBucket;
 
     public BluetoothScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
-                                  SampleDao sampleDao, SourceTypeDao sourceTypeDao,
-                                  BluetoothRecordDao bluetoothRecordDao,
-                                  SensorRecordDao sensorRecordDao) {
-        super(runId, windowConfiguration, context, sampleDao, sourceTypeDao);
+                                  AppDatabase database) {
+        super(runId, windowConfiguration, context, database);
 
-        this.bluetoothRecordDao = bluetoothRecordDao;
-        this.sensorRecordDao = sensorRecordDao;
+        this.bluetoothRepository = new BluetoothRepository(database);
         this.key = SourceTypeEnum.BLUETOOTH.toString();
         sensorDataBucket = new SensorDataBucket(context);
     }
 
     @Override
     protected void registerScanDataBucket() {
-        long sampleId = sampleDao.insert(new Sample(new Date(), runId,
-                sourceTypeDao.getSourceTypeByType(key).id));
-
+        long sampleId = sampleRepository.insert(runId, key);
         IntentFilter bluetoothIntentFilter = new IntentFilter();
         bluetoothIntentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         bluetoothDataBucket = new BluetoothDataBucket(sampleId, context);
@@ -65,13 +60,13 @@ public class BluetoothScanScheduler extends ScanScheduler {
         for (Object record : bluetoothDataBucket.getRecordsList()) {
             bluetoothRecords.add((BluetoothRecord) record);
         }
-        bluetoothRecordDao.insert(bluetoothRecords);
+        bluetoothRepository.insertBluetooth(bluetoothRecords);
 
         List<SensorRecord> sensorRecords = new ArrayList<>();
         for (Object record : sensorDataBucket.getRecordsList()) {
             sensorRecords.add((SensorRecord) record);
         }
-        sensorRecordDao.insert(sensorRecords);
+        bluetoothRepository.insertSensors(sensorRecords);
 
         context.unregisterReceiver(bluetoothDataBucket);
         bluetoothDataBucket = null;

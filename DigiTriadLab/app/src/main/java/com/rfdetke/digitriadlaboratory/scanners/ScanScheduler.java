@@ -2,9 +2,11 @@ package com.rfdetke.digitriadlaboratory.scanners;
 
 import android.content.Context;
 
+import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
+import com.rfdetke.digitriadlaboratory.repositories.SampleRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,7 @@ public abstract class ScanScheduler implements ObservableScanner{
     protected long runId;
     protected Context context;
 
-    protected final SampleDao sampleDao;
-    protected final SourceTypeDao sourceTypeDao;
+    protected final SampleRepository sampleRepository;
     protected List<ScanObserver> observers;
 
     protected String key;
@@ -30,12 +31,11 @@ public abstract class ScanScheduler implements ObservableScanner{
     private int windowCount;
 
     public ScanScheduler(long runId, final WindowConfiguration windowConfiguration, Context context,
-                         SampleDao sampleDao, SourceTypeDao sourceTypeDao) {
+                         AppDatabase database) {
 
         this.runId = runId;
         this.context = context;
-        this.sampleDao = sampleDao;
-        this.sourceTypeDao = sourceTypeDao;
+        this.sampleRepository = new SampleRepository(database);
         activeTimer = new Timer();
         inactiveTimer = new Timer();
         long period =  (windowConfiguration.activeTime + windowConfiguration.inactiveTime)*1000;

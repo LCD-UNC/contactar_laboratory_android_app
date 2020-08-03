@@ -43,7 +43,7 @@ public interface RunDao {
     long getLastRunNumberByExperimentId(long experimentId);
 
     @Query("SELECT * FROM run WHERE id==(:runId) LIMIT 1")
-    Run getRunById(int runId);
+    Run getRunById(long runId);
 
     @Query("UPDATE run SET state=(:state) WHERE id=(:id)")
     void updateRunState(long id, String state);

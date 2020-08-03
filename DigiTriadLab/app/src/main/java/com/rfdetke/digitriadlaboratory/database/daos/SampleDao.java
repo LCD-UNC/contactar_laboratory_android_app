@@ -7,9 +7,13 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.rfdetke.digitriadlaboratory.database.entities.Sample;
+import com.rfdetke.digitriadlaboratory.database.typeconverters.DateConverter;
+import com.rfdetke.digitriadlaboratory.export.CsvExportable;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Dao
 public interface SampleDao {
@@ -123,13 +127,14 @@ public interface SampleDao {
         public int sampleId;
     }
 
-    static class WifiSampleRecord {
+    static class WifiSampleRecord implements CsvExportable {
         public Date timestamp;
         @ColumnInfo(name = "run_id")
-        public int runId;
-
+        public long runId;
+        @ColumnInfo(name = "sample_id")
+        public long sampleId;
         @ColumnInfo(name = "record_id")
-        public String recordId;
+        public long recordId;
         public String address;
         @ColumnInfo(name = "channel_width")
         public String channelWidth;
@@ -140,8 +145,19 @@ public interface SampleDao {
         public int frequency;
         public int level;
         public int passpoint;
-        @ColumnInfo(name = "sample_id")
-        public int sampleId;
+
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run_id,sample_id,record_id,address,channel_width,center_frequency_0,center_frequency_1,frequency,level,passpoint\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%s,%d,%d,%d,%s,%s,%d,%d,%d,%d,%d\n",
+                    DateConverter.dateToTimestamp(timestamp), runId, sampleId, recordId, address,
+                    channelWidth, centerFrequency0, centerFrequency1, frequency, level, passpoint);
+        }
     }
 
     static class SensorSampleRecord {

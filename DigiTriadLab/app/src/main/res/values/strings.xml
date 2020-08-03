@@ -33,4 +33,6 @@
     <string name="device_brand_title">Brand</string>
     <string name="device_model_title">Model</string>
     <string name="new_uuid">Generate New UUID</string>
+    <string name="dialog_enable_wifi">WiFi is required to run experiments</string>
+    <string name="enable">Enable</string>
 </resources>

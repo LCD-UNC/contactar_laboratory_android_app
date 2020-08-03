@@ -33,11 +33,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class NewRunActivity extends AppCompatActivity {
+    public static final String EXTRA_RUN_ID = "com.rfdetke.digitriadlaboratory.RUN_ID";
+
     private static final int MINUTES_MARGIN = 1;
     private static final int MILLIS_CONSTANT = 1000;
     private static final int SECONDS_CONSTANT = 60;
     private static final int MILLIS_MARGIN = MINUTES_MARGIN*SECONDS_CONSTANT*MILLIS_CONSTANT;
-
 
     private DatePicker startDate;
     private TimePicker startTime;
@@ -45,7 +46,6 @@ public class NewRunActivity extends AppCompatActivity {
     private RunRepository runRepository;
     private long experimentId;
     private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +70,6 @@ public class NewRunActivity extends AppCompatActivity {
 
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-
         Button saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             String date = String.format(Locale.ENGLISH, "%d", startDate.getDayOfMonth())+"-"+
@@ -88,7 +85,10 @@ public class NewRunActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if(validateStartDatetime(selectedDate)) {
-                saveRun(selectedDate);
+                long runId = saveRun(selectedDate);
+                Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+                alarmIntent.putExtra(EXTRA_RUN_ID, runId);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedDate.getTime(), pendingIntent);
                 finish();
             } else {
@@ -97,9 +97,9 @@ public class NewRunActivity extends AppCompatActivity {
         });
     }
 
-    private void saveRun(Date selectedDate) {
+    private long saveRun(Date selectedDate) {
         long number = runRepository.getLastRunForExperiment(experimentId)+1;
-        runRepository.insert(new Run(selectedDate,number, RunStateEnum.SCHEDULED.name(), experimentId));
+        return runRepository.insert(new Run(selectedDate,number, RunStateEnum.SCHEDULED.name(), experimentId));
     }
 
     private boolean validateStartDatetime(Date selectedDate) {

@@ -4,37 +4,29 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
-import com.rfdetke.digitriadlaboratory.database.daos.BluetoothLeRecordDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
+import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
+import com.rfdetke.digitriadlaboratory.repositories.BluetoothLeRepository;
 import com.rfdetke.digitriadlaboratory.scanners.ScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class BluetoothLeScanScheduler extends ScanScheduler {
 
-    private final BluetoothLeRecordDao bluetoothLeRecordDao;
-    private final SensorRecordDao sensorRecordDao;
+    private final BluetoothLeRepository bluetoothLeRepository;
 
     BluetoothLeDataBucket bluetoothLeDataBucket;
     SensorDataBucket sensorDataBucket;
 
     public BluetoothLeScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
-                                    SampleDao sampleDao, SourceTypeDao sourceTypeDao,
-                                    BluetoothLeRecordDao bluetoothLeRecordDao,
-                                    SensorRecordDao sensorRecordDao) {
-        super(runId, windowConfiguration, context, sampleDao, sourceTypeDao);
+                                    AppDatabase database) {
+        super(runId, windowConfiguration, context, database);
 
-        this.bluetoothLeRecordDao = bluetoothLeRecordDao;
-        this.sensorRecordDao = sensorRecordDao;
+        this.bluetoothLeRepository = new BluetoothLeRepository(database);
         this.key = SourceTypeEnum.BLUETOOTH_LE.toString();
 
         sensorDataBucket = new SensorDataBucket(context);
@@ -42,8 +34,7 @@ public class BluetoothLeScanScheduler extends ScanScheduler {
 
     @Override
     protected void registerScanDataBucket() {
-        long sampleId = sampleDao.insert(new Sample(new Date(), runId,
-                sourceTypeDao.getSourceTypeByType(key).id));
+        long sampleId = sampleRepository.insert(runId, key);
 
         bluetoothLeDataBucket = new BluetoothLeDataBucket(sampleId, context);
         sensorDataBucket.setSampleId(sampleId);
@@ -61,13 +52,13 @@ public class BluetoothLeScanScheduler extends ScanScheduler {
         for (Object record : bluetoothLeDataBucket.getRecordsList()) {
             bluetoothRecords.add((BluetoothLeRecord) record);
         }
-        bluetoothLeRecordDao.insert(bluetoothRecords);
+        bluetoothLeRepository.insertBluetoothLe(bluetoothRecords);
 
         List<SensorRecord> sensorRecords = new ArrayList<>();
         for (Object record : sensorDataBucket.getRecordsList()) {
             sensorRecords.add((SensorRecord) record);
         }
-        sensorRecordDao.insert(sensorRecords);
+        bluetoothLeRepository.insertSensors(sensorRecords);
 
         bluetoothLeDataBucket = null;
         sensorDataBucket.setSampleId(0);

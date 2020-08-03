@@ -37,6 +37,10 @@ public class RunRepository {
         return runDao.maxDurationByExperimentId(id);
     }
 
+    public Run getById(long id) {
+        return runDao.getRunById(id);
+    }
+
     public long insert(Run run) { return runDao.insert(run); }
 
     public void delete(Run run) { runDao.delete(run); }

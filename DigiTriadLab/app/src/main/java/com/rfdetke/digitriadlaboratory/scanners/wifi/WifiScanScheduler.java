@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 
+import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
+import com.rfdetke.digitriadlaboratory.repositories.WifiRepository;
 import com.rfdetke.digitriadlaboratory.scanners.ScanScheduler;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
@@ -22,27 +24,22 @@ import java.util.List;
 
 public class WifiScanScheduler extends ScanScheduler {
 
-    private final WifiRecordDao wifiRecordDao;
-    private final SensorRecordDao sensorRecordDao;
+    private final WifiRepository wifiRepository;
     WifiDataBucket wifiDataBucket;
     SensorDataBucket sensorDataBucket;
 
     public WifiScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
-                             SampleDao sampleDao, SourceTypeDao sourceTypeDao,
-                             WifiRecordDao wifiRecordDao,
-                             SensorRecordDao sensorRecordDao) {
+                             AppDatabase database) {
 
-        super(runId, windowConfiguration, context, sampleDao, sourceTypeDao);
-        this.wifiRecordDao = wifiRecordDao;
-        this.sensorRecordDao = sensorRecordDao;
+        super(runId, windowConfiguration, context, database);
+        this.wifiRepository = new WifiRepository(database);
         this.key = SourceTypeEnum.WIFI.toString();
         sensorDataBucket = new SensorDataBucket(context);
     }
 
     @Override
     protected void registerScanDataBucket() {
-        long sampleId = sampleDao.insert(new Sample(new Date(), runId,
-                sourceTypeDao.getSourceTypeByType(key).id));
+        long sampleId = sampleRepository.insert(runId, key);
         IntentFilter wifiIntentFilter = new IntentFilter();
         wifiIntentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         wifiDataBucket = new WifiDataBucket(sampleId, context);
@@ -56,13 +53,13 @@ public class WifiScanScheduler extends ScanScheduler {
         for (Object record : wifiDataBucket.getRecordsList()) {
             wifiRecords.add((WifiRecord) record);
         }
-        wifiRecordDao.insert(wifiRecords);
+        wifiRepository.insertWifi(wifiRecords);
 
         List<SensorRecord> sensorRecords = new ArrayList<>();
         for (Object record : sensorDataBucket.getRecordsList()) {
             sensorRecords.add((SensorRecord) record);
         }
-        sensorRecordDao.insert(sensorRecords);
+        wifiRepository.insertSensors(sensorRecords);
 
         context.unregisterReceiver(wifiDataBucket);
         wifiDataBucket = null;
