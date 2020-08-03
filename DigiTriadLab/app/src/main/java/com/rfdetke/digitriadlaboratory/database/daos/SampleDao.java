@@ -71,6 +71,12 @@ public interface SampleDao {
             "WHERE s.run_id IN(:runId) AND st.type=(:type) ORDER BY run_id, sample_id, record_id")
     List<SensorSampleRecord> getSensorSamplesRecords(long[] runId, String type);
 
+    @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.sensor_type, r.value_id, r.value " +
+            "FROM sensor_record as r " +
+            "INNER JOIN sample as s ON r.sample_id=s.id " +
+            "WHERE s.run_id IN (:runId) ORDER BY run_id, sample_id, record_id")
+    List<SensorSampleRecord> getSensorSamplesRecords(long[] runId);
+
     @Query("SELECT DISTINCT s.id as sample_id " +
             "FROM sensor_record as r " +
             "INNER JOIN sample as s ON r.sample_id=s.id " +
@@ -85,30 +91,42 @@ public interface SampleDao {
     @Delete
     void delete(Sample sample);
 
-    static class BluetoothSampleRecord {
+    static class BluetoothSampleRecord implements CsvExportable {
         public Date timestamp;
         @ColumnInfo(name = "run_id")
-        public int runId;
-
+        public long runId;
+        @ColumnInfo(name = "sample_id")
+        public long sampleId;
         @ColumnInfo(name = "record_id")
-        public String recordId;
+        public long recordId;
         public String address;
         @ColumnInfo(name = "bluetooth_major_class")
         public String bluetoothMajorClass;
         @ColumnInfo(name = "bond_state")
         public int bondState;
         public String type;
-        @ColumnInfo(name = "sample_id")
-        public int sampleId;
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run_id,sample_id,record_id,address,bluetooth_major_class,bond_state,type\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%s,%d,%d,%d,%s,%s,%d,%s\n",
+                    DateConverter.dateToTimestamp(timestamp), runId, sampleId, recordId, address,
+                    bluetoothMajorClass, bondState, type);
+        }
     }
 
-    static class BluetoothLeSampleRecord {
+    static class BluetoothLeSampleRecord implements CsvExportable {
         public Date timestamp;
         @ColumnInfo(name = "run_id")
-        public int runId;
-
+        public long runId;
+        @ColumnInfo(name = "sample_id")
+        public long sampleId;
         @ColumnInfo(name = "record_id")
-        public String recordId;
+        public long recordId;
         public String address;
         public double rssi;
         @ColumnInfo(name = "tx_power")
@@ -123,8 +141,22 @@ public interface SampleDao {
         public double periodicAdvertisingInterval;
         public int connectable;
         public int legacy;
-        @ColumnInfo(name = "sample_id")
-        public int sampleId;
+
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run_id,sample_id,record_id,address,rssi,tx_power,advertising_set_id," +
+                    "primary_physical_layer,seconary_physical_layer,periodic_advertising_interval," +
+                    "connectable,legacy\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%s,%d,%d,%d,%s,%f,%f,%d,%s,%s,%f,%d,%d\n",
+                    DateConverter.dateToTimestamp(timestamp), runId, sampleId, recordId, address,
+                    rssi, txPower, advertisingSetId, primaryPhysicalLayer, secondaryPhysicalLayer,
+                    periodicAdvertisingInterval, connectable, legacy);
+        }
     }
 
     static class WifiSampleRecord implements CsvExportable {
@@ -149,7 +181,8 @@ public interface SampleDao {
 
         @Override
         public String csvHeader() {
-            return "timestamp,run_id,sample_id,record_id,address,channel_width,center_frequency_0,center_frequency_1,frequency,level,passpoint\n";
+            return "timestamp,run_id,sample_id,record_id,address,channel_width,center_frequency_0," +
+                    "center_frequency_1,frequency,level,passpoint\n";
         }
 
         @Override
@@ -160,11 +193,12 @@ public interface SampleDao {
         }
     }
 
-    static class SensorSampleRecord {
+    static class SensorSampleRecord implements CsvExportable {
         public Date timestamp;
         @ColumnInfo(name = "run_id")
-        public int runId;
-
+        public long runId;
+        @ColumnInfo(name = "sample_id")
+        public long sampleId;
         @ColumnInfo(name = "record_id")
         public long recordId;
         @ColumnInfo(name = "sensor_type")
@@ -172,7 +206,18 @@ public interface SampleDao {
         @ColumnInfo(name = "value_id")
         public int valueId;
         public double value;
-        @ColumnInfo(name = "sample_id")
-        public int sampleId;
+
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run_id,sample_id,record_id,sensor_type,value_id,value\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%s,%d,%d,%d,%s,%d,%f\n",
+                    DateConverter.dateToTimestamp(timestamp), runId, sampleId, recordId, sensorType,
+                    valueId, value);
+        }
     }
 }

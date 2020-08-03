@@ -3,31 +3,27 @@ package com.rfdetke.digitriadlaboratory.export;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
-import com.rfdetke.digitriadlaboratory.repositories.WifiRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class WifiCsvFileWritter extends AsyncTask<Void, Void, Void> {
-
+public abstract class CsvFileWriter extends AsyncTask<Void, Void, Void> {
     private final Run run;
     private final Experiment experiment;
     private final File appDir;
-    private List<CsvExportable> samples;
+    private final List<CsvExportable> samples;
     private final String key;
 
-    public WifiCsvFileWritter(long runId, AppDatabase database, Context context) throws NullPointerException {
+    public CsvFileWriter(long runId, AppDatabase database, Context context) throws NullPointerException {
         try {
             run = new RunRepository(database).getById(runId);
             experiment = new ExperimentRepository(database).getById(run.experimentId);
@@ -64,11 +60,6 @@ public class WifiCsvFileWritter extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    public List<CsvExportable> getExportables(AppDatabase database, long[] runs) {
-        return new ArrayList<>(new WifiRepository(database).getAllSamplesFor(runs));
-    }
-
-    public String getKey() {
-        return SourceTypeEnum.WIFI.name();
-    }
+    public abstract List<CsvExportable> getExportables(AppDatabase database, long[] runs);
+    public abstract String getKey();
 }

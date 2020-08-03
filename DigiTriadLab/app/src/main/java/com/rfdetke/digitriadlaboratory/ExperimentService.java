@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -19,7 +18,10 @@ import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.export.WifiCsvFileWritter;
+import com.rfdetke.digitriadlaboratory.export.BluetoothCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.BluetoothLeCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.SensorCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
@@ -109,7 +111,16 @@ public class ExperimentService extends Service implements ScanObserver {
                 return;
         }
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
-        new WifiCsvFileWritter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
+        for(String key : doneMap.keySet()) {
+            if (key.equals(SourceTypeEnum.WIFI.name())) {
+                new WifiCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
+            } else if (key.equals(SourceTypeEnum.BLUETOOTH.name())) {
+                new BluetoothCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
+            } else if (key.equals(SourceTypeEnum.BLUETOOTH_LE.name())) {
+                new BluetoothLeCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
+            }
+        }
+        new SensorCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
         stopForeground(true);
     }
 
