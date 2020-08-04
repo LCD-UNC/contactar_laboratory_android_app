@@ -137,9 +137,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void preparePermissions() {
         permissionsList = new ArrayList<>();
-        permissionsList.addAll(Arrays.asList(Manifest.permission.ACCESS_WIFI_STATE,
+        permissionsList.addAll(Arrays.asList(
+                Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissionsList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         }

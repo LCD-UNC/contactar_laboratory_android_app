@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "115fd4d9943749117121400ea244be31",
+    "identityHash": "b07eac173729023c81a5710ffd54b029",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -175,7 +175,7 @@
         ]
       },
       {
-        "tableName": "bluetooth_le_advertise_configuration",
+        "tableName": "advertise_configuration",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tx_power` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
@@ -211,20 +211,20 @@
         },
         "indices": [
           {
-            "name": "index_bluetooth_le_advertise_configuration_id",
+            "name": "index_advertise_configuration_id",
             "unique": true,
             "columnNames": [
               "id"
             ],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bluetooth_le_advertise_configuration_id` ON `${TABLE_NAME}` (`id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_advertise_configuration_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_bluetooth_le_advertise_configuration_experiment_id",
+            "name": "index_advertise_configuration_experiment_id",
             "unique": false,
             "columnNames": [
               "experiment_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_le_advertise_configuration_experiment_id` ON `${TABLE_NAME}` (`experiment_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_advertise_configuration_experiment_id` ON `${TABLE_NAME}` (`experiment_id`)"
           }
         ],
         "foreignKeys": [
@@ -915,7 +915,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '115fd4d9943749117121400ea244be31')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b07eac173729023c81a5710ffd54b029')"
     ]
   }
 }

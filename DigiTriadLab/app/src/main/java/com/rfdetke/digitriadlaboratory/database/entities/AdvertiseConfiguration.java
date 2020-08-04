@@ -6,7 +6,7 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "bluetooth_le_advertise_configuration",
+@Entity(tableName = "advertise_configuration",
         indices = {@Index(value = "id", unique = true),
                 @Index(value = "experiment_id")},
         foreignKeys = @ForeignKey(entity = Experiment.class,

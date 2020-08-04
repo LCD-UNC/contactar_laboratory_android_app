@@ -1,21 +1,27 @@
 package com.rfdetke.digitriadlaboratory.views;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.le.AdvertisingSetParameters;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rfdetke.digitriadlaboratory.R;
+import com.rfdetke.digitriadlaboratory.ScanQrExperiment;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
@@ -27,10 +33,12 @@ import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
 
+import java.util.List;
 import java.util.Objects;
 
 public class NewExperimentActivity extends AppCompatActivity {
 
+    public static final int SCAN_QR = 10;
     private ExperimentRepository experimentRepository;
     private DeviceRepository deviceRepository;
     private SourceTypeRepository sourceTypeRepository;
@@ -71,12 +79,16 @@ public class NewExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_experiment);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.toolbar);
+        getSupportActionBar().setCustomView(R.layout.scan_toolbar);
 
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.new_experiment));
 
-        findViewById(R.id.toolbar_button).setVisibility(View.INVISIBLE);
+        findViewById(R.id.scan_button).setVisibility(View.VISIBLE);
+        findViewById(R.id.scan_button).setOnClickListener(v -> {
+            Intent intent = new Intent(NewExperimentActivity.this, ScanQrExperiment.class);
+            startActivityForResult(intent, SCAN_QR);
+        });
 
         AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());
         experimentRepository = new ExperimentRepository(database);
@@ -319,6 +331,27 @@ public class NewExperimentActivity extends AppCompatActivity {
             builder.setMessage(this.message)
                     .setNeutralButton(R.string.ok, (dialog, id) -> {});
             return builder.create();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SCAN_QR && resultCode == Activity.RESULT_OK) {
+            if(data != null) {
+                String experiment = data.getStringExtra(ScanQrExperiment.EXTRA_CONFIG_STRING);
+                if (experiment != null) {
+                    String[] portions = experiment.split(";",-1);
+                    List<View> editTexts = findViewById(R.id.scroll_view).getFocusables(View.FOCUS_FORWARD);
+                    for (int i = 0; i < portions.length-1; i++) {
+                        View view = editTexts.get(i);
+                        if (view instanceof EditText) {
+                            ((EditText)view).setText(portions[i]);//here it will be clear all the EditText field
+                        }
+                    }
+                }
+
+            }
         }
     }
 }

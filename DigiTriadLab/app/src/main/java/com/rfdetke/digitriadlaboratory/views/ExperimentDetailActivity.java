@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rfdetke.digitriadlaboratory.R;
@@ -22,6 +23,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
+import com.rfdetke.digitriadlaboratory.utils.QRTools;
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.RunViewModel;
@@ -54,7 +56,10 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         SourceTypeRepository sourceTypeRepository = new SourceTypeRepository(database);
         AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
 
-                TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        ImageView qrContainer = findViewById(R.id.qr_container);
+        qrContainer.setImageBitmap(QRTools.getQrConfiguration(currentExperiment, configurationRepository, advertiseConfiguration, sourceTypeRepository));
+
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getResources().getString(R.string.experiment_detail, currentExperiment.codename));
         findViewById(R.id.toolbar_button).setVisibility(View.INVISIBLE);
 
