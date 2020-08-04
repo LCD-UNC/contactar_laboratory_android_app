@@ -57,7 +57,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
 
         ImageView qrContainer = findViewById(R.id.qr_container);
-        qrContainer.setImageBitmap(QRTools.getQrConfiguration(currentExperiment, configurationRepository, advertiseConfiguration, sourceTypeRepository));
+        qrContainer.setImageBitmap(QRTools.getQrConfiguration(currentExperiment, configurationRepository, advertiseConfiguration));
 
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getResources().getString(R.string.experiment_detail, currentExperiment.codename));

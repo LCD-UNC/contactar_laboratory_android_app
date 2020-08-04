@@ -19,8 +19,7 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class QRTools {
     public static Bitmap getQrConfiguration(Experiment experiment,
                                             ConfigurationRepository configurationRepository,
-                                            AdvertiseConfiguration advertiseConfiguration,
-                                            SourceTypeRepository sourceTypeRepository) {
+                                            AdvertiseConfiguration advertiseConfiguration) {
         String code = String.format(Locale.ENGLISH,"%s;%s;",experiment.codename,experiment.description);
 
         WindowConfiguration wifiWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.WIFI.name());
