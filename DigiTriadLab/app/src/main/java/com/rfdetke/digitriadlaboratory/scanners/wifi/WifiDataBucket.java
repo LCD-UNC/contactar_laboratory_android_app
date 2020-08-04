@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.contacthandlers.wifi;
+package com.rfdetke.digitriadlaboratory.scanners.wifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
 import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
-import com.rfdetke.digitriadlaboratory.contacthandlers.DataBucket;
+import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
 
 import java.util.ArrayList;
 import java.util.List;

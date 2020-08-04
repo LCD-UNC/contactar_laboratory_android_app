@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.contacthandlers.sensors;
+package com.rfdetke.digitriadlaboratory.scanners.sensors;
 
 import android.hardware.SensorEvent;
 

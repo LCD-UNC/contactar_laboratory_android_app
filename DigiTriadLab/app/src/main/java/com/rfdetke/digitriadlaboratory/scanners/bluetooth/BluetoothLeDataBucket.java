@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth;
+package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
 
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.ParcelUuid;
 
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
-import com.rfdetke.digitriadlaboratory.contacthandlers.DataBucket;
+import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
 
 import java.util.ArrayList;
 import java.util.List;

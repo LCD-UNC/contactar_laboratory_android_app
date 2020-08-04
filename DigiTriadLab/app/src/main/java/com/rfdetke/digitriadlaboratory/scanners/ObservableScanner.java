@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.contacthandlers;
+package com.rfdetke.digitriadlaboratory.scanners;
 
 public interface ObservableScanner {
     public void addObserver(ScanObserver scanObserver);

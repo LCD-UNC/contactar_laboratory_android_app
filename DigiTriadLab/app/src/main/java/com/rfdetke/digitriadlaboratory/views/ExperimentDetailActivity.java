@@ -2,7 +2,6 @@ package com.rfdetke.digitriadlaboratory.views;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,12 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.rfdetke.digitriadlaboratory.MainActivity;
 import com.rfdetke.digitriadlaboratory.R;
+import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
+import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
-import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
@@ -53,8 +52,9 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         ConfigurationRepository configurationRepository = new ConfigurationRepository(database);
         List<WindowConfiguration> configurations = configurationRepository.getConfigurationsForExperiment(currentExperiment.id);
         SourceTypeRepository sourceTypeRepository = new SourceTypeRepository(database);
+        AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
 
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
+                TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getResources().getString(R.string.experiment_detail, currentExperiment.codename));
         findViewById(R.id.toolbar_button).setVisibility(View.INVISIBLE);
 
@@ -68,9 +68,13 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         String configurationString = "";
         for(WindowConfiguration configuration : configurations) {
             configurationString = configurationString.concat(String.format(Locale.ENGLISH,
-                    "%s:\n  Active: %d s Inactive: %d s Windows: %d\n",
-                    sourceTypeRepository.getById(configuration.sourceType).type,
+                    "      * %s:\n            Active: %d s. Inactive: %d s. Windows: %d.\n",
+                    sourceTypeRepository.getById(configuration.sourceType).type.replace('_',' '),
                     configuration.activeTime, configuration.inactiveTime, configuration.windows));
+            if(sourceTypeRepository.getById(configuration.sourceType).type.equals(SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name())) {
+                configurationString = configurationString.concat(String.format(Locale.ENGLISH,
+                    "            Tx Power: %d dBm. Interval %d ms.\n", advertiseConfiguration.txPower, advertiseConfiguration.interval));
+            }
         }
 
         TextView descriptionTextView = findViewById(R.id.experiment_description);

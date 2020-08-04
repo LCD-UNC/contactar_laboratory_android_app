@@ -44,18 +44,18 @@ dependencies {
     //noinspection LifecycleAnnotationProcessorWithJava8
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.2.0"
 
+    // QR
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
+    implementation 'com.google.zxing:core:3.3.2'
+    
     // UI
     implementation "com.google.android.material:material:1.1.0"
-    compileOnly 'com.google.android.wearable:wearable:2.5.0'
-    def room_version = "2.2.5"
 
+    // database
+    def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
-
-    // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
-
-    // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

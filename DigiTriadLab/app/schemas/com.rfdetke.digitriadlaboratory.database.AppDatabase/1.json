@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b2818dec179ad5a84434b5431c481efa",
+    "identityHash": "115fd4d9943749117121400ea244be31",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -167,6 +167,73 @@
             "onUpdate": "NO ACTION",
             "columns": [
               "record_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "bluetooth_le_advertise_configuration",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tx_power` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "txPower",
+            "columnName": "tx_power",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "interval",
+            "columnName": "interval",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "experimentId",
+            "columnName": "experiment_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_bluetooth_le_advertise_configuration_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bluetooth_le_advertise_configuration_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_bluetooth_le_advertise_configuration_experiment_id",
+            "unique": false,
+            "columnNames": [
+              "experiment_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_le_advertise_configuration_experiment_id` ON `${TABLE_NAME}` (`experiment_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "experiment",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "experiment_id"
             ],
             "referencedColumns": [
               "id"
@@ -848,7 +915,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b2818dec179ad5a84434b5431c481efa')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '115fd4d9943749117121400ea244be31')"
     ]
   }
 }

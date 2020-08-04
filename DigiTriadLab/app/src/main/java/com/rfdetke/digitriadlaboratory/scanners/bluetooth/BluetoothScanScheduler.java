@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth;
+package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,8 +11,8 @@ import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothRepository;
-import com.rfdetke.digitriadlaboratory.contacthandlers.Scheduler;
-import com.rfdetke.digitriadlaboratory.contacthandlers.sensors.SensorDataBucket;
+import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
+import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
 import java.util.List;

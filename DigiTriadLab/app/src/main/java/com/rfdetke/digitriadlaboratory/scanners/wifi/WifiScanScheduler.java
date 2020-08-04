@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.contacthandlers.wifi;
+package com.rfdetke.digitriadlaboratory.scanners.wifi;
 
 import android.content.Context;
 import android.content.IntentFilter;
@@ -7,11 +7,11 @@ import android.net.wifi.WifiManager;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.repositories.WifiRepository;
-import com.rfdetke.digitriadlaboratory.contacthandlers.Scheduler;
+import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
-import com.rfdetke.digitriadlaboratory.contacthandlers.sensors.SensorDataBucket;
+import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
 import java.util.List;

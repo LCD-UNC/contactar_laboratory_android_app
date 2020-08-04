@@ -17,12 +17,12 @@
     <string name="no_entries_found">No entries found</string>
     <string name="loading_data">Loading data…</string>
     <string name="scheduled_runs">Scheduled Runs</string>
-    <string name="wifi_configuration">WiFi Configuration</string>
+    <string name="wifi_configuration">WiFi Scan</string>
     <string name="active_time">Active [s]</string>
     <string name="inactive_time">Inactive [s]</string>
-    <string name="bluetooth_configuration">Bluetooth Configuration</string>
+    <string name="bluetooth_configuration">Bluetooth Scan</string>
     <string name="windows">Windows</string>
-    <string name="bluetooth_le_configuration">Bluetooth LE Configuration</string>
+    <string name="bluetooth_le_configuration">BLE Scan</string>
     <string name="title_activity_new_run">New Run</string>
     <string name="when_run">Schedule this to:</string>
     <string name="overlapped_run">Overlapped run error…</string>
@@ -35,4 +35,14 @@
     <string name="new_uuid">Generate New UUID</string>
     <string name="dialog_enable_wifi">WiFi is required to run experiments</string>
     <string name="enable">Enable</string>
+    <string name="bluetooth_le_advertise_configuration">BLE Advertise</string>
+    <string name="tx_power_dbm">Tx Power [dBm]</string>
+    <string name="interval">Interval [ms]</string>
+    <string name="experiment_codename_error">"Experiment requires a codename.\n"</string>
+    <string name="at_least_one_configuration">"Experiment requires at least 1 configuration.\n"</string>
+    <string name="wifi_error">"Some WiFi configuration is empty.\n"</string>
+    <string name="bluetooth_error">"Some Bluetooth configuration is empty.\n"</string>
+    <string name="bluetooth_le_error">"Some BLE configuration is empty.\n"</string>
+    <string name="bluetooth_le_advertise_error">"Some BLE configuration is wrong or empty. Remember that Tx Power should be in range of [-127, 1] and Interval should be in range of [100, 10485759]\n"</string>
+    <string name="ok">OK</string>
 </resources>

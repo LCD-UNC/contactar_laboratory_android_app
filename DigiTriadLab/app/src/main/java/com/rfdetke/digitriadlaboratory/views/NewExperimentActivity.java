@@ -1,21 +1,25 @@
 package com.rfdetke.digitriadlaboratory.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.bluetooth.le.AdvertisingSetParameters;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
+import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
@@ -34,21 +38,32 @@ public class NewExperimentActivity extends AppCompatActivity {
 
     private EditText codename;
     private EditText description;
+
+    private TextView wifiTitle;
     private EditText wifiActive;
     private EditText wifiInactive;
     private EditText wifiWindows;
+    private Switch wifiSwitch;
+
+    private TextView bluetoothTitle;
     private EditText bluetoothActive;
     private EditText bluetoothInactive;
     private EditText bluetoothWindows;
+    private Switch bluetoothSwitch;
+
+    private TextView bluetoothLeTitle;
     private EditText bluetoothLeActive;
     private EditText bluetoothLeInactive;
     private EditText bluetoothLeWindows;
-    private Switch wifiSwitch;
-    private Switch bluetoothSwitch;
     private Switch bluetoothLeSwitch;
-    private TextView wifiTitle;
-    private TextView bluetoothTitle;
-    private TextView bluetoothLeTitle;
+
+    private TextView bluetoothLeAdvertiseTitle;
+    private EditText bluetoothLeAdvertiseActive;
+    private EditText bluetoothLeAdvertiseInactive;
+    private EditText bluetoothLeAdvertiseWindows;
+    private EditText bluetoothLeAdvertiseTxPower;
+    private EditText bluetoothLeAdvertiseInterval;
+    private Switch bluetoothLeAdvertiseSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,35 +86,51 @@ public class NewExperimentActivity extends AppCompatActivity {
 
         codename = findViewById(R.id.experiment_codename);
         description = findViewById(R.id.experiment_description);
+
         wifiActive = findViewById(R.id.wifi_active);
         wifiInactive = findViewById(R.id.wifi_inactive);
         wifiWindows = findViewById(R.id.wifi_windows);
         wifiTitle = findViewById(R.id.wifi_title);
+        wifiSwitch = findViewById(R.id.wifi_switch);
+
         bluetoothActive = findViewById(R.id.bluetooth_active);
         bluetoothInactive = findViewById(R.id.bluetooth_inactive);
         bluetoothWindows = findViewById(R.id.bluetooth_windows);
         bluetoothTitle = findViewById(R.id.bluetooth_title);
+        bluetoothSwitch = findViewById(R.id.bluetooth_switch);
+
         bluetoothLeActive = findViewById(R.id.bluetooth_le_active);
         bluetoothLeInactive = findViewById(R.id.bluetooth_le_inactive);
         bluetoothLeWindows = findViewById(R.id.bluetooth_le_windows);
         bluetoothLeTitle = findViewById(R.id.bluetooth_le_title);
-        wifiSwitch = findViewById(R.id.wifi_switch);
-        bluetoothSwitch = findViewById(R.id.bluetooth_switch);
         bluetoothLeSwitch = findViewById(R.id.bluetooth_le_switch);
+
+        bluetoothLeAdvertiseActive = findViewById(R.id.bluetooth_le_advertise_active);
+        bluetoothLeAdvertiseInactive = findViewById(R.id.bluetooth_le_advertise_inactive);
+        bluetoothLeAdvertiseWindows = findViewById(R.id.bluetooth_le_advertise_windows);
+        bluetoothLeAdvertiseTitle = findViewById(R.id.bluetooth_le_advertise_title);
+        bluetoothLeAdvertiseTxPower = findViewById(R.id.bluetooth_le_advertise_tx_power);
+        bluetoothLeAdvertiseInterval = findViewById(R.id.bluetooth_le_advertise_interval);
+        bluetoothLeAdvertiseSwitch = findViewById(R.id.bluetooth_le_advertise_switch);
+
         Button saveButton = findViewById(R.id.save_button);
 
         saveButton.setOnClickListener(v -> {
             long experimentId = 0;
             boolean success = true;
+            String errorMessage = "";
             if(validateExperiment()) {
                 experimentId = saveExperiment();
-                if(!wifiSwitch.isChecked() && !bluetoothSwitch.isChecked() && !bluetoothLeSwitch.isChecked())
+                if(!wifiSwitch.isChecked() && !bluetoothSwitch.isChecked() &&
+                        !bluetoothLeSwitch.isChecked() && !bluetoothLeAdvertiseSwitch.isChecked()) {
+                    errorMessage = errorMessage.concat(getResources().getString(R.string.at_least_one_configuration));
                     success = false;
-                else {
+                } else {
                     if (wifiSwitch.isChecked()) {
                         if (validateWifiConfig()) {
                             saveWifiConfig(experimentId);
                         } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.wifi_error));
                             success = false;
                         }
                     }
@@ -107,6 +138,7 @@ public class NewExperimentActivity extends AppCompatActivity {
                         if (validateBluetoothConfig()) {
                             saveBluetoothConfig(experimentId);
                         } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.bluetooth_error));
                             success = false;
                         }
                     }
@@ -114,22 +146,34 @@ public class NewExperimentActivity extends AppCompatActivity {
                         if (validateBluetoothLeConfig()) {
                             saveBluetoothLeConfig(experimentId);
                         } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.bluetooth_le_error));
+                            success = false;
+                        }
+                    }
+                    if(bluetoothLeAdvertiseSwitch.isChecked()) {
+                        if (validateBluetoothLeAdvertiseConfig()) {
+                            saveBluetoothLeAdvertiseConfig(experimentId);
+                        } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.bluetooth_le_advertise_error));
                             success = false;
                         }
                     }
                 }
             } else {
+                errorMessage = errorMessage.concat(getResources().getString(R.string.experiment_codename_error));
                 success = false;
             }
 
             if(success) {
                 finish();
             } else {
-                Toast.makeText(this, getResources().getString(R.string.error, "Required field empty"), Toast.LENGTH_SHORT).show();
                 if(experimentId!=0) {
                     Experiment experiment = experimentRepository.getById(experimentId);
                     experimentRepository.delete(experiment);
                 }
+                DialogFragment newFragment = new FieldErrorDialogFragment(errorMessage);
+                newFragment.setCancelable(false);
+                newFragment.show(getSupportFragmentManager(), "field_error");
             }
 
         });
@@ -160,6 +204,29 @@ public class NewExperimentActivity extends AppCompatActivity {
             color = isChecked ? R.color.black : R.color.grey;
             bluetoothLeTitle.setTextColor(getColor(color));
         });
+
+        bluetoothLeAdvertiseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            bluetoothLeAdvertiseActive.setEnabled(isChecked);
+            bluetoothLeAdvertiseInactive.setEnabled(isChecked);
+            bluetoothLeAdvertiseWindows.setEnabled(isChecked);
+            bluetoothLeAdvertiseTxPower.setEnabled(isChecked);
+            bluetoothLeAdvertiseInterval.setEnabled(isChecked);
+            int color;
+            color = isChecked ? R.color.black : R.color.grey;
+            bluetoothLeAdvertiseTitle.setTextColor(getColor(color));
+        });
+    }
+
+    private boolean validateBluetoothLeAdvertiseConfig() {
+        return !bluetoothLeAdvertiseActive.getText().toString().isEmpty() &&
+                !bluetoothLeAdvertiseInactive.getText().toString().isEmpty() &&
+                !bluetoothLeAdvertiseTxPower.getText().toString().isEmpty() &&
+                (Integer.parseInt(bluetoothLeAdvertiseTxPower.getText().toString()) >= AdvertisingSetParameters.TX_POWER_MIN) &&
+                (Integer.parseInt(bluetoothLeAdvertiseTxPower.getText().toString()) <= AdvertisingSetParameters.TX_POWER_MAX) &&
+                !bluetoothLeAdvertiseInterval.getText().toString().isEmpty() &&
+                (Long.parseLong(bluetoothLeAdvertiseInterval.getText().toString()) >= 100) &&
+                (Long.parseLong(bluetoothLeAdvertiseInterval.getText().toString()) <= 10485759) &&
+                !bluetoothLeAdvertiseWindows.getText().toString().isEmpty();
     }
 
     private boolean validateExperiment(){
@@ -192,9 +259,9 @@ public class NewExperimentActivity extends AppCompatActivity {
 
 
     private void saveBluetoothLeConfig(long experimentId) {
-        long active = Integer.parseInt(bluetoothLeActive.getText().toString());
-        long inactive = Integer.parseInt(bluetoothLeInactive.getText().toString());
-        long windows = Integer.parseInt(bluetoothLeWindows.getText().toString());
+        long active = Long.parseLong(bluetoothLeActive.getText().toString());
+        long inactive = Long.parseLong(bluetoothLeInactive.getText().toString());
+        long windows = Long.parseLong(bluetoothLeWindows.getText().toString());
         long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.BLUETOOTH_LE.name()).id;
         WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
@@ -202,9 +269,9 @@ public class NewExperimentActivity extends AppCompatActivity {
     }
 
     private void saveBluetoothConfig(long experimentId) {
-        long active = Integer.parseInt(bluetoothActive.getText().toString());
-        long inactive = Integer.parseInt(bluetoothInactive.getText().toString());
-        long windows = Integer.parseInt(bluetoothWindows.getText().toString());
+        long active = Long.parseLong(bluetoothActive.getText().toString());
+        long inactive = Long.parseLong(bluetoothInactive.getText().toString());
+        long windows = Long.parseLong(bluetoothWindows.getText().toString());
         long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.BLUETOOTH.name()).id;
         WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
@@ -212,12 +279,46 @@ public class NewExperimentActivity extends AppCompatActivity {
     }
 
     private void saveWifiConfig(long experimentId) {
-        long active = Integer.parseInt(wifiActive.getText().toString());
-        long inactive = Integer.parseInt(wifiInactive.getText().toString());
-        long windows = Integer.parseInt(wifiWindows.getText().toString());
+        long active = Long.parseLong(wifiActive.getText().toString());
+        long inactive = Long.parseLong(wifiInactive.getText().toString());
+        long windows = Long.parseLong(wifiWindows.getText().toString());
         long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name()).id;
         WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
         configurationRepository.insert(configuration);
+    }
+
+    private void saveBluetoothLeAdvertiseConfig(long experimentId) {
+        long active = Long.parseLong(bluetoothLeAdvertiseActive.getText().toString());
+        long inactive = Long.parseLong(bluetoothLeAdvertiseInactive.getText().toString());
+        long windows = Long.parseLong(bluetoothLeAdvertiseWindows.getText().toString());
+        int txPower = Integer.parseInt(bluetoothLeAdvertiseTxPower.getText().toString());
+        int interval = Integer.parseInt(bluetoothLeAdvertiseInterval.getText().toString());
+        long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name()).id;
+        WindowConfiguration configuration = new WindowConfiguration(active,
+                inactive, windows, sourceId, experimentId);
+        AdvertiseConfiguration advertiseConfiguration = new AdvertiseConfiguration(txPower, interval, experimentId);
+        configurationRepository.insert(configuration);
+        configurationRepository.insertAdvertise(advertiseConfiguration);
+    }
+
+    public static class FieldErrorDialogFragment extends DialogFragment {
+
+        String message;
+
+        public FieldErrorDialogFragment(String message) {
+            super();
+            this.message = message;
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(this.message)
+                    .setNeutralButton(R.string.ok, (dialog, id) -> {});
+            return builder.create();
+        }
     }
 }

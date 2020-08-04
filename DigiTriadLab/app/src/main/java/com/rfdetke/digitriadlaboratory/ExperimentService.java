@@ -13,8 +13,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
+import com.rfdetke.digitriadlaboratory.advertisers.BluetoothLeAdvertiseScheduler;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
+import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
@@ -26,11 +28,11 @@ import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
-import com.rfdetke.digitriadlaboratory.contacthandlers.ScanObserver;
-import com.rfdetke.digitriadlaboratory.contacthandlers.Scheduler;
-import com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth.BluetoothLeScanScheduler;
-import com.rfdetke.digitriadlaboratory.contacthandlers.bluetooth.BluetoothScanScheduler;
-import com.rfdetke.digitriadlaboratory.contacthandlers.wifi.WifiScanScheduler;
+import com.rfdetke.digitriadlaboratory.scanners.ScanObserver;
+import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
+import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
+import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
+import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
 
 import java.util.HashMap;
@@ -58,6 +60,11 @@ public class ExperimentService extends Service implements ScanObserver {
         long runId = intent.getLongExtra(NewRunActivity.EXTRA_RUN_ID, 0);
         currentRun = runRepository.getById(runId);
         List<WindowConfiguration> configurations = configurationRepository.getConfigurationsForExperiment(currentRun.experimentId);
+        WindowConfiguration wifiConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.WIFI.name());
+        WindowConfiguration bluetoothConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH.name());
+        WindowConfiguration bluetoothLeConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
+        WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
+
         Experiment currentExperiment = experimentRepository.getById(currentRun.experimentId);
 
         String notificationText = String.format(Locale.ENGLISH, "%s run: %d", currentExperiment.codename, currentRun.number);
@@ -76,17 +83,27 @@ public class ExperimentService extends Service implements ScanObserver {
 
         startForeground(1, notification);
 
-        for (WindowConfiguration configuration : configurations) {
-            if (configuration.sourceType == sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name()).id) {
-                WifiScanScheduler scanScheduler = new WifiScanScheduler(currentRun.id, configuration, this, database);
-                registerScanner(scanScheduler);
-            } else if (configuration.sourceType == sourceTypeRepository.getByType(SourceTypeEnum.BLUETOOTH.name()).id) {
-                BluetoothScanScheduler scanScheduler = new BluetoothScanScheduler(currentRun.id, configuration, this, database);
-                registerScanner(scanScheduler);
-            } else if (configuration.sourceType == sourceTypeRepository.getByType(SourceTypeEnum.BLUETOOTH_LE.name()).id) {
-                BluetoothLeScanScheduler scanScheduler = new BluetoothLeScanScheduler(currentRun.id, configuration, this, database);
-                registerScanner(scanScheduler);
-            }
+        if (wifiConfiguration != null) {
+            WifiScanScheduler scanScheduler = new WifiScanScheduler(currentRun.id, wifiConfiguration, this, database);
+            registerScheduler(scanScheduler);
+        }
+
+        if (bluetoothConfiguration != null) {
+            BluetoothScanScheduler scanScheduler = new BluetoothScanScheduler(currentRun.id, bluetoothConfiguration, this, database);
+            registerScheduler(scanScheduler);
+        }
+
+        if (bluetoothLeConfiguration != null) {
+            BluetoothLeScanScheduler scanScheduler = new BluetoothLeScanScheduler(currentRun.id, bluetoothLeConfiguration, this, database);
+            registerScheduler(scanScheduler);
+        }
+
+        if (bluetoothLeAdvertiseWindowConfiguration != null) {
+            AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentRun.experimentId);
+            BluetoothLeAdvertiseScheduler advertiseScheduler = new BluetoothLeAdvertiseScheduler(
+                    currentRun.id, bluetoothLeAdvertiseWindowConfiguration,
+                    advertiseConfiguration, this, database);
+            registerScheduler(advertiseScheduler);
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -125,9 +142,9 @@ public class ExperimentService extends Service implements ScanObserver {
         stopForeground(true);
     }
 
-    private void registerScanner(Scheduler scanner) {
-        scanner.addObserver(this);
-        doneMap.put(scanner.getKey(), Boolean.FALSE);
+    private void registerScheduler(Scheduler scheduler) {
+        scheduler.addObserver(this);
+        doneMap.put(scheduler.getKey(), Boolean.FALSE);
     }
 
     private void createNotificationChannel() {
