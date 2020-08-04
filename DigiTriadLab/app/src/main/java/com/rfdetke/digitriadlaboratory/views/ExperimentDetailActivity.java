@@ -35,6 +35,7 @@ import java.util.Objects;
 public class ExperimentDetailActivity extends AppCompatActivity {
 
     private static final String EXTRA_ID = "com.rfdetke.digitriadlaboratory.ID";
+
     private RunListAdapter adapter;
     private RunViewModel runViewModel;
 
