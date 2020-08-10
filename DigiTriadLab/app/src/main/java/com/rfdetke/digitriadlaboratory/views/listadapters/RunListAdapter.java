@@ -1,6 +1,7 @@
 package com.rfdetke.digitriadlaboratory.views.listadapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
+import com.rfdetke.digitriadlaboratory.views.ExperimentDetailActivity;
+import com.rfdetke.digitriadlaboratory.views.RunDetailActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.Locale;
 
 public class RunListAdapter extends RecyclerView.Adapter<RunListAdapter.RunViewHolder> {
 
+    public static final String EXTRA_ID = "com.rfdetke.digitriadlaboratory.ID";
     private final LayoutInflater inflater;
     private final SimpleDateFormat simpleDateFormat;
     private List<Run> allRuns;
@@ -36,7 +40,7 @@ public class RunListAdapter extends RecyclerView.Adapter<RunListAdapter.RunViewH
     @NonNull
     @Override
     public RunViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.run_list_item, parent, false);
+        View itemView = inflater.inflate(R.layout.run_list_item, parent, false);
         return new RunViewHolder(itemView);
     }
 
@@ -45,6 +49,11 @@ public class RunListAdapter extends RecyclerView.Adapter<RunListAdapter.RunViewH
         if(allRuns != null) {
             Run current = allRuns.get(position);
             holder.runLabel.setText(context.getResources().getString(R.string.run_label, current.number));
+            holder.parentLayout.setOnClickListener(v -> {
+                Intent intent = new Intent(context, RunDetailActivity.class);
+                intent.putExtra(EXTRA_ID, current.id);
+                context.startActivity(intent);
+            });
             holder.runDate.setText(context.getResources().getString(R.string.run_date, simpleDateFormat.format(current.start)));
             if(current.state.equals(RunStateEnum.DONE.name())) {
                 holder.runStatus.setImageResource(R.drawable.ic_baseline_done_24);

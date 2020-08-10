@@ -45,6 +45,9 @@ public interface RunDao {
     @Query("SELECT * FROM run WHERE id==(:runId) LIMIT 1")
     Run getRunById(long runId);
 
+    @Query("SELECT * FROM run WHERE id==(:runId) LIMIT 1")
+    LiveData<Run> getLiveRunById(long runId);
+
     @Query("UPDATE run SET state=(:state) WHERE id=(:id)")
     void updateRunState(long id, String state);
 

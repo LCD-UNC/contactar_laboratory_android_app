@@ -1,5 +1,7 @@
 package com.rfdetke.digitriadlaboratory.repositories;
 
+import androidx.lifecycle.LiveData;
+
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao.WifiSampleRecord;
@@ -31,5 +33,9 @@ public class WifiRepository {
 
     public List<WifiSampleRecord> getAllSamplesFor(long[] runs) {
         return sampleDao.getWifiSamplesRecords(runs);
+    }
+
+    public LiveData<Long> getLiveCount(long runId) {
+        return sampleDao.getWifiLiveCount(runId);
     }
 }

@@ -2,6 +2,7 @@ package com.rfdetke.digitriadlaboratory.database.daos;
 
 import android.os.ParcelUuid;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -21,12 +22,14 @@ import java.util.Locale;
 @Dao
 public interface SampleDao {
 
+    // ------------------- BLUETOOTH ---------------------------------------------------------------
+
     @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.address, r.bluetooth_major_class, " +
             "r.bond_state, r.type " +
             "FROM sample as s " +
             "LEFT JOIN bluetooth_record as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
-            "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH\" ORDER BY run_id, sample_id, record_id")
+            "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH\" ORDER BY s.timestamp, run_id, sample_id")
     List<BluetoothSampleRecord> getBluetoothSamplesRecords(long[] runId);
 
     @Query("SELECT DISTINCT s.id as sample_id " +
@@ -36,6 +39,14 @@ public interface SampleDao {
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH\" ORDER BY run_id, sample_id")
     long[] getDistinctBluetoothSampleIds(long[] runId);
 
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM bluetooth_record AS r " +
+            "JOIN sample AS s ON  r.sample_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getBluetoothLiveCount(long runId);
+
+
+    // ------------------- BLUETOOTH LE ------------------------------------------------------------
+
     @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.address, r.rssi, r.tx_power, " +
             "r.advertising_set_id, r.primary_physical_layer, r.seconary_physical_layer, " +
             "r.periodic_advertising_interval, r.connectable, r.legacy, r.uuid " +
@@ -43,7 +54,7 @@ public interface SampleDao {
             "LEFT JOIN (SELECT r.*, uu.uuid FROM bluetooth_le_record as r " +
                         "LEFT JOIN bluetooth_le_uuid as uu ON r.id=uu.record_id) as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
-            "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH_LE\" ORDER BY run_id, sample_id, record_id")
+            "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH_LE\" ORDER BY s.timestamp, run_id, sample_id")
     List<BluetoothLeSampleRecord> getBluetoothLeSamplesRecords(long[] runId);
 
     @Query("SELECT DISTINCT s.id as sample_id " +
@@ -53,12 +64,20 @@ public interface SampleDao {
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH_LE\" ORDER BY run_id, sample_id")
     long[] getDistinctBluetoothLeSampleIds(long[] runId);
 
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM bluetooth_le_record AS r " +
+            "JOIN sample AS s ON  r.sample_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getBluetoothLeLiveCount(long runId);
+
+
+    // ------------------- WIFI --------------------------------------------------------------------
+
     @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.address, r.channel_width, " +
             "r.center_frequency_0, r.center_frequency_1, r.frequency, r.level, r.passpoint " +
             "FROM sample as s " +
             "LEFT JOIN wifi_record as r ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
-            "WHERE s.run_id IN(:runId) AND st.type=\"WIFI\" ORDER BY run_id, sample_id, record_id")
+            "WHERE s.run_id IN(:runId) AND st.type=\"WIFI\" ORDER BY s.timestamp, run_id, sample_id")
     List<WifiSampleRecord> getWifiSamplesRecords(long[] runId);
 
     @Query("SELECT DISTINCT s.id as sample_id " +
@@ -68,17 +87,25 @@ public interface SampleDao {
             "WHERE s.run_id IN(:runId) AND st.type=\"WIFI\" ORDER BY run_id, sample_id")
     long[] getDistinctWifiSampleIds(long[] runId);
 
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM wifi_record AS r " +
+            "JOIN sample AS s ON  r.sample_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getWifiLiveCount(long runId);
+
+
+    // ------------------- SENSORS -----------------------------------------------------------------
+
     @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.sensor_type, r.value_id, r.value " +
             "FROM sensor_record as r " +
             "INNER JOIN sample as s ON r.sample_id=s.id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
-            "WHERE s.run_id IN(:runId) AND st.type=(:type) ORDER BY run_id, sample_id, record_id")
+            "WHERE s.run_id IN(:runId) AND st.type=(:type) ORDER BY s.timestamp, run_id, sample_id")
     List<SensorSampleRecord> getSensorSamplesRecords(long[] runId, String type);
 
     @Query("SELECT s.run_id, s.id as sample_id, s.timestamp, r.id as record_id, r.sensor_type, r.value_id, r.value " +
             "FROM sensor_record as r " +
             "INNER JOIN sample as s ON r.sample_id=s.id " +
-            "WHERE s.run_id IN (:runId) ORDER BY run_id, sample_id, record_id")
+            "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run_id, sample_id")
     List<SensorSampleRecord> getSensorSamplesRecords(long[] runId);
 
     @Query("SELECT DISTINCT s.id as sample_id " +
@@ -88,12 +115,20 @@ public interface SampleDao {
             "WHERE s.run_id IN(:runId) AND st.type=(:type) ORDER BY run_id, sample_id")
     long[] getDistinctSensorSampleIds(long[] runId, String type);
 
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM sensor_record AS r " +
+            "JOIN sample AS s ON  r.sample_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getSensorLiveCount(long runId);
 
     @Insert
     long insert(Sample sample);
 
     @Delete
     void delete(Sample sample);
+
+    static class Count {
+        public long quantity;
+    }
 
     static class BluetoothSampleRecord implements CsvExportable {
         public Date timestamp;

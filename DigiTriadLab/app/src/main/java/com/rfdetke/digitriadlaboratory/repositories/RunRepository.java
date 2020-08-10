@@ -41,6 +41,10 @@ public class RunRepository {
         return runDao.getRunById(id);
     }
 
+    public LiveData<Run> getLiveById(long id) {
+        return runDao.getLiveRunById(id);
+    }
+
     public long insert(Run run) { return runDao.insert(run); }
 
     public void delete(Run run) { runDao.delete(run); }

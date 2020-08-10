@@ -123,10 +123,6 @@ public class MainActivity extends AppCompatActivity {
         if (device == null) {
             deviceRepository.insert(new Device(null, Build.MANUFACTURER.toUpperCase(), Build.MODEL.toUpperCase(), new ParcelUuid(UUID.randomUUID())));
         }
-
-        toolbarTitle.setOnClickListener(v -> {
-            database.getExperimentDao().deleteAll();
-        });
     }
 
     private void showEnableWifiDialog() {

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DigiTriad Lab</string>
     <string name="title_goes_here">Title goes here</string>
-    <string name="add_word">Add Experiment</string>
+    <string name="add_experiment">Add Experiment</string>
     <string name="experiments">Experiments</string>
     <string name="new_experiment">New Experiment</string>
     <string name="experiment_detail">"Experiment: %s"</string>
@@ -46,4 +46,15 @@
     <string name="bluetooth_le_advertise_error">"Some BLE configuration is wrong or empty. Remember that Tx Power should be in range of [-127, 1] and Interval should be in range of [100, 10485759]\n"</string>
     <string name="ok">OK</string>
     <string name="copy_experiment">Scan this to copy experiment</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="bluetooth_le">Bluetooth LE</string>
+    <string name="sensors">Sensors</string>
+    <string name="collected_records">Collected records</string>
+    <string name="export">Export</string>
+    <string name="dialog_confirm_delete">Are you sure you want to delete?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="tags">Tags</string>
+    <string name="add_tag">Search or create tag</string>
 </resources>

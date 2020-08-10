@@ -30,7 +30,7 @@ public abstract class CsvFileWriter extends AsyncTask<Void, Void, Void> {
             long[] runs = {runId};
             samples = getExportables(database, runs);
             key = getKey();
-            appDir = context.getExternalFilesDir(null);
+            appDir = new File(context.getExternalFilesDir(null)+"/exports/");
         } catch (Exception e) {
             throw new NullPointerException();
         }
@@ -39,15 +39,17 @@ public abstract class CsvFileWriter extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         if(run != null && experiment != null && appDir != null && key != null && !samples.isEmpty()){
-            String fileName = String.format(Locale.ENGLISH, "%s_RUN-%d_%s.csv", experiment.codename, run.number, key);
-            File file = new File(appDir, fileName);
+            String fileName = String.format(Locale.ENGLISH, "run-%d-%s.csv", run.number, key.toLowerCase());
+            File folder = new File(appDir, experiment.codename.toLowerCase());
+            boolean success = folder.mkdirs();
+            File file = new File(folder, fileName);
             String content = samples.get(0).csvHeader();
             for( CsvExportable sample : samples) {
                 content = content.concat(sample.toCsv());
             }
 
             try {
-                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(file));
+                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(file, false));
                 outputWriter.write(content);
                 outputWriter.close();
 

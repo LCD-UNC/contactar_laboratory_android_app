@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "30d8ef9ef6621e02bf8f8543a361db73",
+    "version": 4,
+    "identityHash": "8800783bcd825a412c12546c04df6179",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -797,7 +797,7 @@
       },
       {
         "tableName": "experiment_tag",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`experiment_id` INTEGER NOT NULL, `tag_id` INTEGER NOT NULL, PRIMARY KEY(`experiment_id`, `tag_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`experiment_id` INTEGER NOT NULL, `tag_id` INTEGER NOT NULL, PRIMARY KEY(`experiment_id`, `tag_id`), FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`tag_id`) REFERENCES `tag`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "experimentId",
@@ -820,7 +820,30 @@
           "autoGenerate": false
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "experiment",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "experiment_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "tag",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tag_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "tag",
@@ -853,6 +876,14 @@
               "id"
             ],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_tag_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_tag_tag",
+            "unique": true,
+            "columnNames": [
+              "tag"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_tag_tag` ON `${TABLE_NAME}` (`tag`)"
           }
         ],
         "foreignKeys": []
@@ -977,7 +1008,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '30d8ef9ef6621e02bf8f8543a361db73')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8800783bcd825a412c12546c04df6179')"
     ]
   }
 }

@@ -11,6 +11,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.DeviceDao;
 import com.rfdetke.digitriadlaboratory.database.daos.ExperimentDao;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
+import com.rfdetke.digitriadlaboratory.database.daos.TagDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WindowConfigurationDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SourceTypeDao;
@@ -19,6 +20,8 @@ import com.rfdetke.digitriadlaboratory.database.daos.WifiRecordDao;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
+import com.rfdetke.digitriadlaboratory.database.entities.ExperimentTag;
+import com.rfdetke.digitriadlaboratory.database.entities.Tag;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
@@ -44,9 +47,11 @@ import java.util.concurrent.Executors;
                         Sample.class,
                         Device.class,
                         Experiment.class,
+                        ExperimentTag.class,
+                        Tag.class,
                         Run.class,
                         SourceType.class},
-          version = 1)
+          version = 4)
 
 @TypeConverters({DateConverter.class, UuidConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
@@ -65,4 +70,5 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract SourceTypeDao getSourceTypeDao();
     public abstract WindowConfigurationDao getWindowConfigurationDao();
     public abstract BluetoothLeAdvertiseConfigurationDao getBluetoothAdvertiseConfigurationDao();
+    public abstract TagDao getTagDao();
 }

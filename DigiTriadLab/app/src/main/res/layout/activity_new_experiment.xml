@@ -22,22 +22,89 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <TextView
+                android:id="@+id/tags_title"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tags"
+                android:textColor="@color/black"
+                android:layout_marginStart="@dimen/big_padding"
+                android:layout_marginTop="@dimen/big_padding"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/description_input_layout"/>
+
+
+            <Button
+                android:id="@+id/add_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:backgroundTint="@color/white"
+                android:layout_marginEnd="@dimen/big_padding"
+                android:paddingTop="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="5dp"
+                app:icon="@drawable/ic_baseline_add_24"
+                app:iconTint="@color/black"
+                app:layout_constraintTop_toTopOf="@id/tags_layout"
+                app:layout_constraintBottom_toBottomOf="@id/tags_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                 />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tags_layout"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_marginStart="@dimen/big_padding"
+                android:layout_marginEnd="@dimen/small_padding"
+                android:layout_marginTop="@dimen/small_padding"
+                app:layout_constraintTop_toBottomOf="@id/tags_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/add_button"
+                style="@style/OutlinedBox.Dense"
+                android:hint="@string/add_tag">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/add_tag"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingEnd="@dimen/small_padding"
+                    android:paddingStart="@dimen/small_padding"
+                     />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/big_padding"
+                android:layout_marginStart="@dimen/big_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/small_padding"
+                app:layout_constraintTop_toBottomOf="@id/tags_layout"
+                >
+
+            </com.google.android.material.chip.ChipGroup>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/codename_input_layout"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/small_padding"
+                android:layout_margin="@dimen/big_padding"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/OutlinedBox.Dense"
+
                 android:hint="@string/codename">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/experiment_codename"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginRight="@dimen/big_padding"
-                    android:layout_marginLeft="@dimen/big_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -48,19 +115,18 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/description_input_layout"
                 app:layout_constraintTop_toBottomOf="@id/codename_input_layout"
-                android:layout_marginTop="@dimen/big_padding"
+                android:layout_margin="@dimen/big_padding"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/OutlinedBox.Dense"
                 android:hint="@string/description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/experiment_description"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginRight="@dimen/big_padding"
-                    android:layout_marginLeft="@dimen/big_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,9 +142,9 @@
                 android:text="@string/wifi_configuration"
                 android:textColor="@color/black"
                 android:layout_marginStart="@dimen/big_padding"
-                android:layout_marginTop="@dimen/big_padding"
+                android:layout_marginTop="@dimen/small_padding"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description_input_layout"/>
+                app:layout_constraintTop_toBottomOf="@id/tags"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/wifi_active_input_layout"
@@ -91,14 +157,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/active_time"
+                android:layout_marginEnd="@dimen/small_padding"
+                android:layout_marginStart="@dimen/big_padding"
+                style="@style/OutlinedBox.Dense"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/wifi_active"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/big_padding"
+
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,14 +184,16 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/inactive_time">
+                android:hint="@string/inactive_time"
+                android:layout_marginEnd="@dimen/small_padding"
+                android:layout_marginStart="@dimen/small_padding"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/wifi_inactive"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/small_padding"
+
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,14 +211,15 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/windows">
+                android:hint="@string/windows"
+                android:layout_marginEnd="@dimen/big_padding"
+                android:layout_marginStart="@dimen/small_padding"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/wifi_windows"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/big_padding"
-                    android:layout_marginStart="@dimen/small_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -179,14 +250,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/active_time"
+                style="@style/OutlinedBox.Dense"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_active"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/big_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -204,14 +274,14 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/inactive_time">
+                android:hint="@string/inactive_time"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_inactive"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/small_padding"
+
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -229,14 +299,14 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/windows">
+                android:hint="@string/windows"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_windows"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/big_padding"
-                    android:layout_marginStart="@dimen/small_padding"
+
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -267,14 +337,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/active_time"
+                style="@style/OutlinedBox.Dense"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_active"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/big_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -292,14 +361,13 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/inactive_time">
+                android:hint="@string/inactive_time"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_inactive"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/small_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -317,14 +385,13 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/windows">
+                android:hint="@string/windows"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_windows"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/big_padding"
-                    android:layout_marginStart="@dimen/small_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -355,14 +422,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/active_time"
+                style="@style/OutlinedBox.Dense"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_advertise_active"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/big_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -380,14 +446,13 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/inactive_time">
+                android:hint="@string/inactive_time"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_advertise_inactive"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:layout_marginStart="@dimen/small_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -405,14 +470,13 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/windows">
+                android:hint="@string/windows"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_advertise_windows"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/big_padding"
-                    android:layout_marginStart="@dimen/small_padding"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -430,15 +494,17 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/tx_power_dbm">
+                android:hint="@string/tx_power_dbm"
+                android:layout_marginStart="@dimen/big_padding"
+                android:layout_marginEnd="@dimen/small_padding"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_advertise_tx_power"
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/big_padding"
-                    android:layout_marginEnd="@dimen/small_padding"
+
                     android:backgroundTint="@color/white"
                     android:inputType="numberSigned|number"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -455,14 +521,16 @@
 
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/interval">
+                android:hint="@string/interval"
+                android:layout_marginEnd="@dimen/big_padding"
+                android:layout_marginStart="@dimen/small_padding"
+                style="@style/OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bluetooth_le_advertise_interval"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/big_padding"
-                    android:layout_marginStart="@dimen/small_padding"
+
                     style="@android:style/Widget.Material.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

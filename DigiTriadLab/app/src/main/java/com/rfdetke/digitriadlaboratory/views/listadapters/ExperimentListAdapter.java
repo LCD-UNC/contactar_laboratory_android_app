@@ -35,7 +35,7 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
     @NonNull
     @Override
     public ExperimentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.experiment_list_item, parent, false);
+        View itemView = inflater.inflate(R.layout.experiment_list_item, parent, false);
         return new ExperimentViewHolder(itemView);
     }
 

@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".views.RunDetailActivity"></activity>
 
         <service
             android:name=".ExperimentService"
@@ -33,7 +33,7 @@
         <activity android:name=".views.DeviceInfoActivity" />
         <activity android:name=".views.NewRunActivity" />
         <activity android:name=".views.ExperimentDetailActivity" />
-        <activity android:name=".ScanQrExperiment" />
+        <activity android:name=".views.ScanQrExperiment" />
         <activity android:name=".views.NewExperimentActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

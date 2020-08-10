@@ -46,64 +46,67 @@ public class ExperimentService extends Service implements ScanObserver {
     Map<String, Boolean> doneMap;
     private RunRepository runRepository;
     private Run currentRun;
+    private AppDatabase database;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
-        AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());
+        database = DatabaseSingleton.getInstance(getApplicationContext());
 
         runRepository = new RunRepository(database);
         ConfigurationRepository configurationRepository = new ConfigurationRepository(database);
-        SourceTypeRepository sourceTypeRepository = new SourceTypeRepository(database);
         ExperimentRepository experimentRepository = new ExperimentRepository(database);
 
         long runId = intent.getLongExtra(NewRunActivity.EXTRA_RUN_ID, 0);
         currentRun = runRepository.getById(runId);
-        List<WindowConfiguration> configurations = configurationRepository.getConfigurationsForExperiment(currentRun.experimentId);
-        WindowConfiguration wifiConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.WIFI.name());
-        WindowConfiguration bluetoothConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH.name());
-        WindowConfiguration bluetoothLeConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
-        WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
+        if(currentRun != null ) {
+            WindowConfiguration wifiConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.WIFI.name());
+            WindowConfiguration bluetoothConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH.name());
+            WindowConfiguration bluetoothLeConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
+            WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
-        Experiment currentExperiment = experimentRepository.getById(currentRun.experimentId);
+            Experiment currentExperiment = experimentRepository.getById(currentRun.experimentId);
 
-        String notificationText = String.format(Locale.ENGLISH, "%s run: %d", currentExperiment.codename, currentRun.number);
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getResources().getString(R.string.app_name))
-                .setContentText(notificationText)
-                .setSmallIcon(R.drawable.ic_baseline_bulb_24)
-                .setContentIntent(pendingIntent)
-                .build();
+            String notificationText = String.format(Locale.ENGLISH, "%s run: %d", currentExperiment.codename, currentRun.number);
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                    0, notificationIntent, 0);
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle(getResources().getString(R.string.app_name))
+                    .setColor(getColor(R.color.colorAccent))
+                    .setColorized(true)
+                    .setContentText(notificationText)
+                    .setSmallIcon(R.drawable.ic_baseline_bulb_24)
+                    .setContentIntent(pendingIntent)
+                    .build();
 
-        doneMap = new HashMap<>();
-        runRepository.updateState(currentRun.id, RunStateEnum.RUNNING.name());
+            doneMap = new HashMap<>();
+            runRepository.updateState(currentRun.id, RunStateEnum.RUNNING.name());
 
-        startForeground(1, notification);
+            startForeground(1, notification);
 
-        if (wifiConfiguration != null) {
-            WifiScanScheduler scanScheduler = new WifiScanScheduler(currentRun.id, wifiConfiguration, this, database);
-            registerScheduler(scanScheduler);
-        }
+            if (wifiConfiguration != null) {
+                WifiScanScheduler scanScheduler = new WifiScanScheduler(currentRun.id, wifiConfiguration, this, database);
+                registerScheduler(scanScheduler);
+            }
 
-        if (bluetoothConfiguration != null) {
-            BluetoothScanScheduler scanScheduler = new BluetoothScanScheduler(currentRun.id, bluetoothConfiguration, this, database);
-            registerScheduler(scanScheduler);
-        }
+            if (bluetoothConfiguration != null) {
+                BluetoothScanScheduler scanScheduler = new BluetoothScanScheduler(currentRun.id, bluetoothConfiguration, this, database);
+                registerScheduler(scanScheduler);
+            }
 
-        if (bluetoothLeConfiguration != null) {
-            BluetoothLeScanScheduler scanScheduler = new BluetoothLeScanScheduler(currentRun.id, bluetoothLeConfiguration, this, database);
-            registerScheduler(scanScheduler);
-        }
+            if (bluetoothLeConfiguration != null) {
+                BluetoothLeScanScheduler scanScheduler = new BluetoothLeScanScheduler(currentRun.id, bluetoothLeConfiguration, this, database);
+                registerScheduler(scanScheduler);
+            }
 
-        if (bluetoothLeAdvertiseWindowConfiguration != null) {
-            AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentRun.experimentId);
-            BluetoothLeAdvertiseScheduler advertiseScheduler = new BluetoothLeAdvertiseScheduler(
-                    currentRun.id, bluetoothLeAdvertiseWindowConfiguration,
-                    advertiseConfiguration, this, database);
-            registerScheduler(advertiseScheduler);
+            if (bluetoothLeAdvertiseWindowConfiguration != null) {
+                AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentRun.experimentId);
+                BluetoothLeAdvertiseScheduler advertiseScheduler = new BluetoothLeAdvertiseScheduler(
+                        currentRun.id, bluetoothLeAdvertiseWindowConfiguration,
+                        advertiseConfiguration, this, database);
+                registerScheduler(advertiseScheduler);
+            }
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -128,16 +131,17 @@ public class ExperimentService extends Service implements ScanObserver {
             if(!done)
                 return;
         }
-        for(String key : doneMap.keySet()) {
-            if (key.equals(SourceTypeEnum.WIFI.name())) {
-                new WifiCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
-            } else if (key.equals(SourceTypeEnum.BLUETOOTH.name())) {
-                new BluetoothCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
-            } else if (key.equals(SourceTypeEnum.BLUETOOTH_LE.name())) {
-                new BluetoothLeCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
-            }
-        }
-        new SensorCsvFileWriter(currentRun.id, DatabaseSingleton.getInstance(getApplicationContext()), getApplicationContext()).execute();
+
+        if (doneMap.containsKey(SourceTypeEnum.WIFI.name()))
+            new WifiCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+
+        if (doneMap.containsKey(SourceTypeEnum.BLUETOOTH.name()))
+            new BluetoothCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+
+        if (doneMap.containsKey(SourceTypeEnum.BLUETOOTH_LE.name()))
+            new BluetoothLeCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+
+        new SensorCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);
     }

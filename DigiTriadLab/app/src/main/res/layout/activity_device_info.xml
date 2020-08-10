@@ -9,19 +9,21 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/codename_input_layout"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/small_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:layout_marginRight="@dimen/big_padding"
+        android:layout_marginLeft="@dimen/big_padding"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/OutlinedBox.Dense"
         android:hint="@string/codename">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/device_codename"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginRight="@dimen/big_padding"
-            android:layout_marginLeft="@dimen/big_padding"
+
             style="@android:style/Widget.Material.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

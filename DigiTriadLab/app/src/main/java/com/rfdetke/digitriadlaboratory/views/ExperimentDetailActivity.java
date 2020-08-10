@@ -6,30 +6,22 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.rfdetke.digitriadlaboratory.R;
-import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
-import com.rfdetke.digitriadlaboratory.database.AppDatabase;
-import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
-import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
-import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
-import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
-import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
-import com.rfdetke.digitriadlaboratory.utils.QRTools;
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
-import com.rfdetke.digitriadlaboratory.views.modelviews.RunViewModel;
+import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentDetailViewModel;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class ExperimentDetailActivity extends AppCompatActivity {
@@ -37,7 +29,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     private static final String EXTRA_ID = "com.rfdetke.digitriadlaboratory.ID";
 
     private RunListAdapter adapter;
-    private RunViewModel runViewModel;
+    private ExperimentDetailViewModel experimentDetailViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +37,20 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_experiment_detail);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.toolbar);
+        getSupportActionBar().setCustomView(R.layout.delete_toolbar);
 
         long experimentId = getIntent().getLongExtra(ExperimentListAdapter.EXTRA_ID, 0);
-        AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());
-
-        ExperimentRepository experimentRepository = new ExperimentRepository(database);
-        Experiment currentExperiment = experimentRepository.getById(experimentId);
-        ConfigurationRepository configurationRepository = new ConfigurationRepository(database);
-        List<WindowConfiguration> configurations = configurationRepository.getConfigurationsForExperiment(currentExperiment.id);
-        SourceTypeRepository sourceTypeRepository = new SourceTypeRepository(database);
-        AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
+        experimentDetailViewModel = new ViewModelProvider(this).get(ExperimentDetailViewModel.class);
+        experimentDetailViewModel.setExperiment(experimentId);
 
         ImageView qrContainer = findViewById(R.id.qr_container);
-        qrContainer.setImageBitmap(QRTools.getQrConfiguration(currentExperiment, configurationRepository, advertiseConfiguration));
+        qrContainer.setImageBitmap(experimentDetailViewModel.getExperimentQr());
+
+        Experiment currentExperiment = experimentDetailViewModel.getCurrentExperiment();
 
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getResources().getString(R.string.experiment_detail, currentExperiment.codename));
-        findViewById(R.id.toolbar_button).setVisibility(View.INVISIBLE);
+        Button deleteButton = findViewById(R.id.delete_button);
 
         Button addRunButton = findViewById(R.id.add_run_button);
         addRunButton.setOnClickListener(v -> {
@@ -71,17 +59,15 @@ public class ExperimentDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        String configurationString = "";
-        for(WindowConfiguration configuration : configurations) {
-            configurationString = configurationString.concat(String.format(Locale.ENGLISH,
-                    "      * %s:\n            Active: %d s. Inactive: %d s. Windows: %d.\n",
-                    sourceTypeRepository.getById(configuration.sourceType).type.replace('_',' '),
-                    configuration.activeTime, configuration.inactiveTime, configuration.windows));
-            if(sourceTypeRepository.getById(configuration.sourceType).type.equals(SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name())) {
-                configurationString = configurationString.concat(String.format(Locale.ENGLISH,
-                    "            Tx Power: %d dBm. Interval %d ms.\n", advertiseConfiguration.txPower, advertiseConfiguration.interval));
-            }
+        List<String> tagsList = experimentDetailViewModel.getTagList();
+        ChipGroup tags = findViewById(R.id.tags);
+        for(String tagValue : tagsList) {
+            Chip chip = new Chip(this);
+            chip.setText(tagValue.toUpperCase());
+            tags.addView(chip);
         }
+
+        String configurationString = experimentDetailViewModel.getConfigurationString();
 
         TextView descriptionTextView = findViewById(R.id.experiment_description);
         if (currentExperiment.description == null || currentExperiment.description.isEmpty()) {
@@ -98,10 +84,22 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        runViewModel = new ViewModelProvider(this).get(RunViewModel.class);
-        runViewModel.setRunsForExperiment(experimentId);
-        runViewModel.getRunsForExperiment().observe(this, runs -> {
+        experimentDetailViewModel.getRunsForExperiment().observe(this, runs -> {
             adapter.setRuns(runs);
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.dialog_confirm_delete)
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
+                        experimentDetailViewModel.getRunsForExperiment().removeObservers(this);
+                        experimentDetailViewModel.delete();
+                        finish();
+                    })
+                    .setNeutralButton(R.string.no, ((dialog, id) -> {
+                        dialog.dismiss();
+                    }))
+                    .create().show();
         });
     }
 }

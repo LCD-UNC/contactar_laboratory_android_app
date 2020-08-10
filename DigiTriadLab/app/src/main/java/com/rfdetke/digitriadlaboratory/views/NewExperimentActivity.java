@@ -13,20 +13,23 @@ import android.bluetooth.le.AdvertisingSetParameters;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.rfdetke.digitriadlaboratory.R;
-import com.rfdetke.digitriadlaboratory.ScanQrExperiment;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
+import com.rfdetke.digitriadlaboratory.database.entities.Tag;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
@@ -72,6 +75,7 @@ public class NewExperimentActivity extends AppCompatActivity {
     private EditText bluetoothLeAdvertiseTxPower;
     private EditText bluetoothLeAdvertiseInterval;
     private Switch bluetoothLeAdvertiseSwitch;
+    private ChipGroup tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +129,37 @@ public class NewExperimentActivity extends AppCompatActivity {
         bluetoothLeAdvertiseInterval = findViewById(R.id.bluetooth_le_advertise_interval);
         bluetoothLeAdvertiseSwitch = findViewById(R.id.bluetooth_le_advertise_switch);
 
+        List<String> tagsList = experimentRepository.getTagList();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, tagsList);
+
+        AutoCompleteTextView textView = findViewById(R.id.add_tag);
+        tags = findViewById(R.id.tags);
+        Button addButton = findViewById(R.id.add_button);
+        addButton.setOnClickListener(v -> {
+            String value = textView.getText().toString();
+            if(!value.isEmpty()) {
+                Chip chip = new Chip(this);
+                chip.setText(value.toUpperCase());
+                chip.setCloseIconVisible(true);
+                chip.setClickable(true);
+                tags.addView(chip);
+                chip.setOnCloseIconClickListener(tags::removeView);
+            }
+        });
+
+        textView.setOnItemClickListener((parent, view, position, id) -> {
+            Chip chip = new Chip(this);
+            chip.setText(((TextView)view).getText().toString().toUpperCase());
+            chip.setCloseIconVisible(true);
+            chip.setClickable(true);
+            tags.addView(chip);
+            chip.setOnCloseIconClickListener(tags::removeView);
+        });
+        textView.setThreshold(1);
+        textView.setAdapter(adapter);
+
+
         Button saveButton = findViewById(R.id.save_button);
 
         saveButton.setOnClickListener(v -> {
@@ -170,6 +205,7 @@ public class NewExperimentActivity extends AppCompatActivity {
                             success = false;
                         }
                     }
+                    saveTags(experimentId);
                 }
             } else {
                 errorMessage = errorMessage.concat(getResources().getString(R.string.experiment_codename_error));
@@ -227,6 +263,17 @@ public class NewExperimentActivity extends AppCompatActivity {
             color = isChecked ? R.color.black : R.color.grey;
             bluetoothLeAdvertiseTitle.setTextColor(getColor(color));
         });
+    }
+
+    private void saveTags(long experimentId) {
+        for(int i=0, count=tags.getChildCount(); i<count; i++) {
+            String tagValue = ((Chip)tags.getChildAt(i)).getText().toString();
+            long tagId = experimentRepository.insertTag(tagValue);
+            if (tagId == -1) {
+                tagId = experimentRepository.getTagId(tagValue);
+            }
+            experimentRepository.relateToTag(experimentId, tagId);
+        }
     }
 
     private boolean validateBluetoothLeAdvertiseConfig() {

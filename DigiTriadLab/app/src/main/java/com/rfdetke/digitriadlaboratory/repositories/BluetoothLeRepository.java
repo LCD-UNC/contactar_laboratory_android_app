@@ -1,5 +1,7 @@
 package com.rfdetke.digitriadlaboratory.repositories;
 
+import androidx.lifecycle.LiveData;
+
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.daos.BluetoothLeRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
@@ -36,5 +38,9 @@ public class BluetoothLeRepository {
 
     public long[] insertUuids(List<BluetoothLeUuid> bluetoothLeUuids) {
         return bluetoothLeRecordDao.insertUuids(bluetoothLeUuids);
+    }
+
+    public LiveData<Long> getLiveCount(long runId) {
+        return sampleDao.getBluetoothLeLiveCount(runId);
     }
 }

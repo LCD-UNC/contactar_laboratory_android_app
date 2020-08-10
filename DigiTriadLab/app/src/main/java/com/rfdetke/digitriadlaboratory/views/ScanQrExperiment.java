@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory;
+package com.rfdetke.digitriadlaboratory.views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
+import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.views.NewExperimentActivity;
 
 public class ScanQrExperiment extends AppCompatActivity {

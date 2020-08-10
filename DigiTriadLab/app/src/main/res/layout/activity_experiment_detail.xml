@@ -21,6 +21,19 @@
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/copy_experiment" />
 
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_padding"
+            android:layout_marginStart="@dimen/big_padding"
+            android:layout_marginEnd="@dimen/big_padding"
+            app:layout_constraintTop_toBottomOf="@id/qr_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        </com.google.android.material.chip.ChipGroup>
+
         <TextView
             android:id="@+id/experiment_description"
             android:layout_width="match_parent"
@@ -31,7 +44,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/qr_container" />
+            app:layout_constraintTop_toBottomOf="@id/tags" />
 
         <TextView
             android:id="@+id/runs_title"
