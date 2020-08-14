@@ -12,9 +12,6 @@ import java.util.List;
 @Dao
 public interface WindowConfigurationDao {
 
-    @Query("SELECT * FROM window_configuration WHERE id==(:id)")
-    WindowConfiguration getWindowConfigurationById(long id);
-
     @Query("SELECT * FROM window_configuration WHERE experiment_id==(:experimentId) AND source_type==(:type)")
     WindowConfiguration getWindowConfigurationByExperimentIdAndType(long experimentId, long type);
 

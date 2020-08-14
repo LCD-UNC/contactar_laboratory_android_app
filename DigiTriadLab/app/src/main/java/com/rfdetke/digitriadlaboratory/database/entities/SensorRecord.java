@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "sensor_record",
         indices = {@Index(value = "id", unique = true),
-                   @Index(value = "sample_id")},
-        foreignKeys = @ForeignKey(entity = Sample.class,
+                   @Index(value = "window_id")},
+        foreignKeys = @ForeignKey(entity = Window.class,
                 parentColumns = "id",
-                childColumns = "sample_id",
+                childColumns = "window_id",
                 onDelete = ForeignKey.CASCADE))
 public class SensorRecord {
     @PrimaryKey(autoGenerate = true)
@@ -23,8 +23,8 @@ public class SensorRecord {
     public int valueId;
     public double value;
 
-    @ColumnInfo(name = "sample_id")
-    public long sampleId;
+    @ColumnInfo(name = "window_id")
+    public long windowId;
 
     public SensorRecord(String sensorType, int valueId, double value) {
         this.sensorType = sensorType;

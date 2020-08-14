@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 4,
-    "identityHash": "ebbd0404cc80aff606b9c437852a71f3",
+    "version": 8,
+    "identityHash": "10844625c5384e9ffeb611cd8a074b68",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `address` TEXT, `rssi` REAL NOT NULL, `tx_power` REAL NOT NULL, `advertising_set_id` INTEGER NOT NULL, `primary_physical_layer` TEXT, `seconary_physical_layer` TEXT, `periodic_advertising_interval` REAL NOT NULL, `connectable` INTEGER NOT NULL, `legacy` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `rssi` REAL NOT NULL, `tx_power` REAL NOT NULL, `advertising_set_id` INTEGER NOT NULL, `primary_physical_layer` TEXT, `seconary_physical_layer` TEXT, `periodic_advertising_interval` REAL NOT NULL, `connectable` INTEGER NOT NULL, `legacy` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,7 +17,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -75,8 +75,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "sampleId",
-            "columnName": "sample_id",
+            "fieldPath": "windowId",
+            "columnName": "window_id",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -97,21 +97,21 @@
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bluetooth_le_record_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_bluetooth_le_record_sample_id",
+            "name": "index_bluetooth_le_record_window_id",
             "unique": false,
             "columnNames": [
-              "sample_id"
+              "window_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_le_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_le_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "sample",
+            "table": "window",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "sample_id"
+              "window_id"
             ],
             "referencedColumns": [
               "id"
@@ -347,7 +347,7 @@
       },
       {
         "tableName": "bluetooth_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `address` TEXT, `bluetooth_major_class` TEXT, `bond_state` INTEGER NOT NULL, `type` TEXT, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `bluetooth_major_class` TEXT, `bond_state` INTEGER NOT NULL, `type` TEXT, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -358,7 +358,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -386,8 +386,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "sampleId",
-            "columnName": "sample_id",
+            "fieldPath": "windowId",
+            "columnName": "window_id",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -408,21 +408,21 @@
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bluetooth_record_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_bluetooth_record_sample_id",
+            "name": "index_bluetooth_record_window_id",
             "unique": false,
             "columnNames": [
-              "sample_id"
+              "window_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bluetooth_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "sample",
+            "table": "window",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "sample_id"
+              "window_id"
             ],
             "referencedColumns": [
               "id"
@@ -432,7 +432,7 @@
       },
       {
         "tableName": "sensor_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sensor_type` TEXT, `value_id` INTEGER NOT NULL, `value` REAL NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sensor_type` TEXT, `value_id` INTEGER NOT NULL, `value` REAL NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -459,8 +459,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "sampleId",
-            "columnName": "sample_id",
+            "fieldPath": "windowId",
+            "columnName": "window_id",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -481,21 +481,21 @@
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_sensor_record_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_sensor_record_sample_id",
+            "name": "index_sensor_record_window_id",
             "unique": false,
             "columnNames": [
-              "sample_id"
+              "window_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_sensor_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sensor_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "sample",
+            "table": "window",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "sample_id"
+              "window_id"
             ],
             "referencedColumns": [
               "id"
@@ -505,7 +505,7 @@
       },
       {
         "tableName": "wifi_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `address` TEXT, `channel_width` TEXT, `center_frequency_0` INTEGER NOT NULL, `center_frequency_1` INTEGER NOT NULL, `frequency` INTEGER NOT NULL, `level` INTEGER NOT NULL, `passpoint` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `channel_width` TEXT, `center_frequency_0` INTEGER NOT NULL, `center_frequency_1` INTEGER NOT NULL, `frequency` INTEGER NOT NULL, `level` INTEGER NOT NULL, `passpoint` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -516,7 +516,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -562,8 +562,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "sampleId",
-            "columnName": "sample_id",
+            "fieldPath": "windowId",
+            "columnName": "window_id",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -584,21 +584,21 @@
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_wifi_record_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_wifi_record_sample_id",
+            "name": "index_wifi_record_window_id",
             "unique": false,
             "columnNames": [
-              "sample_id"
+              "window_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_wifi_record_sample_id` ON `${TABLE_NAME}` (`sample_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_wifi_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "sample",
+            "table": "window",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "sample_id"
+              "window_id"
             ],
             "referencedColumns": [
               "id"
@@ -607,8 +607,8 @@
         ]
       },
       {
-        "tableName": "sample",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `run_id` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, FOREIGN KEY(`run_id`) REFERENCES `run`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "window",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `run_id` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, FOREIGN KEY(`run_id`) REFERENCES `run`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -619,7 +619,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -643,28 +643,28 @@
         },
         "indices": [
           {
-            "name": "index_sample_id",
+            "name": "index_window_id",
             "unique": true,
             "columnNames": [
               "id"
             ],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_sample_id` ON `${TABLE_NAME}` (`id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_window_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_sample_run_id",
+            "name": "index_window_run_id",
             "unique": false,
             "columnNames": [
               "run_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_sample_run_id` ON `${TABLE_NAME}` (`run_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_window_run_id` ON `${TABLE_NAME}` (`run_id`)"
           },
           {
-            "name": "index_sample_source_type",
+            "name": "index_window_source_type",
             "unique": false,
             "columnNames": [
               "source_type"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_sample_source_type` ON `${TABLE_NAME}` (`source_type`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_window_source_type` ON `${TABLE_NAME}` (`source_type`)"
           }
         ],
         "foreignKeys": [
@@ -837,7 +837,24 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_experiment_tag_experiment_id",
+            "unique": false,
+            "columnNames": [
+              "experiment_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_experiment_tag_experiment_id` ON `${TABLE_NAME}` (`experiment_id`)"
+          },
+          {
+            "name": "index_experiment_tag_tag_id",
+            "unique": false,
+            "columnNames": [
+              "tag_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_experiment_tag_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "experiment",
@@ -908,7 +925,7 @@
       },
       {
         "tableName": "run",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` TEXT, `number` INTEGER NOT NULL, `state` TEXT, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` INTEGER, `number` INTEGER NOT NULL, `state` TEXT, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -919,7 +936,7 @@
           {
             "fieldPath": "start",
             "columnName": "start",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -1026,7 +1043,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ebbd0404cc80aff606b9c437852a71f3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '10844625c5384e9ffeb611cd8a074b68')"
     ]
   }
 }

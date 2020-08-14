@@ -16,7 +16,4 @@ public interface BluetoothLeAdvertiseConfigurationDao {
 
     @Query("SELECT * FROM advertise_configuration WHERE experiment_id=(:id)")
     AdvertiseConfiguration getBluetoothLeAdvertiseConfigurationForByExperiment(long id);
-
-    @Query("SELECT * FROM advertise_configuration ")
-    List<AdvertiseConfiguration> getAllBluetoothLeAdvertiseConfiguration();
 }

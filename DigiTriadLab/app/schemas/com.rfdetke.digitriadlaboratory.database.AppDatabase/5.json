@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 4,
-    "identityHash": "ebbd0404cc80aff606b9c437852a71f3",
+    "version": 5,
+    "identityHash": "e05006215ed78d8fba70e1aed33a3711",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `address` TEXT, `rssi` REAL NOT NULL, `tx_power` REAL NOT NULL, `advertising_set_id` INTEGER NOT NULL, `primary_physical_layer` TEXT, `seconary_physical_layer` TEXT, `periodic_advertising_interval` REAL NOT NULL, `connectable` INTEGER NOT NULL, `legacy` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `rssi` REAL NOT NULL, `tx_power` REAL NOT NULL, `advertising_set_id` INTEGER NOT NULL, `primary_physical_layer` TEXT, `seconary_physical_layer` TEXT, `periodic_advertising_interval` REAL NOT NULL, `connectable` INTEGER NOT NULL, `legacy` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,7 +17,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -347,7 +347,7 @@
       },
       {
         "tableName": "bluetooth_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `address` TEXT, `bluetooth_major_class` TEXT, `bond_state` INTEGER NOT NULL, `type` TEXT, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `bluetooth_major_class` TEXT, `bond_state` INTEGER NOT NULL, `type` TEXT, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -358,7 +358,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -505,7 +505,7 @@
       },
       {
         "tableName": "wifi_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `address` TEXT, `channel_width` TEXT, `center_frequency_0` INTEGER NOT NULL, `center_frequency_1` INTEGER NOT NULL, `frequency` INTEGER NOT NULL, `level` INTEGER NOT NULL, `passpoint` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `channel_width` TEXT, `center_frequency_0` INTEGER NOT NULL, `center_frequency_1` INTEGER NOT NULL, `frequency` INTEGER NOT NULL, `level` INTEGER NOT NULL, `passpoint` INTEGER NOT NULL, `sample_id` INTEGER NOT NULL, FOREIGN KEY(`sample_id`) REFERENCES `sample`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -516,7 +516,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -608,7 +608,7 @@
       },
       {
         "tableName": "sample",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` TEXT, `run_id` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, FOREIGN KEY(`run_id`) REFERENCES `run`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `run_id` INTEGER NOT NULL, `source_type` INTEGER NOT NULL, FOREIGN KEY(`run_id`) REFERENCES `run`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`source_type`) REFERENCES `source_type`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -619,7 +619,7 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -908,7 +908,7 @@
       },
       {
         "tableName": "run",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` TEXT, `number` INTEGER NOT NULL, `state` TEXT, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `start` INTEGER, `number` INTEGER NOT NULL, `state` TEXT, `experiment_id` INTEGER NOT NULL, FOREIGN KEY(`experiment_id`) REFERENCES `experiment`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -919,7 +919,7 @@
           {
             "fieldPath": "start",
             "columnName": "start",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -1026,7 +1026,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ebbd0404cc80aff606b9c437852a71f3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e05006215ed78d8fba70e1aed33a3711')"
     ]
   }
 }

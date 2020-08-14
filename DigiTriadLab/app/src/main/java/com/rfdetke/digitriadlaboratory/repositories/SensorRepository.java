@@ -3,24 +3,31 @@ package com.rfdetke.digitriadlaboratory.repositories;
 import androidx.lifecycle.LiveData;
 
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
-import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SampleDao.Count;
-import com.rfdetke.digitriadlaboratory.database.daos.SampleDao.SensorSampleRecord;
+import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
+import com.rfdetke.digitriadlaboratory.database.daos.WindowDao;
+import com.rfdetke.digitriadlaboratory.database.daos.WindowDao.SensorSampleRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 
 import java.util.List;
 
 public class SensorRepository {
-    private SampleDao sampleDao;
+    private WindowDao windowDao;
+    private SensorRecordDao sensorRecordDao;
 
     public SensorRepository(AppDatabase database) {
-        sampleDao = database.getSampleDao();
+        sensorRecordDao = database.getSensorRecordDao();
+        windowDao = database.getWindowDao();
     }
 
     public List<SensorSampleRecord> getAllSamplesFor(long[] runs) {
-        return sampleDao.getSensorSamplesRecords(runs);
+        return windowDao.getSensorSamplesRecords(runs);
     }
 
     public LiveData<Long> getLiveCount(long runId) {
-        return sampleDao.getSensorLiveCount(runId);
+        return windowDao.getSensorLiveCount(runId);
+    }
+
+    public long[] insert(List<SensorRecord> sensorRecords) {
+        return sensorRecordDao.insert(sensorRecords);
     }
 }

@@ -21,7 +21,6 @@ public class BluetoothScanScheduler extends Scheduler {
 
     private final BluetoothRepository bluetoothRepository;
     BluetoothDataBucket bluetoothDataBucket;
-    SensorDataBucket sensorDataBucket;
 
     public BluetoothScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
                                   AppDatabase database) {
@@ -29,16 +28,14 @@ public class BluetoothScanScheduler extends Scheduler {
 
         this.bluetoothRepository = new BluetoothRepository(database);
         this.key = SourceTypeEnum.BLUETOOTH.toString();
-        sensorDataBucket = new SensorDataBucket(context);
     }
 
     @Override
     protected void startTask() {
-        long sampleId = sampleRepository.insert(runId, key);
+        long sampleId = windowRepository.insert(runId, key);
         IntentFilter bluetoothIntentFilter = new IntentFilter();
         bluetoothIntentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         bluetoothDataBucket = new BluetoothDataBucket(sampleId, context);
-        sensorDataBucket.setSampleId(sampleId);
         context.registerReceiver(bluetoothDataBucket, bluetoothIntentFilter);
 
         // TODO: Implementar un mutex para hacer escaneo despues porque no se pueden hacer escaneos
@@ -56,14 +53,7 @@ public class BluetoothScanScheduler extends Scheduler {
         }
         bluetoothRepository.insertBluetooth(bluetoothRecords);
 
-        List<SensorRecord> sensorRecords = new ArrayList<>();
-        for (Object record : sensorDataBucket.getRecordsList()) {
-            sensorRecords.add((SensorRecord) record);
-        }
-        bluetoothRepository.insertSensors(sensorRecords);
-
         context.unregisterReceiver(bluetoothDataBucket);
         bluetoothDataBucket = null;
-        sensorDataBucket.setSampleId(0);
     }
 }

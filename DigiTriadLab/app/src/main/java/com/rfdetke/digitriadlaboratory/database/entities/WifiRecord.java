@@ -1,6 +1,7 @@
 package com.rfdetke.digitriadlaboratory.database.entities;
 
 import android.net.wifi.ScanResult;
+import android.os.SystemClock;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -8,18 +9,21 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
+
 @Entity(tableName = "wifi_record",
         indices = {@Index(value = "id", unique = true),
-                   @Index(value = "sample_id")},
-        foreignKeys = @ForeignKey(entity = Sample.class,
+                   @Index(value = "window_id")},
+        foreignKeys = @ForeignKey(entity = Window.class,
                 parentColumns = "id",
-                childColumns = "sample_id",
+                childColumns = "window_id",
                 onDelete = ForeignKey.CASCADE))
 public class WifiRecord {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
 
+    public Date timestamp;
     public String address;
     @ColumnInfo(name = "channel_width")
     public String channelWidth;
@@ -31,27 +35,26 @@ public class WifiRecord {
     public int level;
     public int passpoint;
 
-    @ColumnInfo(name = "sample_id")
-    public long sampleId;
+    @ColumnInfo(name = "window_id")
+    public long windowId;
 
-    public WifiRecord(ScanResult result, long sampleId) {
+    public WifiRecord(ScanResult result, long windowId) {
         this.address = result.BSSID;
         this.channelWidth = parseChannelWidth(result.channelWidth);
         this.centerFrequency0 = result.centerFreq0;
         this.centerFrequency1 = result.centerFreq1;
         this.frequency = result.frequency;
         this.level = result.level;
-
         if(result.isPasspointNetwork())
             this.passpoint = 1;
         else
             this.passpoint = 0;
-
-        this.sampleId = sampleId;
+        this.windowId = windowId;
+        this.timestamp = new Date(System.currentTimeMillis() - SystemClock.elapsedRealtime() + (result.timestamp / 1000));
     }
 
     public WifiRecord(String address, String channelWidth, int centerFrequency0,
-                      int centerFrequency1, int frequency, int level, int passpoint, long sampleId) {
+                      int centerFrequency1, int frequency, int level, int passpoint, long windowId) {
         this.address = address;
         this.channelWidth = channelWidth;
         this.centerFrequency0 = centerFrequency0;
@@ -59,7 +62,7 @@ public class WifiRecord {
         this.frequency = frequency;
         this.level = level;
         this.passpoint = passpoint;
-        this.sampleId = sampleId;
+        this.windowId = windowId;
     }
 
     private String parseChannelWidth (int channelWidth) {

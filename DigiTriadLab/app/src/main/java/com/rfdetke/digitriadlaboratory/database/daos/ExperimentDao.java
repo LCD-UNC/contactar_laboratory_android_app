@@ -15,13 +15,6 @@ import java.util.List;
 @Dao
 public interface ExperimentDao {
 
-    @Query("SELECT * FROM experiment")
-    List<Experiment> getAllExperiments();
-
-    @Query("SELECT * FROM experiment")
-    LiveData<List<Experiment>> getLiveDataExperiments();
-
-
     @Query("SELECT e.*, d.done, t.total FROM experiment as e " +
             "LEFT JOIN (SELECT COUNT(id) as done, experiment_id " +
                         "FROM (SELECT r.id, r.experiment_id " +
@@ -32,10 +25,6 @@ public interface ExperimentDao {
             "ON e.id=t.experiment_id")
 
     LiveData<List<ExperimentDone>> getLiveDataExperimentDone();
-
-
-    @Query("SELECT * FROM experiment WHERE codename == (:codename) LIMIT 1")
-    Experiment getExperimentByCodename(String codename);
 
     @Query("SELECT * FROM experiment ORDER BY id DESC LIMIT 1")
     Experiment getLastExperiment();
@@ -48,9 +37,6 @@ public interface ExperimentDao {
 
     @Delete
     void delete(Experiment experiment);
-
-    @Query("DELETE FROM experiment")
-    void deleteAll();
 
     static class ExperimentDone {
         public long id;

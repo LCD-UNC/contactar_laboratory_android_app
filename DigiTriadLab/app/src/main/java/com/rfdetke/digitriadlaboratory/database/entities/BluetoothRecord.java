@@ -9,20 +9,20 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.lang.reflect.Field;
+import java.util.Date;
 
 @Entity(tableName = "bluetooth_record",
         indices = {@Index(value = "id", unique = true),
-                @Index(value = "sample_id")},
-        foreignKeys = @ForeignKey(entity = Sample.class,
+                @Index(value = "window_id")},
+        foreignKeys = @ForeignKey(entity = Window.class,
                 parentColumns = "id",
-                childColumns = "sample_id",
+                childColumns = "window_id",
                 onDelete = ForeignKey.CASCADE))
 public class BluetoothRecord {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-
+    public Date timestamp;
     public String address;
     @ColumnInfo(name = "bluetooth_major_class")
     public String bluetoothMajorClass;
@@ -30,10 +30,10 @@ public class BluetoothRecord {
     public int bondState;
     public String type;
 
-    @ColumnInfo(name = "sample_id")
-    public long sampleId;
+    @ColumnInfo(name = "window_id")
+    public long windowId;
 
-    public BluetoothRecord(BluetoothDevice device, long sampleId) {
+    public BluetoothRecord(BluetoothDevice device, long windowId) {
         this.address = device.getAddress();
         this.bluetoothMajorClass = parseBluetoothMajorClass(device.getBluetoothClass().getMajorDeviceClass());
 
@@ -43,16 +43,17 @@ public class BluetoothRecord {
             this.bondState = 0;
 
         this.type = parseType(device.getType());
-        this.sampleId = sampleId;
+        this.windowId = windowId;
+        this.timestamp = new Date();
     }
 
     public BluetoothRecord(String address, String bluetoothMajorClass,
-                           int bondState, String type, long sampleId) {
+                           int bondState, String type, long windowId) {
         this.address = address;
         this.bluetoothMajorClass = bluetoothMajorClass;
         this.bondState = bondState;
         this.type = type;
-        this.sampleId = sampleId;
+        this.windowId = windowId;
     }
 
 

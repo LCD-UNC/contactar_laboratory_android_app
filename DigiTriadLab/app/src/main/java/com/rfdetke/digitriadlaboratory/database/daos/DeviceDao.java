@@ -17,12 +17,6 @@ public interface DeviceDao {
     @Query("SELECT * FROM device LIMIT 1")
     Device getDevice();
 
-    @Query("SELECT * FROM device")
-    List<Device> getAllDevices();
-
-    @Query("DELETE FROM device")
-    void deleteAll();
-
     @Insert
     long insert(Device device);
 

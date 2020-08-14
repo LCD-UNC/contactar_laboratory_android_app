@@ -18,10 +18,10 @@ import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
-import com.rfdetke.digitriadlaboratory.export.BluetoothCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.BluetoothLeCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.SensorCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.WifiCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.RunDetailViewModel;
 

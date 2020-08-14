@@ -20,9 +20,7 @@ import java.util.List;
 public class BluetoothLeScanScheduler extends Scheduler {
 
     private final BluetoothLeRepository bluetoothLeRepository;
-
     BluetoothLeDataBucket bluetoothLeDataBucket;
-    SensorDataBucket sensorDataBucket;
 
     public BluetoothLeScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
                                     AppDatabase database) {
@@ -31,15 +29,12 @@ public class BluetoothLeScanScheduler extends Scheduler {
         this.bluetoothLeRepository = new BluetoothLeRepository(database);
         this.key = SourceTypeEnum.BLUETOOTH_LE.toString();
 
-        sensorDataBucket = new SensorDataBucket(context);
     }
 
     @Override
     protected void startTask() {
-        long sampleId = sampleRepository.insert(runId, key);
-
+        long sampleId = windowRepository.insert(runId, key);
         bluetoothLeDataBucket = new BluetoothLeDataBucket(sampleId, context);
-        sensorDataBucket.setSampleId(sampleId);
 
         // TODO: Implementar un mutex para hacer escaneo despues porque no se pueden hacer escaneos
         //       clasicos y low energy al mismo tiempo.
@@ -66,13 +61,6 @@ public class BluetoothLeScanScheduler extends Scheduler {
         }
         bluetoothLeRepository.insertUuids(bluetoothLeUuids);
 
-        List<SensorRecord> sensorRecords = new ArrayList<>();
-        for (Object record : sensorDataBucket.getRecordsList()) {
-            sensorRecords.add((SensorRecord) record);
-        }
-        bluetoothLeRepository.insertSensors(sensorRecords);
-
         bluetoothLeDataBucket = null;
-        sensorDataBucket.setSampleId(0);
     }
 }

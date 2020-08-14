@@ -16,9 +16,6 @@ public interface BluetoothLeRecordDao {
     long[] insertUuids(List<BluetoothLeUuid> bluetoothLeUuids);
 
     @Insert
-    long insertUuid(BluetoothLeUuid bluetoothLeUuid);
-
-    @Insert
     long[] insert(List<BluetoothLeRecord> bluetoothLeRecord);
 
     @Insert

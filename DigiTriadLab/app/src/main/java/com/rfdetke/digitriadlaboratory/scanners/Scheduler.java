@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.repositories.SampleRepository;
+import com.rfdetke.digitriadlaboratory.repositories.WindowRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public abstract class Scheduler implements ObservableScanner{
     protected long runId;
     protected Context context;
 
-    protected final SampleRepository sampleRepository;
+    protected final WindowRepository windowRepository;
     protected List<ScanObserver> observers;
 
     protected String key;
@@ -33,7 +33,7 @@ public abstract class Scheduler implements ObservableScanner{
 
         this.runId = runId;
         this.context = context;
-        this.sampleRepository = new SampleRepository(database);
+        this.windowRepository = new WindowRepository(database);
         activeTimer = new Timer();
         inactiveTimer = new Timer();
         long period =  (windowConfiguration.activeTime + windowConfiguration.inactiveTime)*1000;
@@ -64,7 +64,6 @@ public abstract class Scheduler implements ObservableScanner{
 
         activeTimer.scheduleAtFixedRate(activeTask, initialDelay, period);
         inactiveTimer.scheduleAtFixedRate(inactiveTask, (windowConfiguration.activeTime*1000)+initialDelay, period);
-
     }
 
     public String getKey() {

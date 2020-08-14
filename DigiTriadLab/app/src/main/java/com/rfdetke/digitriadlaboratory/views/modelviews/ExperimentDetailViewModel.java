@@ -19,7 +19,7 @@ import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
-import com.rfdetke.digitriadlaboratory.utils.QRTools;
+import com.rfdetke.digitriadlaboratory.utils.ShareTools;
 
 import java.util.List;
 import java.util.Locale;
@@ -51,9 +51,10 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
         this.currentExperiment = experimentRepository.getById(experimentId);
         this.configurations = configurationRepository.getConfigurationsForExperiment(currentExperiment.id);
         this.advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
-        this.experimentQr = QRTools.getQrConfiguration(currentExperiment, configurationRepository, advertiseConfiguration);
         this.runsForExperiment = runRepository.getRunsForExperiment(experimentId);
         this.tagList = experimentRepository.getTagList(experimentId);
+        this.experimentQr = ShareTools.getQrExperiment(currentExperiment, configurationRepository,
+                advertiseConfiguration, tagList);
     }
 
     public LiveData<List<Run>> getRunsForExperiment() {

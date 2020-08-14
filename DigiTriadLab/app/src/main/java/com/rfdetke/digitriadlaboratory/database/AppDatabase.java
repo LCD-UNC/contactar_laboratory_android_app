@@ -10,7 +10,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.BluetoothRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.DeviceDao;
 import com.rfdetke.digitriadlaboratory.database.daos.ExperimentDao;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SampleDao;
+import com.rfdetke.digitriadlaboratory.database.daos.WindowDao;
 import com.rfdetke.digitriadlaboratory.database.daos.TagDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WindowConfigurationDao;
 import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
@@ -22,6 +22,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
 import com.rfdetke.digitriadlaboratory.database.entities.ExperimentTag;
 import com.rfdetke.digitriadlaboratory.database.entities.Tag;
+import com.rfdetke.digitriadlaboratory.database.entities.Window;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
@@ -30,7 +31,6 @@ import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.SourceType;
 import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.Sample;
 import com.rfdetke.digitriadlaboratory.database.typeconverters.DateConverter;
 import com.rfdetke.digitriadlaboratory.database.typeconverters.UuidConverter;
 
@@ -44,14 +44,14 @@ import java.util.concurrent.Executors;
                         BluetoothRecord.class,
                         SensorRecord.class,
                         WifiRecord.class,
-                        Sample.class,
+                        Window.class,
                         Device.class,
                         Experiment.class,
                         ExperimentTag.class,
                         Tag.class,
                         Run.class,
                         SourceType.class},
-          version = 4)
+          version = 8)
 
 @TypeConverters({DateConverter.class, UuidConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
@@ -66,7 +66,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract DeviceDao getDeviceDao();
     public abstract ExperimentDao getExperimentDao();
     public abstract RunDao getRunDao();
-    public abstract SampleDao getSampleDao();
+    public abstract WindowDao getWindowDao();
     public abstract SourceTypeDao getSourceTypeDao();
     public abstract WindowConfigurationDao getWindowConfigurationDao();
     public abstract BluetoothLeAdvertiseConfigurationDao getBluetoothAdvertiseConfigurationDao();

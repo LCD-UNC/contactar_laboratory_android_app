@@ -3,9 +3,12 @@ package com.rfdetke.digitriadlaboratory.database.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 
 @Entity(tableName = "experiment_tag",
         primaryKeys = {"experiment_id", "tag_id"},
+        indices = {@Index(value = "experiment_id"),
+                    @Index(value = "tag_id")},
         foreignKeys = {@ForeignKey(entity = Experiment.class,
                         parentColumns = "id",
                         childColumns = "experiment_id",

@@ -14,12 +14,6 @@ import java.util.List;
 @Dao
 public interface RunDao {
 
-    @Query("SELECT * FROM run")
-    List<Run> getAllRuns();
-
-    @Query("SELECT * FROM run WHERE experiment_id==(:experimentId)")
-    List<Run> getRunsByExperimentId(long experimentId);
-
     @Query("SELECT * FROM run WHERE experiment_id==(:experimentId)")
     LiveData<List<Run>> getLiveDataRunsByExperimentId(long experimentId);
 
@@ -56,9 +50,6 @@ public interface RunDao {
 
     @Delete
     void delete(Run run);
-
-    @Query("DELETE FROM run")
-    void deleteAll();
 
     static class StartDuration {
         public Date start;

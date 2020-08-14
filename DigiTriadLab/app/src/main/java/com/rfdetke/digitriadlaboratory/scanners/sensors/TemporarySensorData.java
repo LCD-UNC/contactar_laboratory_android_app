@@ -24,7 +24,7 @@ public class TemporarySensorData {
 
     public void setSampleId(long sampleId) {
         for(SensorRecord record : records) {
-            record.sampleId = sampleId;
+            record.windowId = sampleId;
         }
     }
 

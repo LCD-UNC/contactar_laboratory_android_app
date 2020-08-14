@@ -2,6 +2,7 @@ package com.rfdetke.digitriadlaboratory.database.entities;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
+import android.os.SystemClock;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -9,17 +10,20 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
+
 @Entity(tableName = "bluetooth_le_record",
         indices = {@Index(value = "id", unique = true),
-                   @Index(value = "sample_id")},
-        foreignKeys = @ForeignKey(entity = Sample.class,
+                   @Index(value = "window_id")},
+        foreignKeys = @ForeignKey(entity = Window.class,
                 parentColumns = "id",
-                childColumns = "sample_id",
+                childColumns = "window_id",
                 onDelete = ForeignKey.CASCADE))
 public class BluetoothLeRecord {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
+    public Date timestamp;
     public String address;
     public double rssi;
     @ColumnInfo(name = "tx_power")
@@ -35,10 +39,10 @@ public class BluetoothLeRecord {
     public int connectable;
     public int legacy;
 
-    @ColumnInfo(name = "sample_id")
-    public long sampleId;
+    @ColumnInfo(name = "window_id")
+    public long windowId;
 
-    public BluetoothLeRecord(ScanResult result, long sampleId) {
+    public BluetoothLeRecord(ScanResult result, long windowId) {
         this.address = result.getDevice().getAddress();
         this.rssi = result.getRssi();
         if(result.getScanRecord() != null)
@@ -60,7 +64,8 @@ public class BluetoothLeRecord {
         else
             this.legacy = 0;
 
-        this.sampleId = sampleId;
+        this.windowId = windowId;
+        this.timestamp = new Date(System.currentTimeMillis() - SystemClock.elapsedRealtime() + (result.getTimestampNanos() / 1000000));
     }
 
     private String parsePhysicalLayer(int layer) {
@@ -79,7 +84,7 @@ public class BluetoothLeRecord {
     public BluetoothLeRecord(String address, double rssi, double txPower, int advertisingSetId,
                              String primaryPhysicalLayer, String secondaryPhysicalLayer,
                              double periodicAdvertisingInterval, int connectable,
-                             int legacy, long sampleId) {
+                             int legacy, long windowId) {
         this.address = address;
         this.rssi = rssi;
         this.txPower = txPower;
@@ -89,7 +94,7 @@ public class BluetoothLeRecord {
         this.periodicAdvertisingInterval = periodicAdvertisingInterval;
         this.connectable = connectable;
         this.legacy = legacy;
-        this.sampleId = sampleId;
+        this.windowId = windowId;
     }
 
 

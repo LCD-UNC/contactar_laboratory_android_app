@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "sample",
+@Entity(tableName = "window",
         indices = {@Index(value = "id", unique = true),
                    @Index(value = "run_id"),
                    @Index(value = "source_type")},
@@ -20,7 +20,7 @@ import java.util.Date;
                             parentColumns = "id",
                             childColumns = "source_type",
                             onDelete = ForeignKey.CASCADE)})
-public class Sample {
+public class Window {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
@@ -31,7 +31,7 @@ public class Sample {
     @ColumnInfo(name = "source_type")
     public long sourceType;
 
-    public Sample(Date timestamp, long runId, long sourceType) {
+    public Window(Date timestamp, long runId, long sourceType) {
         this.timestamp = timestamp;
         this.runId = runId;
         this.sourceType = sourceType;

@@ -20,7 +20,6 @@ public class WifiScanScheduler extends Scheduler {
 
     private final WifiRepository wifiRepository;
     WifiDataBucket wifiDataBucket;
-    SensorDataBucket sensorDataBucket;
 
     public WifiScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
                              AppDatabase database) {
@@ -28,16 +27,14 @@ public class WifiScanScheduler extends Scheduler {
         super(runId, windowConfiguration, context, database);
         this.wifiRepository = new WifiRepository(database);
         this.key = SourceTypeEnum.WIFI.toString();
-        sensorDataBucket = new SensorDataBucket(context);
     }
 
     @Override
     protected void startTask() {
-        long sampleId = sampleRepository.insert(runId, key);
+        long sampleId = windowRepository.insert(runId, key);
         IntentFilter wifiIntentFilter = new IntentFilter();
         wifiIntentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         wifiDataBucket = new WifiDataBucket(sampleId, context);
-        sensorDataBucket.setSampleId(sampleId);
         context.registerReceiver(wifiDataBucket, wifiIntentFilter);
     };
 
@@ -49,16 +46,8 @@ public class WifiScanScheduler extends Scheduler {
         }
         wifiRepository.insertWifi(wifiRecords);
 
-        List<SensorRecord> sensorRecords = new ArrayList<>();
-        for (Object record : sensorDataBucket.getRecordsList()) {
-            sensorRecords.add((SensorRecord) record);
-        }
-        wifiRepository.insertSensors(sensorRecords);
-
         context.unregisterReceiver(wifiDataBucket);
         wifiDataBucket = null;
-        sensorDataBucket.setSampleId(0);
-
     };
 
 }

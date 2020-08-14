@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.export;
+package com.rfdetke.digitriadlaboratory.export.csv;
 
 public interface CsvExportable {
     public String csvHeader();

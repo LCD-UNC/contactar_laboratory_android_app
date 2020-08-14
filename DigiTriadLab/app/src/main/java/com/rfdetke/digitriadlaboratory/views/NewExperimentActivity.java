@@ -13,7 +13,6 @@ import android.bluetooth.le.AdvertisingSetParameters;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -29,14 +28,16 @@ import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
-import com.rfdetke.digitriadlaboratory.database.entities.Tag;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
+import com.rfdetke.digitriadlaboratory.export.ExperimentRepresentation;
+import com.rfdetke.digitriadlaboratory.utils.ShareTools;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class NewExperimentActivity extends AppCompatActivity {
@@ -67,6 +68,12 @@ public class NewExperimentActivity extends AppCompatActivity {
     private EditText bluetoothLeInactive;
     private EditText bluetoothLeWindows;
     private Switch bluetoothLeSwitch;
+
+    private TextView sensorsTitle;
+    private EditText sensorsActive;
+    private EditText sensorsInactive;
+    private EditText sensorsWindows;
+    private Switch sensorsSwitch;
 
     private TextView bluetoothLeAdvertiseTitle;
     private EditText bluetoothLeAdvertiseActive;
@@ -121,6 +128,12 @@ public class NewExperimentActivity extends AppCompatActivity {
         bluetoothLeTitle = findViewById(R.id.bluetooth_le_title);
         bluetoothLeSwitch = findViewById(R.id.bluetooth_le_switch);
 
+        sensorsActive = findViewById(R.id.sensors_active);
+        sensorsInactive = findViewById(R.id.sensors_inactive);
+        sensorsWindows = findViewById(R.id.sensors_windows);
+        sensorsTitle = findViewById(R.id.sensors_title);
+        sensorsSwitch = findViewById(R.id.sensors_switch);
+
         bluetoothLeAdvertiseActive = findViewById(R.id.bluetooth_le_advertise_active);
         bluetoothLeAdvertiseInactive = findViewById(R.id.bluetooth_le_advertise_inactive);
         bluetoothLeAdvertiseWindows = findViewById(R.id.bluetooth_le_advertise_windows);
@@ -169,7 +182,8 @@ public class NewExperimentActivity extends AppCompatActivity {
             if(validateExperiment()) {
                 experimentId = saveExperiment();
                 if(!wifiSwitch.isChecked() && !bluetoothSwitch.isChecked() &&
-                        !bluetoothLeSwitch.isChecked() && !bluetoothLeAdvertiseSwitch.isChecked()) {
+                        !bluetoothLeSwitch.isChecked() && !bluetoothLeAdvertiseSwitch.isChecked() &&
+                        !sensorsSwitch.isChecked()) {
                     errorMessage = errorMessage.concat(getResources().getString(R.string.at_least_one_configuration));
                     success = false;
                 } else {
@@ -194,6 +208,14 @@ public class NewExperimentActivity extends AppCompatActivity {
                             saveBluetoothLeConfig(experimentId);
                         } else {
                             errorMessage = errorMessage.concat(getResources().getString(R.string.bluetooth_le_error));
+                            success = false;
+                        }
+                    }
+                    if(sensorsSwitch.isChecked()) {
+                        if (validateSensorsConfig()) {
+                            saveSensorsConfig(experimentId);
+                        } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.sensors_error));
                             success = false;
                         }
                     }
@@ -310,6 +332,12 @@ public class NewExperimentActivity extends AppCompatActivity {
                 !bluetoothLeWindows.getText().toString().isEmpty();
     }
 
+    private boolean validateSensorsConfig() {
+        return !sensorsActive.getText().toString().isEmpty() &&
+                !sensorsInactive.getText().toString().isEmpty() &&
+                !sensorsWindows.getText().toString().isEmpty();
+    }
+
     private long saveExperiment() {
         return experimentRepository.insert( new Experiment(codename.getText().toString(),
                 description.getText().toString(),
@@ -342,6 +370,16 @@ public class NewExperimentActivity extends AppCompatActivity {
         long inactive = Long.parseLong(wifiInactive.getText().toString());
         long windows = Long.parseLong(wifiWindows.getText().toString());
         long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name()).id;
+        WindowConfiguration configuration = new WindowConfiguration(active,
+                inactive, windows, sourceId, experimentId);
+        configurationRepository.insert(configuration);
+    }
+
+    private void saveSensorsConfig(long experimentId) {
+        long active = Long.parseLong(sensorsActive.getText().toString());
+        long inactive = Long.parseLong(sensorsInactive.getText().toString());
+        long windows = Long.parseLong(sensorsWindows.getText().toString());
+        long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.SENSORS.name()).id;
         WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
         configurationRepository.insert(configuration);
@@ -380,7 +418,13 @@ public class NewExperimentActivity extends AppCompatActivity {
             return builder.create();
         }
     }
-
+    private String longOrNullToEmpty(Long value) {
+        if (value == null) {
+            return "";
+        } else {
+            return String.format(Locale.ENGLISH, "%d", value);
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -388,16 +432,41 @@ public class NewExperimentActivity extends AppCompatActivity {
             if(data != null) {
                 String experiment = data.getStringExtra(ScanQrExperiment.EXTRA_CONFIG_STRING);
                 if (experiment != null) {
-                    String[] portions = experiment.split(";",-1);
-                    List<View> editTexts = findViewById(R.id.scroll_view).getFocusables(View.FOCUS_FORWARD);
-                    for (int i = 0; i < portions.length-1; i++) {
-                        View view = editTexts.get(i);
-                        if (view instanceof EditText) {
-                            ((EditText)view).setText(portions[i]);//here it will be clear all the EditText field
-                        }
+                    ExperimentRepresentation representation = ShareTools.getCodedExperiment(experiment);
+                    codename.setText(representation.codename);
+                    description.setText(representation.description);
+
+                    wifiActive.setText(longOrNullToEmpty(representation.wifi.get(ExperimentRepresentation.ACTIVE)));
+                    wifiInactive.setText(longOrNullToEmpty(representation.wifi.get(ExperimentRepresentation.INACTIVE)));
+                    wifiWindows.setText(longOrNullToEmpty(representation.wifi.get(ExperimentRepresentation.WINDOWS)));
+
+                    bluetoothActive.setText(longOrNullToEmpty(representation.bluetooth.get(ExperimentRepresentation.ACTIVE)));
+                    bluetoothInactive.setText(longOrNullToEmpty(representation.bluetooth.get(ExperimentRepresentation.INACTIVE)));
+                    bluetoothWindows.setText(longOrNullToEmpty(representation.bluetooth.get(ExperimentRepresentation.WINDOWS)));
+
+                    bluetoothLeActive.setText(longOrNullToEmpty(representation.bluetoothLe.get(ExperimentRepresentation.ACTIVE)));
+                    bluetoothLeInactive.setText(longOrNullToEmpty(representation.bluetoothLe.get(ExperimentRepresentation.INACTIVE)));
+                    bluetoothLeWindows.setText(longOrNullToEmpty(representation.bluetoothLe.get(ExperimentRepresentation.WINDOWS)));
+
+                    sensorsActive.setText(longOrNullToEmpty(representation.sensors.get(ExperimentRepresentation.ACTIVE)));
+                    sensorsInactive.setText(longOrNullToEmpty(representation.sensors.get(ExperimentRepresentation.INACTIVE)));
+                    sensorsWindows.setText(longOrNullToEmpty(representation.sensors.get(ExperimentRepresentation.WINDOWS)));
+
+                    bluetoothLeAdvertiseActive.setText(longOrNullToEmpty(representation.bluetoothLeAdvertise.get(ExperimentRepresentation.ACTIVE)));
+                    bluetoothLeAdvertiseInactive.setText(longOrNullToEmpty(representation.bluetoothLeAdvertise.get(ExperimentRepresentation.INACTIVE)));
+                    bluetoothLeAdvertiseWindows.setText(longOrNullToEmpty(representation.bluetoothLeAdvertise.get(ExperimentRepresentation.WINDOWS)));
+                    bluetoothLeAdvertiseTxPower.setText(longOrNullToEmpty(representation.bluetoothLeAdvertise.get(ExperimentRepresentation.TX_POWER)));
+                    bluetoothLeAdvertiseInterval.setText(longOrNullToEmpty(representation.bluetoothLeAdvertise.get(ExperimentRepresentation.INTERVAL)));
+
+                    for(String tagValue : representation.tags) {
+                        Chip chip = new Chip(this);
+                        chip.setText(tagValue.toUpperCase());
+                        chip.setCloseIconVisible(true);
+                        chip.setClickable(true);
+                        tags.addView(chip);
+                        chip.setOnCloseIconClickListener(tags::removeView);
                     }
                 }
-
             }
         }
     }

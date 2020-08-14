@@ -20,23 +20,22 @@ import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.export.BluetoothCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.BluetoothLeCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.SensorCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.WifiCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
-import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
 import com.rfdetke.digitriadlaboratory.scanners.ScanObserver;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
+import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorsScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -63,6 +62,7 @@ public class ExperimentService extends Service implements ScanObserver {
             WindowConfiguration wifiConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.WIFI.name());
             WindowConfiguration bluetoothConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH.name());
             WindowConfiguration bluetoothLeConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
+            WindowConfiguration sensorConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.SENSORS.name());
             WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
             Experiment currentExperiment = experimentRepository.getById(currentRun.experimentId);
@@ -97,6 +97,11 @@ public class ExperimentService extends Service implements ScanObserver {
 
             if (bluetoothLeConfiguration != null) {
                 BluetoothLeScanScheduler scanScheduler = new BluetoothLeScanScheduler(currentRun.id, bluetoothLeConfiguration, this, database);
+                registerScheduler(scanScheduler);
+            }
+
+            if (sensorConfiguration != null) {
+                SensorsScanScheduler scanScheduler = new SensorsScanScheduler(currentRun.id, sensorConfiguration, this, database);
                 registerScheduler(scanScheduler);
             }
 
@@ -141,7 +146,9 @@ public class ExperimentService extends Service implements ScanObserver {
         if (doneMap.containsKey(SourceTypeEnum.BLUETOOTH_LE.name()))
             new BluetoothLeCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
 
-        new SensorCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+        if (doneMap.containsKey(SourceTypeEnum.SENSORS.name()))
+            new SensorCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);
     }
