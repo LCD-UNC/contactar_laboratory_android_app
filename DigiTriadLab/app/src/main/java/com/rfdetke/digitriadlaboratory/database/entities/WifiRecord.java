@@ -65,7 +65,7 @@ public class WifiRecord {
         this.windowId = windowId;
     }
 
-    private String parseChannelWidth (int channelWidth) {
+    public static String parseChannelWidth (int channelWidth) {
         switch (channelWidth) {
             case ScanResult.CHANNEL_WIDTH_20MHZ:
                 return "20MHz";

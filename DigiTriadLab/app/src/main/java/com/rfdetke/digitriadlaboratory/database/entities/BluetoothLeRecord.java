@@ -68,7 +68,7 @@ public class BluetoothLeRecord {
         this.timestamp = new Date(System.currentTimeMillis() - SystemClock.elapsedRealtime() + (result.getTimestampNanos() / 1000000));
     }
 
-    private String parsePhysicalLayer(int layer) {
+    public static String parsePhysicalLayer(int layer) {
         switch (layer) {
             case BluetoothDevice.PHY_LE_1M:
                 return "LE 1M";

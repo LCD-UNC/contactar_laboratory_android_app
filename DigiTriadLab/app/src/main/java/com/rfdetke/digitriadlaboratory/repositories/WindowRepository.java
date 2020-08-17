@@ -19,4 +19,8 @@ public class WindowRepository {
     public long insert(long runId, String type) {
         return windowDao.insert(new Window(new Date(), runId, sourceTypeDao.getSourceTypeByType(type).id));
     }
+
+    public Window getById(long id) {
+        return windowDao.getById(id);
+    }
 }

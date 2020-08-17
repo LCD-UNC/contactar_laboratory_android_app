@@ -2,7 +2,6 @@ package com.rfdetke.digitriadlaboratory.scanners.sensors;
 
 import android.hardware.SensorEvent;
 
-import com.rfdetke.digitriadlaboratory.utils.EnumMapper;
 import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class TemporarySensorData {
 
     public TemporarySensorData(int sensorType) {
         records = new ArrayList<>();
-        this.sensorType = EnumMapper.mapSensorTypeToString(sensorType);
+        this.sensorType = SensorRecord.parseSensorType(sensorType);
     }
 
     public List<SensorRecord> getRecords() {

@@ -57,7 +57,7 @@ public class BluetoothRecord {
     }
 
 
-    private String parseType(int type) {
+    public static String parseType(int type) {
         switch (type) {
             case BluetoothDevice.DEVICE_TYPE_CLASSIC:
                 return "CLASSIC";
@@ -70,7 +70,7 @@ public class BluetoothRecord {
         }
     }
 
-    private String parseBluetoothMajorClass(int majorDeviceClass) {
+    public static String parseBluetoothMajorClass(int majorDeviceClass) {
         switch (majorDeviceClass) {
             case BluetoothClass.Device.Major.AUDIO_VIDEO:
                 return "AUDIO VIDEO";

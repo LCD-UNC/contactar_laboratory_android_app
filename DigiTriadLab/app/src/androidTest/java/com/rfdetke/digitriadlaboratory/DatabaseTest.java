@@ -13,14 +13,14 @@ import org.junit.Before;
 
 public class DatabaseTest {
 
-    AppDatabase db;
+    protected AppDatabase db;
     Context context;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         context = ApplicationProvider.getApplicationContext();
         db = DatabaseSingleton.getMemoryInstance(context);
-        DatabasePopulator.prepopulate(context, true);
+        DatabasePopulator.prepopulate(db);
     }
 
     @After

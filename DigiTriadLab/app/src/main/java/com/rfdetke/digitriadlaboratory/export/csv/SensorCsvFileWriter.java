@@ -16,7 +16,7 @@ public class SensorCsvFileWriter extends CsvFileWriter{
 
     @Override
     public List<CsvExportable> getExportables(AppDatabase database, long[] runs) {
-        return new ArrayList<>(new SensorRepository(database).getAllSamplesFor(runs));
+        return new ArrayList<>(new SensorRepository(database).getAllSamples(runs));
     }
 
     @Override

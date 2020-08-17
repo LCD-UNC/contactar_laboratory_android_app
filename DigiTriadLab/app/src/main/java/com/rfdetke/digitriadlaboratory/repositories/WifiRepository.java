@@ -25,7 +25,7 @@ public class WifiRepository {
         return wifiRecordDao.insert(wifiRecord);
     }
 
-    public List<WifiSampleRecord> getAllSamplesFor(long[] runs) {
+    public List<WifiSampleRecord> getAllSamples(long[] runs) {
         return windowDao.getWifiSamplesRecords(runs);
     }
 

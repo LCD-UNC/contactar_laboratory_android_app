@@ -94,6 +94,9 @@ public interface WindowDao {
     @Delete
     void delete(Window window);
 
+    @Query("SELECT * FROM window WHERE id==(:id)")
+    Window getById(long id);
+
     static class BluetoothSampleRecord implements CsvExportable {
         @ColumnInfo(name = "record_timestamp")
         public Date recordTimestamp;

@@ -19,7 +19,7 @@ public class SensorRepository {
         windowDao = database.getWindowDao();
     }
 
-    public List<SensorSampleRecord> getAllSamplesFor(long[] runs) {
+    public List<SensorSampleRecord> getAllSamples(long[] runs) {
         return windowDao.getSensorSamplesRecords(runs);
     }
 

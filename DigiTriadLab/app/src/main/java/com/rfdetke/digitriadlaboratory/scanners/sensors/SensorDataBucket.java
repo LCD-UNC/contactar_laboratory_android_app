@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class SensorDataBucket implements SensorEventListener, DataBucket {
 
-    private final int[] sensorTypes = {
+    public static final int[] SENSOR_TYPES = {
             Sensor.TYPE_ACCELEROMETER,
             Sensor.TYPE_AMBIENT_TEMPERATURE,
             Sensor.TYPE_GRAVITY,
@@ -38,7 +38,7 @@ public class SensorDataBucket implements SensorEventListener, DataBucket {
     public SensorDataBucket(Context context) {
         temporarySensorDataList = new HashMap<>();
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        for (int sensorType: sensorTypes) {
+        for (int sensorType: SENSOR_TYPES) {
             Sensor sensor = Objects.requireNonNull(sensorManager).getDefaultSensor(sensorType);
             temporarySensorDataList.putIfAbsent(sensorType, new TemporarySensorData(sensorType));
             sensorManager.registerListener( this, sensor, SensorManager.SENSOR_DELAY_FASTEST);

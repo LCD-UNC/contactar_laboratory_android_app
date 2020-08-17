@@ -17,7 +17,7 @@ public class WifiCsvFileWriter extends CsvFileWriter{
 
     @Override
     public List<CsvExportable> getExportables(AppDatabase database, long[] runs) {
-        return new ArrayList<>(new WifiRepository(database).getAllSamplesFor(runs));
+        return new ArrayList<>(new WifiRepository(database).getAllSamples(runs));
     }
 
     @Override
