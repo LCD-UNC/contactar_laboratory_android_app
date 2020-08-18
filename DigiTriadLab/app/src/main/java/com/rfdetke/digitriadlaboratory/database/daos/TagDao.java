@@ -20,13 +20,10 @@ public interface TagDao {
     List<String> getTagList();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long[] insert(List<Tag> tag);
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Tag tag);
 
     @Insert
-    long insertRelation(ExperimentTag experimentTag);
+    void insertRelation(ExperimentTag experimentTag);
 
     @Query("SELECT t.tag FROM experiment_tag AS et " +
             "JOIN tag AS t ON et.tag_id=t.id " +

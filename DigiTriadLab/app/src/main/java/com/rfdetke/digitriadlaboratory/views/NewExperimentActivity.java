@@ -33,7 +33,7 @@ import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
-import com.rfdetke.digitriadlaboratory.export.ExperimentRepresentation;
+import com.rfdetke.digitriadlaboratory.export.representations.ExperimentRepresentation;
 import com.rfdetke.digitriadlaboratory.utils.ShareTools;
 
 import java.util.List;
@@ -273,6 +273,15 @@ public class NewExperimentActivity extends AppCompatActivity {
             int color;
             color = isChecked ? R.color.black : R.color.grey;
             bluetoothLeTitle.setTextColor(getColor(color));
+        });
+
+        sensorsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            sensorsActive.setEnabled(isChecked);
+            sensorsInactive.setEnabled(isChecked);
+            sensorsWindows.setEnabled(isChecked);
+            int color;
+            color = isChecked ? R.color.black : R.color.grey;
+            sensorsTitle.setTextColor(getColor(color));
         });
 
         bluetoothLeAdvertiseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {

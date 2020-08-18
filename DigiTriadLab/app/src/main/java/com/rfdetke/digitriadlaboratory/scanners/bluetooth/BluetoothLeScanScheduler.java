@@ -3,6 +3,8 @@ package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.ParcelUuid;
+import android.telephony.CellSignalStrength;
+import android.util.Log;
 
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
@@ -16,6 +18,7 @@ import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class BluetoothLeScanScheduler extends Scheduler {
 
@@ -58,6 +61,8 @@ public class BluetoothLeScanScheduler extends Scheduler {
                 for(ParcelUuid uuid : uuidLists.get(i)) {
                     bluetoothLeUuids.add(new BluetoothLeUuid(uuid, recordIds[i]));
                 }
+            else
+                Log.d("BluetoothLeScanScheduler", String.format(Locale.ENGLISH, "No UUIDs for record %d", recordIds[i]));
         }
         bluetoothLeRepository.insertUuids(bluetoothLeUuids);
 

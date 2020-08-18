@@ -17,10 +17,4 @@ public interface BluetoothLeRecordDao {
 
     @Insert
     long[] insert(List<BluetoothLeRecord> bluetoothLeRecord);
-
-    @Insert
-    long insert(BluetoothLeRecord bluetoothLeRecord);
-
-    @Delete
-    void delete(BluetoothLeRecord bluetoothLeRecord);
 }

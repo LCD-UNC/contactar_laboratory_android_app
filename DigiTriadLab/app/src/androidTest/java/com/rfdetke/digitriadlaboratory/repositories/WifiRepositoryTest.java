@@ -1,15 +1,18 @@
 package com.rfdetke.digitriadlaboratory.repositories;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+
 import com.rfdetke.digitriadlaboratory.DatabaseTest;
-import com.rfdetke.digitriadlaboratory.TestEntityGenerator;
+import com.rfdetke.digitriadlaboratory.ObservableDataTestUtil;
+import com.rfdetke.digitriadlaboratory.TestUtils;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
-import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
@@ -30,25 +33,37 @@ public class WifiRepositoryTest extends DatabaseTest {
         RunRepository runRepository = new RunRepository(db);
         WindowRepository windowRepository = new WindowRepository(db);
         repository = new WifiRepository(db);
-        Device device = TestEntityGenerator.getDevice();
+        Device device = TestUtils.getDevice();
         device.id = deviceRepository.insert(device);
-        Experiment experiment = TestEntityGenerator.getExperiment(device.id);
+        Experiment experiment = TestUtils.getExperiment(device.id);
         experiment.id = experimentRepository.insert(experiment);
-        run = TestEntityGenerator.getRun(0, experiment.id);
+        run = TestUtils.getRun(0, experiment.id);
         run.id = runRepository.insert(run);
         windowId = windowRepository.insert(run.id, SourceTypeEnum.WIFI.name());
     }
 
     @Test
+    public void getLiveCount() {
+        try {
+            assertNull(ObservableDataTestUtil.getValue(repository.getLiveCount(run.id)));
+            List<WifiRecord> records = TestUtils.getWifiRecordList(windowId);
+            repository.insertWifi(records);
+            assertEquals(records.size(), ObservableDataTestUtil.getValue(repository.getLiveCount(run.id)).longValue());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void insertWifi() {
-        List<WifiRecord> records = TestEntityGenerator.getWifiRecordList(windowId);
+        List<WifiRecord> records = TestUtils.getWifiRecordList(windowId);
         long[] ids = repository.insertWifi(records);
         assertEquals(ids.length, records.size());
     }
 
     @Test
     public void getAllSamplesFor() {
-        List<WifiRecord> records = TestEntityGenerator.getWifiRecordList(windowId);
+        List<WifiRecord> records = TestUtils.getWifiRecordList(windowId);
         repository.insertWifi(records);
         long[] runs = {run.id};
         assertEquals(records.size(), repository.getAllSamples(runs).size());

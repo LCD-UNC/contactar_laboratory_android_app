@@ -22,6 +22,7 @@ import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.json.JsonFileWriter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.RunDetailViewModel;
 
@@ -61,16 +62,20 @@ public class RunDetailActivity extends AppCompatActivity {
         AppDatabase database = DatabaseSingleton.getInstance(context);
 
         exportButton.setOnClickListener(v -> {
+            long[] runs = {currentRun.id};
             if (modules.contains(SourceTypeEnum.WIFI.name()))
-                new WifiCsvFileWriter(currentRun.id, database, context).execute();
+                new WifiCsvFileWriter(runs, database, context).execute();
 
             if (modules.contains(SourceTypeEnum.BLUETOOTH.name()))
-                new BluetoothCsvFileWriter(currentRun.id, database, context).execute();
+                new BluetoothCsvFileWriter(runs, database, context).execute();
 
             if (modules.contains(SourceTypeEnum.BLUETOOTH_LE.name()))
-                new BluetoothLeCsvFileWriter(currentRun.id, database, context).execute();
+                new BluetoothLeCsvFileWriter(runs, database, context).execute();
 
-            new SensorCsvFileWriter(currentRun.id, database, context).execute();
+            if (modules.contains(SourceTypeEnum.SENSORS.name()))
+                new SensorCsvFileWriter(runs, database, context).execute();
+
+            new JsonFileWriter(currentRun.experimentId, database, context).execute();
         });
 
         deleteButton.setOnClickListener(v -> {

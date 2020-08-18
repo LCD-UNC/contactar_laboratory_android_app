@@ -1,12 +1,19 @@
 package com.rfdetke.digitriadlaboratory.repositories;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+
 import com.rfdetke.digitriadlaboratory.DatabaseTest;
-import com.rfdetke.digitriadlaboratory.TestEntityGenerator;
+import com.rfdetke.digitriadlaboratory.ObservableDataTestUtil;
+import com.rfdetke.digitriadlaboratory.TestUtils;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -20,9 +27,9 @@ public class ExperimentRepositoryTest extends DatabaseTest {
         super.setUp();
         DeviceRepository deviceRepository = new DeviceRepository(db);
         repository = new ExperimentRepository(db);
-        Device device = TestEntityGenerator.getDevice();
+        Device device = TestUtils.getDevice();
         device.id = deviceRepository.insert(device);
-        experiment = TestEntityGenerator.getExperiment(device.id);
+        experiment = TestUtils.getExperiment(device.id);
     }
 
     @Test
@@ -64,8 +71,64 @@ public class ExperimentRepositoryTest extends DatabaseTest {
     }
 
     @Test
+    public void getAllExperimentDoneNotNull() {
+        assertNotNull(repository.getAllExperimentDone());
+    }
+
+    @Test
+    public void getAllExperimentDoneEmpty() {
+        try {
+            assertEquals(0, ObservableDataTestUtil.getValue(repository.getAllExperimentDone()).size());
+            repository.insert(experiment);
+            assertEquals(1, ObservableDataTestUtil.getValue(repository.getAllExperimentDone()).size());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void getByIdNull() {
         repository.insert(experiment);
         assertNull(repository.getById(20));
+    }
+
+    @Test
+    public void insertTag() {
+        long id = repository.insertTag(TestUtils.getRandomString(7));
+        assertTrue(id != 0);
+    }
+
+    @Test
+    public void getAllTagList() {
+        List<String> tags = TestUtils.getRandomStringList(2, 12);
+        for (String tag : tags) {
+            repository.insertTag(tag);
+        }
+        assertEquals(tags.size(), repository.getTagList().size());
+    }
+
+    @Test
+    public void getRelatedTagList() {
+        experiment.id = repository.insert(experiment);
+        List<String> tags = TestUtils.getRandomStringList(2, 12);
+        for (String tag : tags) {
+            long id = repository.insertTag(tag);
+            repository.relateToTag(experiment.id, id);
+        }
+        assertEquals(tags.size(), repository.getTagList(experiment.id).size());
+    }
+
+    @Test
+    public void getTagIdNull() {
+        String tag = TestUtils.getRandomString(5);
+        repository.insertTag(tag);
+        assertEquals(0, repository.getTagId(TestUtils.getRandomString(5)));
+    }
+
+    @Test
+    public void getTagIdNotNull() {
+        String tag = TestUtils.getRandomString(5);
+        long id = repository.insertTag(tag);
+        assertEquals(id, repository.getTagId(tag));
     }
 }

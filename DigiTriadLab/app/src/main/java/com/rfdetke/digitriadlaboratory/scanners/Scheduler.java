@@ -1,6 +1,7 @@
 package com.rfdetke.digitriadlaboratory.scanners;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
@@ -58,6 +59,8 @@ public abstract class Scheduler implements ObservableScanner{
                     inactiveTimer.cancel();
                     inactiveTimer.purge();
                     setDone();
+                } else {
+                    Log.d("Scheduler", "Still have work to do...");
                 }
             }
         };

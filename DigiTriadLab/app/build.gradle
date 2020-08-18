@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
 
 android {
     compileSdkVersion 29
@@ -26,7 +27,7 @@ android {
 
     buildTypes {
         debug {
-            testCoverageEnabled = true
+            testCoverageEnabled true
         }
         release {
             minifyEnabled false
@@ -76,5 +77,50 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
     implementation 'org.apache.commons:commons-text:1.7'
+}
+
+task jacocoTestReport(type:JacocoReport, dependsOn: "connectedDebugAndroidTest") {
+
+    group = "Reporting"
+
+    description = "Generate Jacoco coverage reports"
+
+    // exclude auto-generated classes and tests
+    def fileFilter = ['**/R.class',
+                      '**/R$*.class',
+                      '**/BuildConfig.*',
+                      '**/Manifest*.*',
+                      '**/*IScript*.*',
+                      'android/**/*.*',
+                      '**/*_Factory*',
+                      '**/*_MembersInjector*',
+                      '**/*Fake*',
+                      '**/database',
+                      '**/views',
+                      '**/constants',
+                      '**/MainActivity.class',
+                      '**/MainActivity$*.class',
+                      '**/ExperimentService.class',
+                      '**/AlarmReceiver.class',
+                      '**/FileWriter.class'
+    ]
+
+    def debugTree = fileTree(dir:
+            "${project.buildDir}/intermediates/javac/debug",
+            excludes: fileFilter)
+
+    def mainSrc = "${project.projectDir}/src/main/java/*"
+
+    sourceDirectories.setFrom files([mainSrc])
+    classDirectories.setFrom files([debugTree])
+
+    executionData.setFrom fileTree(dir: project.projectDir, includes:
+            ['**/*.exec', '**/*.ec'])
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
 }

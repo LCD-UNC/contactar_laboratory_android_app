@@ -8,15 +8,15 @@ import com.rfdetke.digitriadlaboratory.repositories.SensorRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SensorCsvFileWriter extends CsvFileWriter{
+public class SensorCsvFileWriter extends CsvSampleFileWriter {
 
-    public SensorCsvFileWriter(long runId, AppDatabase database, Context context) throws NullPointerException {
-        super(runId, database, context);
+    public SensorCsvFileWriter(long[] runIds, AppDatabase database, Context context) throws NullPointerException {
+        super(runIds, database, context);
     }
 
     @Override
-    public List<CsvExportable> getExportables(AppDatabase database, long[] runs) {
-        return new ArrayList<>(new SensorRepository(database).getAllSamples(runs));
+    public List<CsvExportable> getExportableData() {
+        return new ArrayList<>(new SensorRepository(database).getAllSamples(runIds));
     }
 
     @Override

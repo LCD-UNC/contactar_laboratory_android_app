@@ -99,7 +99,7 @@ public class NewRunActivity extends AppCompatActivity {
 
     private long saveRun(Date selectedDate) {
         long number = runRepository.getLastRunForExperiment(experimentId)+1;
-        return runRepository.insert(new Run(selectedDate,number, RunStateEnum.SCHEDULED.name(), experimentId));
+        return runRepository.insert(new Run(selectedDate, number, RunStateEnum.SCHEDULED.name(), experimentId));
     }
 
     private boolean validateStartDatetime(Date selectedDate) {

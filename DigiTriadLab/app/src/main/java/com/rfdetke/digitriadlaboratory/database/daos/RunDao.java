@@ -17,7 +17,7 @@ public interface RunDao {
     @Query("SELECT * FROM run WHERE experiment_id==(:experimentId)")
     LiveData<List<Run>> getLiveDataRunsByExperimentId(long experimentId);
 
-    @Query("SELECT start, max as duration FROM run as r " +
+    @Query("SELECT r.id, start, max as duration FROM run as r " +
             "LEFT JOIN (SELECT max(total_time) as max, experiment_id " +
                         "FROM (SELECT ((active_time+inactive_time)*windows) as total_time, experiment_id " +
                                     "FROM window_configuration) " +
@@ -52,6 +52,7 @@ public interface RunDao {
     void delete(Run run);
 
     static class StartDuration {
+        public long id;
         public Date start;
         public long duration;
     }

@@ -17,7 +17,7 @@ public class RunRepository {
         runDao = database.getRunDao();
     }
 
-    public LiveData<List<Run>> getRunsForExperiment(long id) {
+    public LiveData<List<Run>> getLiveRunsForExperiment(long id) {
         return runDao.getLiveDataRunsByExperimentId(id);
     }
 

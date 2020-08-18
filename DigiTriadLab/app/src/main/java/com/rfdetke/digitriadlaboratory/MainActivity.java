@@ -28,11 +28,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabasePopulator;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
+import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
+import com.rfdetke.digitriadlaboratory.database.daos.RunDao.StartDuration;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
+import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.views.DeviceInfoActivity;
 import com.rfdetke.digitriadlaboratory.views.NewExperimentActivity;
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
@@ -40,6 +44,7 @@ import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -122,6 +127,18 @@ public class MainActivity extends AppCompatActivity {
         Device device = deviceRepository.getDevice();
         if (device == null) {
             deviceRepository.insert(new Device(null, Build.MANUFACTURER.toUpperCase(), Build.MODEL.toUpperCase(), new ParcelUuid(UUID.randomUUID())));
+        }
+        checkAllRunStates();
+    }
+
+    private void checkAllRunStates() {
+        RunRepository runRepository = new RunRepository(database);
+        List<StartDuration> times = runRepository.getCurrentScheduledOrRunningStartAndDuration();
+
+        for(StartDuration startDuration : times) {
+            Date now = new Date();
+            if(now.getTime()>startDuration.start.getTime()+startDuration.duration)
+                runRepository.updateState(startDuration.id, RunStateEnum.DONE.name());
         }
     }
 

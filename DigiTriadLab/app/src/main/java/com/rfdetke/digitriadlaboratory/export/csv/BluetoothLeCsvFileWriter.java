@@ -9,15 +9,15 @@ import com.rfdetke.digitriadlaboratory.repositories.BluetoothLeRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BluetoothLeCsvFileWriter extends CsvFileWriter{
+public class BluetoothLeCsvFileWriter extends CsvSampleFileWriter {
 
-    public BluetoothLeCsvFileWriter(long runId, AppDatabase database, Context context) throws NullPointerException {
-        super(runId, database, context);
+    public BluetoothLeCsvFileWriter(long[] runIds, AppDatabase database, Context context) throws NullPointerException {
+        super(runIds, database, context);
     }
 
     @Override
-    public List<CsvExportable> getExportables(AppDatabase database, long[] runs) {
-        return new ArrayList<>(new BluetoothLeRepository(database).getAllSamples(runs));
+    public List<CsvExportable> getExportableData() {
+        return new ArrayList<>(new BluetoothLeRepository(database).getAllSamples(runIds));
     }
 
     @Override

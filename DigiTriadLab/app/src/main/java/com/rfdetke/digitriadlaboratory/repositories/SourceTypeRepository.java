@@ -24,7 +24,4 @@ public class SourceTypeRepository {
         return sourceTypeDao.insert(sourceType);
     }
 
-    public void delete(SourceType sourceType) {
-        sourceTypeDao.delete(sourceType);
-    }
 }

@@ -7,7 +7,7 @@ import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.export.ExperimentRepresentation;
+import com.rfdetke.digitriadlaboratory.export.representations.ExperimentRepresentation;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 
 import java.util.List;

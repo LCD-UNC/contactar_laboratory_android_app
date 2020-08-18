@@ -1,7 +1,7 @@
 package com.rfdetke.digitriadlaboratory.repositories;
 
 import com.rfdetke.digitriadlaboratory.DatabaseTest;
-import com.rfdetke.digitriadlaboratory.TestEntityGenerator;
+import com.rfdetke.digitriadlaboratory.TestUtils;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
@@ -27,19 +27,19 @@ public class ConfigurationRepositoryTest extends DatabaseTest {
         ExperimentRepository experimentRepository = new ExperimentRepository(db);
         sourceTypeRepository = new SourceTypeRepository(db);
         repository = new ConfigurationRepository(db);
-        Device device = TestEntityGenerator.getDevice();
+        Device device = TestUtils.getDevice();
         device.id = deviceRepository.insert(device);
-        experiment = TestEntityGenerator.getExperiment(device.id);
+        experiment = TestUtils.getExperiment(device.id);
         experiment.id = experimentRepository.insert(experiment);
     }
 
     @Test
     public void getConfigurationsForExperiment() {
         SourceType sourceType = sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name());
-        WindowConfiguration configuration = TestEntityGenerator.getWindowConfiguration(sourceType.id,experiment.id);
+        WindowConfiguration configuration = TestUtils.getWindowConfiguration(sourceType.id,experiment.id);
         repository.insert(configuration);
         sourceType = sourceTypeRepository.getByType(SourceTypeEnum.BLUETOOTH.name());
-        configuration = TestEntityGenerator.getWindowConfiguration(sourceType.id,experiment.id);
+        configuration = TestUtils.getWindowConfiguration(sourceType.id,experiment.id);
         repository.insert(configuration);
         assertEquals(2, repository.getConfigurationsForExperiment(experiment.id).size());
     }
@@ -52,7 +52,7 @@ public class ConfigurationRepositoryTest extends DatabaseTest {
     @Test
     public void insert() {
         SourceType sourceType = sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name());
-        WindowConfiguration configuration = TestEntityGenerator.getWindowConfiguration(sourceType.id,experiment.id);
+        WindowConfiguration configuration = TestUtils.getWindowConfiguration(sourceType.id,experiment.id);
         repository.insert(configuration);
         assertFalse(repository.getConfigurationsForExperiment(experiment.id).isEmpty());
     }
@@ -60,7 +60,7 @@ public class ConfigurationRepositoryTest extends DatabaseTest {
     @Test
     public void delete() {
         SourceType sourceType = sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name());
-        WindowConfiguration configuration = TestEntityGenerator.getWindowConfiguration(sourceType.id,experiment.id);
+        WindowConfiguration configuration = TestUtils.getWindowConfiguration(sourceType.id,experiment.id);
         configuration.id = repository.insert(configuration);
         repository.delete(configuration);
         assertTrue(repository.getConfigurationsForExperiment(experiment.id).isEmpty());
@@ -69,7 +69,7 @@ public class ConfigurationRepositoryTest extends DatabaseTest {
     @Test
     public void getConfigurationForExperimentByType() {
         SourceType sourceType = sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name());
-        WindowConfiguration configuration = TestEntityGenerator.getWindowConfiguration(sourceType.id,experiment.id);
+        WindowConfiguration configuration = TestUtils.getWindowConfiguration(sourceType.id,experiment.id);
         repository.insert(configuration);
         assertNotNull(repository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.WIFI.name()));
     }
@@ -77,14 +77,14 @@ public class ConfigurationRepositoryTest extends DatabaseTest {
     @Test
     public void getConfigurationForExperimentByTypeThatNotExist() {
         SourceType sourceType = sourceTypeRepository.getByType(SourceTypeEnum.WIFI.name());
-        WindowConfiguration configuration = TestEntityGenerator.getWindowConfiguration(sourceType.id,experiment.id);
+        WindowConfiguration configuration = TestUtils.getWindowConfiguration(sourceType.id,experiment.id);
         repository.insert(configuration);
         assertNull(repository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.BLUETOOTH.name()));
     }
 
     @Test
     public void insertAdvertise() {
-        AdvertiseConfiguration configuration = TestEntityGenerator.getAdvertiseConfiguration(experiment.id);
+        AdvertiseConfiguration configuration = TestUtils.getAdvertiseConfiguration(experiment.id);
         repository.insertAdvertise(configuration);
         assertNotNull(repository.getBluetoothLeAdvertiseConfigurationFor(experiment.id));
     }

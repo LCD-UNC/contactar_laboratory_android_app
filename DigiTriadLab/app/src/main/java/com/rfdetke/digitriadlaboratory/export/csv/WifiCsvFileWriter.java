@@ -9,15 +9,15 @@ import com.rfdetke.digitriadlaboratory.repositories.WifiRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WifiCsvFileWriter extends CsvFileWriter{
+public class WifiCsvFileWriter extends CsvSampleFileWriter {
 
-    public WifiCsvFileWriter(long runId, AppDatabase database, Context context) throws NullPointerException {
-        super(runId, database, context);
+    public WifiCsvFileWriter(long[] runIds, AppDatabase database, Context context) throws NullPointerException {
+        super(runIds, database, context);
     }
 
     @Override
-    public List<CsvExportable> getExportables(AppDatabase database, long[] runs) {
-        return new ArrayList<>(new WifiRepository(database).getAllSamples(runs));
+    public List<CsvExportable> getExportableData() {
+        return new ArrayList<>(new WifiRepository(database).getAllSamples(runIds));
     }
 
     @Override

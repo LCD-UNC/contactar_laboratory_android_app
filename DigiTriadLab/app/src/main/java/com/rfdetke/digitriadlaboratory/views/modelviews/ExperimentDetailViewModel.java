@@ -51,7 +51,7 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
         this.currentExperiment = experimentRepository.getById(experimentId);
         this.configurations = configurationRepository.getConfigurationsForExperiment(currentExperiment.id);
         this.advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
-        this.runsForExperiment = runRepository.getRunsForExperiment(experimentId);
+        this.runsForExperiment = runRepository.getLiveRunsForExperiment(experimentId);
         this.tagList = experimentRepository.getTagList(experimentId);
         this.experimentQr = ShareTools.getQrExperiment(currentExperiment, configurationRepository,
                 advertiseConfiguration, tagList);

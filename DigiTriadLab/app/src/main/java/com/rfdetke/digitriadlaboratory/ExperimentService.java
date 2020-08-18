@@ -137,17 +137,19 @@ public class ExperimentService extends Service implements ScanObserver {
                 return;
         }
 
+        long[] runs = {currentRun.id};
+
         if (doneMap.containsKey(SourceTypeEnum.WIFI.name()))
-            new WifiCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+            new WifiCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         if (doneMap.containsKey(SourceTypeEnum.BLUETOOTH.name()))
-            new BluetoothCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+            new BluetoothCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         if (doneMap.containsKey(SourceTypeEnum.BLUETOOTH_LE.name()))
-            new BluetoothLeCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+            new BluetoothLeCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         if (doneMap.containsKey(SourceTypeEnum.SENSORS.name()))
-            new SensorCsvFileWriter(currentRun.id, database, getApplicationContext()).execute();
+            new SensorCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);

@@ -1,14 +1,18 @@
-package com.rfdetke.digitriadlaboratory.export;
+package com.rfdetke.digitriadlaboratory.export.representations;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
+import com.rfdetke.digitriadlaboratory.export.json.JsonExportable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class ExperimentRepresentation {
+public class ExperimentRepresentation implements JsonExportable {
     public static final String ACTIVE = "active";
     public static final String INACTIVE = "inactive";
     public static final String WINDOWS = "windows";
@@ -68,5 +72,31 @@ public class ExperimentRepresentation {
             bluetoothLeAdvertise.put(INTERVAL, (long) advertiseConfiguration.interval);
         }
         this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExperimentRepresentation that = (ExperimentRepresentation) o;
+        return Objects.equals(codename, that.codename) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(wifi, that.wifi) &&
+                Objects.equals(bluetooth, that.bluetooth) &&
+                Objects.equals(bluetoothLe, that.bluetoothLe) &&
+                Objects.equals(sensors, that.sensors) &&
+                Objects.equals(bluetoothLeAdvertise, that.bluetoothLeAdvertise) &&
+                Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codename, description, wifi, bluetooth, bluetoothLe, sensors, bluetoothLeAdvertise, tags);
+    }
+
+    @Override
+    public String toJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(this, ExperimentRepresentation.class);
     }
 }

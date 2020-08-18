@@ -1,8 +1,13 @@
 package com.rfdetke.digitriadlaboratory.repositories;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+
 import com.rfdetke.digitriadlaboratory.DatabaseTest;
-import com.rfdetke.digitriadlaboratory.TestEntityGenerator;
+import com.rfdetke.digitriadlaboratory.ObservableDataTestUtil;
+import com.rfdetke.digitriadlaboratory.TestUtils;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
+import com.rfdetke.digitriadlaboratory.database.daos.WindowDao;
+import com.rfdetke.digitriadlaboratory.database.daos.WindowDao.BluetoothLeSampleRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
@@ -10,6 +15,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
@@ -30,25 +36,37 @@ public class BluetoothLeRepositoryTest extends DatabaseTest {
         RunRepository runRepository = new RunRepository(db);
         WindowRepository windowRepository = new WindowRepository(db);
         repository = new BluetoothLeRepository(db);
-        Device device = TestEntityGenerator.getDevice();
+        Device device = TestUtils.getDevice();
         device.id = deviceRepository.insert(device);
-        Experiment experiment = TestEntityGenerator.getExperiment(device.id);
+        Experiment experiment = TestUtils.getExperiment(device.id);
         experiment.id = experimentRepository.insert(experiment);
-        run = TestEntityGenerator.getRun(0, experiment.id);
+        run = TestUtils.getRun(0, experiment.id);
         run.id = runRepository.insert(run);
         windowId = windowRepository.insert(run.id, SourceTypeEnum.BLUETOOTH_LE.name());
     }
 
     @Test
+    public void getLiveCount() {
+        try {
+            assertNull(ObservableDataTestUtil.getValue(repository.getLiveCount(run.id)));
+            List<BluetoothLeRecord> records = TestUtils.getBluetoothLeRecordList(windowId);
+            repository.insertBluetoothLe(records);
+            assertEquals(records.size(), ObservableDataTestUtil.getValue(repository.getLiveCount(run.id)).longValue());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void insertBluetoothLe() {
-        List<BluetoothLeRecord> records = TestEntityGenerator.getBluetoothLeRecordList(windowId);
+        List<BluetoothLeRecord> records = TestUtils.getBluetoothLeRecordList(windowId);
         long[] ids = repository.insertBluetoothLe(records);
         assertEquals(ids.length, records.size());
     }
 
     @Test
     public void getAllSamples() {
-        List<BluetoothLeRecord> records = TestEntityGenerator.getBluetoothLeRecordList(windowId);
+        List<BluetoothLeRecord> records = TestUtils.getBluetoothLeRecordList(windowId);
         repository.insertBluetoothLe(records);
         long[] runs = {run.id};
         assertEquals(records.size(), repository.getAllSamples(runs).size());
@@ -56,10 +74,11 @@ public class BluetoothLeRepositoryTest extends DatabaseTest {
 
     @Test
     public void insertUuids() {
-        List<BluetoothLeRecord> records = TestEntityGenerator.getBluetoothLeRecordList(windowId);
+        List<BluetoothLeRecord> records = TestUtils.getBluetoothLeRecordList(windowId);
         long[] ids = repository.insertBluetoothLe(records);
-        List<BluetoothLeUuid> uuids = TestEntityGenerator.getBluetoothLeUuidList(ids);
-        ids = repository.insertUuids(uuids);
-        assertTrue(ids.length>=records.size());
+        List<BluetoothLeUuid> uuids = TestUtils.getBluetoothLeUuidList(ids);
+        repository.insertUuids(uuids);
+        List<BluetoothLeSampleRecord> samples = repository.getAllSamples(ids);
+        assertTrue(samples.size()>=records.size());
     }
 }

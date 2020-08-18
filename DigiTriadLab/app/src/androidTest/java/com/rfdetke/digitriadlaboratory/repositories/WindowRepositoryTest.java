@@ -1,7 +1,7 @@
 package com.rfdetke.digitriadlaboratory.repositories;
 
 import com.rfdetke.digitriadlaboratory.DatabaseTest;
-import com.rfdetke.digitriadlaboratory.TestEntityGenerator;
+import com.rfdetke.digitriadlaboratory.TestUtils;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
@@ -24,11 +24,11 @@ public class WindowRepositoryTest extends DatabaseTest {
         ExperimentRepository experimentRepository = new ExperimentRepository(db);
         RunRepository runRepository = new RunRepository(db);
         repository = new WindowRepository(db);
-        Device device = TestEntityGenerator.getDevice();
+        Device device = TestUtils.getDevice();
         device.id = deviceRepository.insert(device);
-        Experiment experiment = TestEntityGenerator.getExperiment(device.id);
+        Experiment experiment = TestUtils.getExperiment(device.id);
         experiment.id = experimentRepository.insert(experiment);
-        run = TestEntityGenerator.getRun(0,experiment.id);
+        run = TestUtils.getRun(0,experiment.id);
         run.id = runRepository.insert(run);
     }
 
