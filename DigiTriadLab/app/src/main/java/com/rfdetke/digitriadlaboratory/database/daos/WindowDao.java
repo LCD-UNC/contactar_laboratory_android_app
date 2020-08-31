@@ -88,6 +88,14 @@ public interface WindowDao {
             "WHERE s.run_id == (:runId) GROUP BY s.run_id")
     LiveData<Long> getSensorLiveCount(long runId);
 
+    // ------------------- SENSORS -----------------------------------------------------------------
+
+    @Query("SELECT s.run_id, s.id as window_id, s.timestamp, r.technology, r.dbm, r.asu_level " +
+            "FROM window as s " +
+            "LEFT JOIN cell_record as r ON r.window_id=s.id " +
+            "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run_id, window_id")
+    List<CellSampleRecord> getCellSamplesRecords(long[] runId);
+
     @Insert
     long insert(Window window);
 
@@ -214,6 +222,32 @@ public interface WindowDao {
             return String.format(Locale.ENGLISH, "%d,%d,%d,%s,%d,%f\n",
                     DateConverter.dateToTimestamp(timestamp), runId, windowId, sensorType,
                     valueId, value);
+        }
+    }
+
+    static class CellSampleRecord implements CsvExportable {
+        public Date timestamp;
+        @ColumnInfo(name = "run_id")
+        public long runId;
+        @ColumnInfo(name = "window_id")
+        public long windowId;
+        @ColumnInfo(name = "technology")
+        public String technology;
+        @ColumnInfo(name = "dbm")
+        public int dbm;
+        @ColumnInfo(name = "asu_level")
+        public int asuLevel;
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run_id,window_id,technology,dbm,asu_level\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%d,%d,%d,%s,%d,%f\n",
+                    DateConverter.dateToTimestamp(timestamp), runId, windowId, technology,
+                    dbm, asuLevel);
         }
     }
 }

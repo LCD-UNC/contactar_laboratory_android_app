@@ -7,6 +7,7 @@ import androidx.room.TypeConverters;
 import com.rfdetke.digitriadlaboratory.database.daos.BluetoothLeAdvertiseConfigurationDao;
 import com.rfdetke.digitriadlaboratory.database.daos.BluetoothLeRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.BluetoothRecordDao;
+import com.rfdetke.digitriadlaboratory.database.daos.CellRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.DeviceDao;
 import com.rfdetke.digitriadlaboratory.database.daos.ExperimentDao;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
@@ -20,6 +21,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.WifiRecordDao;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
+import com.rfdetke.digitriadlaboratory.database.entities.CellRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.ExperimentTag;
 import com.rfdetke.digitriadlaboratory.database.entities.Tag;
 import com.rfdetke.digitriadlaboratory.database.entities.Window;
@@ -43,6 +45,7 @@ import java.util.concurrent.Executors;
                         WindowConfiguration.class,
                         BluetoothRecord.class,
                         SensorRecord.class,
+                        CellRecord.class,
                         WifiRecord.class,
                         Window.class,
                         Device.class,
@@ -62,6 +65,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BluetoothLeRecordDao getBluetoothLeRecordDao();
     public abstract BluetoothRecordDao getBluetoothRecordDao();
     public abstract SensorRecordDao getSensorRecordDao();
+    public abstract CellRecordDao getCellRecordDao();
     public abstract WifiRecordDao getWifiRecordDao();
     public abstract DeviceDao getDeviceDao();
     public abstract ExperimentDao getExperimentDao();
