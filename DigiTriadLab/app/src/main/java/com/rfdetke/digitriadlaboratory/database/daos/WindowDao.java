@@ -78,8 +78,8 @@ public interface WindowDao {
     // ------------------- SENSORS -----------------------------------------------------------------
 
     @Query("SELECT s.run_id, s.id as window_id, s.timestamp, r.sensor_type, r.value_id, r.value " +
-            "FROM window as s " +
-            "LEFT JOIN sensor_record as r ON r.window_id=s.id " +
+            "FROM sensor_record as r " +
+            "INNER JOIN window as s ON r.window_id=s.id " +
             "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run_id, window_id")
     List<SensorSampleRecord> getSensorSamplesRecords(long[] runId);
 

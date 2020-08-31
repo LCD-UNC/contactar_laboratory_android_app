@@ -36,4 +36,6 @@ public abstract class CsvSampleFileWriter extends CsvFileWriter{
             return String.format(Locale.ENGLISH, "run-%d-%s.csv", run.number, getKey().toLowerCase());
         }
     }
+
+    public abstract String getKey();
 }

@@ -97,4 +97,8 @@ public class RunDetailViewModel  extends AndroidViewModel {
     public void delete() {
         runRepository.delete(currentRun);
     }
+
+    public void updateState(String state) {
+        runRepository.updateState(currentRun.id, state);
+    }
 }

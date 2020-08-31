@@ -55,9 +55,12 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
             } else if ((current.total - current.done) == 0) {
                 holder.statusImageView.setImageResource(R.drawable.ic_baseline_done_24);
                 holder.statusImageView.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
-            } else {
-                holder.statusImageView.setImageResource(R.drawable.ic_baseline_timer_24);
+            } else if(current.running != 0){
+                holder.statusImageView.setImageResource(R.drawable.ic_baseline_directions_run_24);
                 holder.statusImageView.setColorFilter(ContextCompat.getColor(context, R.color.yellow), android.graphics.PorterDuff.Mode.SRC_IN);
+            }else {
+                holder.statusImageView.setImageResource(R.drawable.ic_baseline_timer_24);
+                holder.statusImageView.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN);
             }
         } else {
             holder.experimentItemView.setText(R.string.loading_data);

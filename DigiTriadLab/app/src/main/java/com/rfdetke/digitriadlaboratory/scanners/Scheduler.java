@@ -77,6 +77,14 @@ public abstract class Scheduler implements ObservableScanner{
 
     protected abstract void endTask();
 
+    public void stop(){
+        activeTimer.cancel();
+        activeTimer.purge();
+        inactiveTimer.cancel();
+        inactiveTimer.purge();
+    }
+
+
     @Override
     public void addObserver(ScanObserver scanObserver) {
         this.observers.add(scanObserver);

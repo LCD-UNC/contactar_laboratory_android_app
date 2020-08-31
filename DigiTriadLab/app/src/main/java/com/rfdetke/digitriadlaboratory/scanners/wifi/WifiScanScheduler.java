@@ -5,13 +5,11 @@ import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
-import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.repositories.WifiRepository;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.WifiRecord;
-import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +46,14 @@ public class WifiScanScheduler extends Scheduler {
 
         context.unregisterReceiver(wifiDataBucket);
         wifiDataBucket = null;
-    };
+    }
 
+    @Override
+    public void stop() {
+        super.stop();
+        if(wifiDataBucket!=null) {
+            context.unregisterReceiver(wifiDataBucket);
+            wifiDataBucket = null;
+        }
+    }
 }

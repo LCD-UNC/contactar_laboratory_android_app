@@ -15,12 +15,17 @@ import java.util.List;
 @Dao
 public interface ExperimentDao {
 
-    @Query("SELECT e.*, d.done, t.total FROM experiment as e " +
+    @Query("SELECT e.*, d.done, t.total, r.running FROM experiment as e " +
             "LEFT JOIN (SELECT COUNT(id) as done, experiment_id " +
                         "FROM (SELECT r.id, r.experiment_id " +
                                 "FROM run as r WHERE r.state=\"DONE\") " +
                                 "GROUP BY experiment_id) as d " +
             "ON e.id=d.experiment_id " +
+            "LEFT JOIN (SELECT COUNT(id) as running, experiment_id " +
+                        "FROM (SELECT r.id, r.experiment_id " +
+                                "FROM run as r WHERE r.state=\"RUNNING\") " +
+                                "GROUP BY experiment_id) as r " +
+            "ON e.id=r.experiment_id " +
             "LEFT JOIN (SELECT COUNT(r.id) as total, r.experiment_id FROM run as r GROUP BY r.experiment_id) as t " +
             "ON e.id=t.experiment_id")
 
@@ -44,6 +49,7 @@ public interface ExperimentDao {
         public String description;
         public long done;
         public long total;
+        public long running;
 
         @ColumnInfo(name = "device_id")
         public long deviceId;

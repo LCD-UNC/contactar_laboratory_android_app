@@ -40,4 +40,13 @@ public class SensorsScanScheduler extends Scheduler {
     protected void endTask() {
 
     }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if(sensorDataBucket !=null) {
+            sensorDataBucket.unregisterSensors();
+            sensorDataBucket = null;
+        }
+    }
 }

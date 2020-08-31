@@ -54,9 +54,11 @@
     <string name="collected_records">Collected records</string>
     <string name="export">Export</string>
     <string name="dialog_confirm_delete">Are you sure you want to delete?</string>
+    <string name="dialog_confirm_cancel">Are you sure you want to cancel?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="tags">Tags</string>
     <string name="add_tag">Search or create tag</string>
     <string name="sensor_configuration">Sensors Scan</string>
+    <string name="dialog_confirm_cancel_running">This Run is in progress. Are you sure you want to cancel?</string>
 </resources>

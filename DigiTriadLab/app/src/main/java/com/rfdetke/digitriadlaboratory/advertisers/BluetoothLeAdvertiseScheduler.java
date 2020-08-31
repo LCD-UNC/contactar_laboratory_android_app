@@ -32,7 +32,7 @@ public class BluetoothLeAdvertiseScheduler extends Scheduler {
                 .setLegacyMode(true)
                 .setConnectable(true)
                 .setScannable(true)
-                .setInterval(advertiseConfiguration.interval)
+                .setInterval((int)(advertiseConfiguration.interval/0.625))
                 .setTxPowerLevel(advertiseConfiguration.txPower)
                 .build();
         this.key = SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name();
@@ -57,5 +57,14 @@ public class BluetoothLeAdvertiseScheduler extends Scheduler {
     @Override
     protected void endTask() {
         advertiser.stopAdvertisingSet(callback);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if(advertiser !=null) {
+            advertiser.stopAdvertisingSet(callback);
+            advertiser = null;
+        }
     }
 }

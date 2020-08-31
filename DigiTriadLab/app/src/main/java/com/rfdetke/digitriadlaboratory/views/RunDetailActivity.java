@@ -4,14 +4,20 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.rfdetke.digitriadlaboratory.AlarmReceiver;
+import com.rfdetke.digitriadlaboratory.ExperimentService;
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
@@ -22,7 +28,7 @@ import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.json.JsonFileWriter;
+import com.rfdetke.digitriadlaboratory.export.json.JsonExperimentFileWriter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.RunDetailViewModel;
 
@@ -75,30 +81,46 @@ public class RunDetailActivity extends AppCompatActivity {
             if (modules.contains(SourceTypeEnum.SENSORS.name()))
                 new SensorCsvFileWriter(runs, database, context).execute();
 
-            new JsonFileWriter(currentRun.experimentId, database, context).execute();
+            new JsonExperimentFileWriter(currentRun.experimentId, database, context).execute();
+            Toast.makeText(this, "Files exported...", Toast.LENGTH_SHORT).show();
         });
 
         deleteButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.dialog_confirm_delete)
-                    .setPositiveButton(R.string.yes, (dialog, id) -> {
-                        runDetailViewModel.getCurrentLiveRun().removeObservers(this);
-                        runDetailViewModel.getSensorCount().removeObservers(this);
-                        runDetailViewModel.getWifiCount().removeObservers(this);
-                        runDetailViewModel.getBluetoothCount().removeObservers(this);
-                        runDetailViewModel.getBluetoothLeCount().removeObservers(this);
-                        runDetailViewModel.delete();
-                        finish();
-                    })
-                    .setNeutralButton(R.string.no, ((dialog, id) -> {
-                        dialog.dismiss();
-                    }))
-                    .create().show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.dialog_confirm_cancel)
+                        .setPositiveButton(R.string.yes, (dialog, id) -> {
+                            runDetailViewModel.getCurrentLiveRun().removeObservers(this);
+                            runDetailViewModel.getSensorCount().removeObservers(this);
+                            runDetailViewModel.getWifiCount().removeObservers(this);
+                            runDetailViewModel.getBluetoothCount().removeObservers(this);
+                            runDetailViewModel.getBluetoothLeCount().removeObservers(this);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+                            alarmIntent.putExtra(NewRunActivity.EXTRA_RUN_ID, currentRun.id);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                    getApplicationContext(), (int)currentRun.id, alarmIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                            assert alarmManager != null;
+                            alarmManager.cancel(pendingIntent);
+                            if(currentRun.state.equals(RunStateEnum.RUNNING.name())) {
+                                stopService(new Intent(getApplicationContext(), ExperimentService.class));
+                            }
+                            runDetailViewModel.updateState(RunStateEnum.CANCELED.name());
+                            finish();
+                        })
+                        .setNeutralButton(R.string.no, ((dialog, id) -> {
+                            dialog.dismiss();
+                        }))
+                        .create().show();
+
         });
 
         runDetailViewModel.getCurrentLiveRun().observe(this, run -> {
             toolbarTitle.setText(getString(R.string.run_label, run.number));
-            if (run.state.equals(RunStateEnum.DONE.name()) || run.state.equals(RunStateEnum.SCHEDULED.name())) {
+            if (run.state.equals(RunStateEnum.DONE.name())
+                    || run.state.equals(RunStateEnum.CANCELED.name())
+                    || run.state.equals(RunStateEnum.SCHEDULED.name())) {
                 progressBar.setVisibility(View.INVISIBLE);
             } else {
                 progressBar.setVisibility(View.VISIBLE);

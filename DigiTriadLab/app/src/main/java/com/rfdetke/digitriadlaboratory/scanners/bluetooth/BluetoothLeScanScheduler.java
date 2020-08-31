@@ -3,7 +3,6 @@ package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.ParcelUuid;
-import android.telephony.CellSignalStrength;
 import android.util.Log;
 
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
@@ -11,10 +10,8 @@ import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothLeUuid;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothLeRepository;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
-import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,5 +64,14 @@ public class BluetoothLeScanScheduler extends Scheduler {
         bluetoothLeRepository.insertUuids(bluetoothLeUuids);
 
         bluetoothLeDataBucket = null;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if(bluetoothLeDataBucket!=null) {
+            BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(bluetoothLeDataBucket);
+            bluetoothLeDataBucket = null;
+        }
     }
 }

@@ -17,7 +17,6 @@ import com.rfdetke.digitriadlaboratory.advertisers.BluetoothLeAdvertiseScheduler
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
-import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
@@ -25,7 +24,6 @@ import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
-import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.scanners.ScanObserver;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
@@ -36,7 +34,6 @@ import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class ExperimentService extends Service implements ScanObserver {
@@ -46,15 +43,34 @@ public class ExperimentService extends Service implements ScanObserver {
     private RunRepository runRepository;
     private Run currentRun;
     private AppDatabase database;
+    private WifiScanScheduler wifiScanScheduler;
+    private BluetoothScanScheduler bluetoothScanScheduler;
+    private BluetoothLeScanScheduler bluetoothLeScanScheduler;
+    private SensorsScanScheduler sensorsScanScheduler;
+    private BluetoothLeAdvertiseScheduler bluetoothLeAdvertiseScheduler;
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
+        String notificationText = "Running an experiment...";
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setColor(getColor(R.color.colorAccent))
+                .setColorized(true)
+                .setContentText(notificationText)
+                .setSmallIcon(R.drawable.ic_baseline_bulb_24)
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(1, notification);
+
         database = DatabaseSingleton.getInstance(getApplicationContext());
 
         runRepository = new RunRepository(database);
         ConfigurationRepository configurationRepository = new ConfigurationRepository(database);
-        ExperimentRepository experimentRepository = new ExperimentRepository(database);
 
         long runId = intent.getLongExtra(NewRunActivity.EXTRA_RUN_ID, 0);
         currentRun = runRepository.getById(runId);
@@ -65,61 +81,67 @@ public class ExperimentService extends Service implements ScanObserver {
             WindowConfiguration sensorConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.SENSORS.name());
             WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
-            Experiment currentExperiment = experimentRepository.getById(currentRun.experimentId);
-
-            String notificationText = String.format(Locale.ENGLISH, "%s run: %d", currentExperiment.codename, currentRun.number);
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                    0, notificationIntent, 0);
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle(getResources().getString(R.string.app_name))
-                    .setColor(getColor(R.color.colorAccent))
-                    .setColorized(true)
-                    .setContentText(notificationText)
-                    .setSmallIcon(R.drawable.ic_baseline_bulb_24)
-                    .setContentIntent(pendingIntent)
-                    .build();
-
             doneMap = new HashMap<>();
             runRepository.updateState(currentRun.id, RunStateEnum.RUNNING.name());
 
-            startForeground(1, notification);
-
             if (wifiConfiguration != null) {
-                WifiScanScheduler scanScheduler = new WifiScanScheduler(currentRun.id, wifiConfiguration, this, database);
-                registerScheduler(scanScheduler);
+                wifiScanScheduler = new WifiScanScheduler(currentRun.id, wifiConfiguration, this, database);
+                registerScheduler(wifiScanScheduler);
             }
 
             if (bluetoothConfiguration != null) {
-                BluetoothScanScheduler scanScheduler = new BluetoothScanScheduler(currentRun.id, bluetoothConfiguration, this, database);
-                registerScheduler(scanScheduler);
+                bluetoothScanScheduler = new BluetoothScanScheduler(currentRun.id, bluetoothConfiguration, this, database);
+                registerScheduler(bluetoothScanScheduler);
             }
 
             if (bluetoothLeConfiguration != null) {
-                BluetoothLeScanScheduler scanScheduler = new BluetoothLeScanScheduler(currentRun.id, bluetoothLeConfiguration, this, database);
-                registerScheduler(scanScheduler);
+                bluetoothLeScanScheduler = new BluetoothLeScanScheduler(currentRun.id, bluetoothLeConfiguration, this, database);
+                registerScheduler(bluetoothLeScanScheduler);
             }
 
             if (sensorConfiguration != null) {
-                SensorsScanScheduler scanScheduler = new SensorsScanScheduler(currentRun.id, sensorConfiguration, this, database);
-                registerScheduler(scanScheduler);
+                sensorsScanScheduler = new SensorsScanScheduler(currentRun.id, sensorConfiguration, this, database);
+                registerScheduler(sensorsScanScheduler);
             }
 
             if (bluetoothLeAdvertiseWindowConfiguration != null) {
                 AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentRun.experimentId);
-                BluetoothLeAdvertiseScheduler advertiseScheduler = new BluetoothLeAdvertiseScheduler(
+                bluetoothLeAdvertiseScheduler = new BluetoothLeAdvertiseScheduler(
                         currentRun.id, bluetoothLeAdvertiseWindowConfiguration,
                         advertiseConfiguration, this, database);
-                registerScheduler(advertiseScheduler);
+                registerScheduler(bluetoothLeAdvertiseScheduler);
             }
+        } else {
+            stopForeground(true);
+            stopSelf();
         }
 
         return super.onStartCommand(intent, flags, startId);
     }
 
+
+
     @Override
     public void onDestroy() {
-        runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
+        if(wifiScanScheduler != null) {
+            wifiScanScheduler.stop();
+        }
+
+        if(bluetoothScanScheduler != null) {
+            bluetoothScanScheduler.stop();
+        }
+
+        if(bluetoothLeScanScheduler != null) {
+            bluetoothLeScanScheduler.stop();
+        }
+
+        if(sensorsScanScheduler != null) {
+            sensorsScanScheduler.stop();
+        }
+
+        if(bluetoothLeAdvertiseScheduler != null) {
+            bluetoothLeAdvertiseScheduler.stop();
+        }
         super.onDestroy();
     }
 
@@ -153,6 +175,7 @@ public class ExperimentService extends Service implements ScanObserver {
 
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);
+        stopSelf();
     }
 
     private void registerScheduler(Scheduler scheduler) {

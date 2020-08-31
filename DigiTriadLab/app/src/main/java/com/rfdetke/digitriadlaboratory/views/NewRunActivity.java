@@ -86,9 +86,9 @@ public class NewRunActivity extends AppCompatActivity {
             }
             if(validateStartDatetime(selectedDate)) {
                 long runId = saveRun(selectedDate);
-                Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+                Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
                 alarmIntent.putExtra(EXTRA_RUN_ID, runId);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int)runId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedDate.getTime(), pendingIntent);
                 finish();
             } else {

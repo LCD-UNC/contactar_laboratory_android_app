@@ -61,8 +61,12 @@ public class RunListAdapter extends RecyclerView.Adapter<RunListAdapter.RunViewH
             } else if (current.state.equals(RunStateEnum.RUNNING.name())) {
                 holder.runStatus.setImageResource(R.drawable.ic_baseline_directions_run_24);
                 holder.runStatus.setColorFilter(ContextCompat.getColor(context, R.color.yellow), android.graphics.PorterDuff.Mode.SRC_IN);
+            } else if(current.state.equals(RunStateEnum.CANCELED.name())) {
+                holder.runStatus.setImageResource(R.drawable.ic_baseline_close_24);
+                holder.runStatus.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
             } else {
                 holder.runStatus.setImageResource(R.drawable.ic_baseline_timer_24);
+                holder.runStatus.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN);
             }
         } else {
             holder.runLabel.setText(R.string.loading_data);
