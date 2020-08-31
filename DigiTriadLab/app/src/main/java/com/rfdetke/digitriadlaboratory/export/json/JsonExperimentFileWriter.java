@@ -5,11 +5,13 @@ import android.content.Context;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
+import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.export.FileWriter;
 import com.rfdetke.digitriadlaboratory.export.representations.ExperimentRepresentation;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
+import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 
 import java.util.ArrayList;
@@ -18,14 +20,15 @@ import java.util.Locale;
 
 public class JsonExperimentFileWriter extends JsonFileWriter {
 
-    private final static String FILE_NAME = "experiment.json";
-
     private final ExperimentRepresentation representation;
     private final Experiment experiment;
+    private final Device device;
 
     public JsonExperimentFileWriter(long experimentId, AppDatabase database, Context context) {
         super(context, database);
         ExperimentRepository experimentRepository = new ExperimentRepository(database);
+        DeviceRepository deviceRepository = new DeviceRepository(database);
+        device = deviceRepository.getDevice();
         experiment = experimentRepository.getById(experimentId);
         ConfigurationRepository configurationRepository = new ConfigurationRepository(database);
         WindowConfiguration wifiWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.WIFI.name());
@@ -37,7 +40,7 @@ public class JsonExperimentFileWriter extends JsonFileWriter {
         List<String> tags =  experimentRepository.getTagList(experimentId);
 
         representation = new ExperimentRepresentation(experiment, wifiWindow, bluetoothWindow,
-                bluetoothLeWindow, sensorWindow, advertiseWindow, advertiseConfiguration, tags);
+                bluetoothLeWindow, sensorWindow, advertiseWindow, advertiseConfiguration, tags, device);
     }
 
     @Override
@@ -54,7 +57,7 @@ public class JsonExperimentFileWriter extends JsonFileWriter {
 
     @Override
     public String getFileName() {
-        return FILE_NAME;
+        return String.format(Locale.ENGLISH, "X-%s_%s.json", experiment.codename.toLowerCase(), device.codename);
     }
 
 }
