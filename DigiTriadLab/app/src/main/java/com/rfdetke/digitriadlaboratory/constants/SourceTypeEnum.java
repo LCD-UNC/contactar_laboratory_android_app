@@ -5,5 +5,6 @@ public enum SourceTypeEnum {
     BLUETOOTH,
     BLUETOOTH_LE,
     BLUETOOTH_LE_ADVERTISE,
-    SENSORS
+    SENSORS,
+    CELL
 }
