@@ -52,7 +52,7 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
             if (current.total == 0) {
                 holder.statusImageView.setImageResource(R.drawable.ic_baseline_warning_24);
                 holder.statusImageView.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
-            } else if ((current.total - current.done) == 0) {
+            } else if ((current.total - current.done - current.canceled) == 0) {
                 holder.statusImageView.setImageResource(R.drawable.ic_baseline_done_24);
                 holder.statusImageView.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
             } else if(current.running != 0){
