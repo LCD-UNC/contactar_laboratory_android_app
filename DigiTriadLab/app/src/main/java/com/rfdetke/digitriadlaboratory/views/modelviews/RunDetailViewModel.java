@@ -35,6 +35,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
     private LiveData<Long> bluetoothCount;
     private LiveData<Long> bluetoothLeCount;
     private LiveData<Long> sensorCount;
+    private LiveData<Long> cellCount;
     private LiveData<Run> currentLiveRun;
     private Run currentRun;
 
@@ -80,6 +81,10 @@ public class RunDetailViewModel  extends AndroidViewModel {
 
     public LiveData<Long> getSensorCount() {
         return sensorCount;
+    }
+
+    public LiveData<Long> getCellCount() {
+        return cellCount;
     }
 
     public LiveData<Run> getCurrentLiveRun() {

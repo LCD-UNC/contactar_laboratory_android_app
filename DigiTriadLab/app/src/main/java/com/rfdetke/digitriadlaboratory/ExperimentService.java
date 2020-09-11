@@ -22,6 +22,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
@@ -150,6 +151,9 @@ public class ExperimentService extends Service implements ScanObserver {
 
         if (doneMap.containsKey(SourceTypeEnum.SENSORS.name()))
             new SensorCsvFileWriter(runs, database, getApplicationContext()).execute();
+
+        if (doneMap.containsKey(SourceTypeEnum.CELL.name()))
+            new CellCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);

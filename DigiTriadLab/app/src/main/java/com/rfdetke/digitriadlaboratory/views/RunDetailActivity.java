@@ -20,6 +20,7 @@ import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.json.JsonFileWriter;
@@ -48,6 +49,7 @@ public class RunDetailActivity extends AppCompatActivity {
         TextView wifiCount = findViewById(R.id.wifi_count);
         TextView bluetoothCount = findViewById(R.id.bluetooth_count);
         TextView bluetoothLeCount = findViewById(R.id.bluetooth_le_count);
+        TextView cellCount = findViewById(R.id.cell_count);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         ProgressBar progressBar = findViewById(R.id.progress_bar);
         Button exportButton = findViewById(R.id.export_button);
@@ -75,6 +77,9 @@ public class RunDetailActivity extends AppCompatActivity {
             if (modules.contains(SourceTypeEnum.SENSORS.name()))
                 new SensorCsvFileWriter(runs, database, context).execute();
 
+            if (modules.contains(SourceTypeEnum.CELL.name()))
+                new CellCsvFileWriter(runs, database, context).execute();
+
             new JsonFileWriter(currentRun.experimentId, database, context).execute();
         });
 
@@ -87,6 +92,7 @@ public class RunDetailActivity extends AppCompatActivity {
                         runDetailViewModel.getWifiCount().removeObservers(this);
                         runDetailViewModel.getBluetoothCount().removeObservers(this);
                         runDetailViewModel.getBluetoothLeCount().removeObservers(this);
+                        runDetailViewModel.getCellCount().removeObservers(this);
                         runDetailViewModel.delete();
                         finish();
                     })
@@ -106,11 +112,20 @@ public class RunDetailActivity extends AppCompatActivity {
             }
         });
 
+
+
         runDetailViewModel.getSensorCount().observe(this, count -> {
             if (count != null)
                 sensorCount.setText(String.format(Locale.ENGLISH, "%d", count));
             else
                 sensorCount.setText("0");
+        });
+
+        runDetailViewModel.getCellCount().observe(this, count -> {
+            if (count != null)
+                cellCount.setText(String.format(Locale.ENGLISH, "%d", count));
+            else
+                cellCount.setText("0");
         });
 
         runDetailViewModel.getWifiCount().observe(this, count -> {

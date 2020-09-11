@@ -57,6 +57,13 @@ public class CellRecord {
             this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
         }
         this.windowId = windowId;
+    }
 
+    public CellRecord(String operator, String technology, int dbm, int asuLevel, long windowId) {
+        this.operator = operator;
+        this.technology = technology;
+        this.dbm = dbm;
+        this.asuLevel = asuLevel;
+        this.windowId = windowId;
     }
 }

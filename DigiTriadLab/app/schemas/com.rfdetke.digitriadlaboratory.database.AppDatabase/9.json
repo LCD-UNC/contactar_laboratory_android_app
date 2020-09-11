@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "7b922c9d1405ad3013c615625e04de47",
+    "identityHash": "fe7cbbfc650eb0b8f865555704a0fcd5",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -504,14 +504,20 @@
         ]
       },
       {
-        "tableName": "gsm_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `technology` TEXT, `dbm` INTEGER NOT NULL, `asu_level` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "cell_record",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `operator` TEXT, `technology` TEXT, `dbm` INTEGER NOT NULL, `asu_level` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "operator",
+            "columnName": "operator",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "technology",
@@ -546,20 +552,20 @@
         },
         "indices": [
           {
-            "name": "index_gsm_record_id",
+            "name": "index_cell_record_id",
             "unique": true,
             "columnNames": [
               "id"
             ],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_gsm_record_id` ON `${TABLE_NAME}` (`id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_cell_record_id` ON `${TABLE_NAME}` (`id`)"
           },
           {
-            "name": "index_gsm_record_window_id",
+            "name": "index_cell_record_window_id",
             "unique": false,
             "columnNames": [
               "window_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_gsm_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_cell_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
           }
         ],
         "foreignKeys": [
@@ -1116,7 +1122,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7b922c9d1405ad3013c615625e04de47')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fe7cbbfc650eb0b8f865555704a0fcd5')"
     ]
   }
 }

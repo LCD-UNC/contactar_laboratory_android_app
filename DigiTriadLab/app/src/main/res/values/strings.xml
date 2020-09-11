@@ -44,6 +44,7 @@
     <string name="bluetooth_error">"Some Bluetooth configuration is empty.\n"</string>
     <string name="bluetooth_le_error">"Some BLE configuration is empty.\n"</string>
     <string name="sensors_error">"Some Sensors configuration is empty.\n"</string>
+    <string name="cell_error">"Some Cell configuration is empty.\n"</string>
     <string name="bluetooth_le_advertise_error">"Some BLE configuration is wrong or empty. Remember that Tx Power should be in range of [-127, 1] and Interval should be in range of [100, 10485759]\n"</string>
     <string name="ok">OK</string>
     <string name="copy_experiment">Scan this to copy experiment</string>
@@ -59,4 +60,6 @@
     <string name="tags">Tags</string>
     <string name="add_tag">Search or create tag</string>
     <string name="sensor_configuration">Sensors Scan</string>
+    <string name="cell_configuration">Cells Scan</string>
+    <string name="cell">Cell</string>
 </resources>

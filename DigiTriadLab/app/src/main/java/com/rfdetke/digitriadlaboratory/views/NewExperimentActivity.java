@@ -75,6 +75,12 @@ public class NewExperimentActivity extends AppCompatActivity {
     private EditText sensorsWindows;
     private Switch sensorsSwitch;
 
+    private TextView cellTitle;
+    private EditText cellActive;
+    private EditText cellInactive;
+    private EditText cellWindows;
+    private Switch cellSwitch;
+
     private TextView bluetoothLeAdvertiseTitle;
     private EditText bluetoothLeAdvertiseActive;
     private EditText bluetoothLeAdvertiseInactive;
@@ -133,6 +139,12 @@ public class NewExperimentActivity extends AppCompatActivity {
         sensorsWindows = findViewById(R.id.sensors_windows);
         sensorsTitle = findViewById(R.id.sensors_title);
         sensorsSwitch = findViewById(R.id.sensors_switch);
+
+        cellActive = findViewById(R.id.cell_active);
+        cellInactive = findViewById(R.id.cell_inactive);
+        cellWindows = findViewById(R.id.cell_windows);
+        cellTitle = findViewById(R.id.cell_title);
+        cellSwitch = findViewById(R.id.cell_switch);
 
         bluetoothLeAdvertiseActive = findViewById(R.id.bluetooth_le_advertise_active);
         bluetoothLeAdvertiseInactive = findViewById(R.id.bluetooth_le_advertise_inactive);
@@ -219,6 +231,14 @@ public class NewExperimentActivity extends AppCompatActivity {
                             success = false;
                         }
                     }
+                    if(cellSwitch.isChecked()) {
+                        if (validateCellConfig()) {
+                            saveCellConfig(experimentId);
+                        } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.cell_error));
+                            success = false;
+                        }
+                    }
                     if(bluetoothLeAdvertiseSwitch.isChecked()) {
                         if (validateBluetoothLeAdvertiseConfig()) {
                             saveBluetoothLeAdvertiseConfig(experimentId);
@@ -284,6 +304,15 @@ public class NewExperimentActivity extends AppCompatActivity {
             sensorsTitle.setTextColor(getColor(color));
         });
 
+        cellSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            cellActive.setEnabled(isChecked);
+            cellInactive.setEnabled(isChecked);
+            cellWindows.setEnabled(isChecked);
+            int color;
+            color = isChecked ? R.color.black : R.color.grey;
+            cellTitle.setTextColor(getColor(color));
+        });
+
         bluetoothLeAdvertiseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             bluetoothLeAdvertiseActive.setEnabled(isChecked);
             bluetoothLeAdvertiseInactive.setEnabled(isChecked);
@@ -347,6 +376,12 @@ public class NewExperimentActivity extends AppCompatActivity {
                 !sensorsWindows.getText().toString().isEmpty();
     }
 
+    private boolean validateCellConfig() {
+        return !cellActive.getText().toString().isEmpty() &&
+                !cellInactive.getText().toString().isEmpty() &&
+                !cellWindows.getText().toString().isEmpty();
+    }
+
     private long saveExperiment() {
         return experimentRepository.insert( new Experiment(codename.getText().toString(),
                 description.getText().toString(),
@@ -389,6 +424,16 @@ public class NewExperimentActivity extends AppCompatActivity {
         long inactive = Long.parseLong(sensorsInactive.getText().toString());
         long windows = Long.parseLong(sensorsWindows.getText().toString());
         long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.SENSORS.name()).id;
+        WindowConfiguration configuration = new WindowConfiguration(active,
+                inactive, windows, sourceId, experimentId);
+        configurationRepository.insert(configuration);
+    }
+
+    private void saveCellConfig(long experimentId) {
+        long active = Long.parseLong(cellActive.getText().toString());
+        long inactive = Long.parseLong(cellInactive.getText().toString());
+        long windows = Long.parseLong(cellWindows.getText().toString());
+        long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.CELL.name()).id;
         WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
         configurationRepository.insert(configuration);
@@ -460,6 +505,10 @@ public class NewExperimentActivity extends AppCompatActivity {
                     sensorsActive.setText(longOrNullToEmpty(representation.sensors.get(ExperimentRepresentation.ACTIVE)));
                     sensorsInactive.setText(longOrNullToEmpty(representation.sensors.get(ExperimentRepresentation.INACTIVE)));
                     sensorsWindows.setText(longOrNullToEmpty(representation.sensors.get(ExperimentRepresentation.WINDOWS)));
+
+                    cellActive.setText(longOrNullToEmpty(representation.cell.get(ExperimentRepresentation.ACTIVE)));
+                    cellInactive.setText(longOrNullToEmpty(representation.cell.get(ExperimentRepresentation.INACTIVE)));
+                    cellWindows.setText(longOrNullToEmpty(representation.cell.get(ExperimentRepresentation.WINDOWS)));
 
                     bluetoothLeAdvertiseActive.setText(longOrNullToEmpty(representation.bluetoothLeAdvertise.get(ExperimentRepresentation.ACTIVE)));
                     bluetoothLeAdvertiseInactive.setText(longOrNullToEmpty(representation.bluetoothLeAdvertise.get(ExperimentRepresentation.INACTIVE)));

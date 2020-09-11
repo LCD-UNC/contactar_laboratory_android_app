@@ -25,6 +25,7 @@ public class ExperimentRepresentation implements JsonExportable {
     public Map<String, Long> bluetooth;
     public Map<String, Long> bluetoothLe;
     public Map<String, Long> sensors;
+    public Map<String, Long> cell;
     public Map<String, Long> bluetoothLeAdvertise;
 
     public List<String> tags;
@@ -34,6 +35,7 @@ public class ExperimentRepresentation implements JsonExportable {
                                     WindowConfiguration bluetoothWindow,
                                     WindowConfiguration bluetoothLeWindow,
                                     WindowConfiguration sensorWindow,
+                                    WindowConfiguration cellWindow,
                                     WindowConfiguration advertiseWindow,
                                     AdvertiseConfiguration advertiseConfiguration,
                                     List<String> tags) {
@@ -43,6 +45,7 @@ public class ExperimentRepresentation implements JsonExportable {
         bluetooth = new HashMap<>();
         bluetoothLe = new HashMap<>();
         sensors = new HashMap<>();
+        cell = new HashMap<>();
         bluetoothLeAdvertise = new HashMap<>();
         if(wifiWindow != null) {
             wifi.put(ACTIVE, wifiWindow.activeTime);
@@ -63,6 +66,11 @@ public class ExperimentRepresentation implements JsonExportable {
             sensors.put(ACTIVE, sensorWindow.activeTime);
             sensors.put(INACTIVE, sensorWindow.inactiveTime);
             sensors.put(WINDOWS, sensorWindow.windows);
+        }
+        if(cellWindow != null) {
+            cell.put(ACTIVE, cellWindow.activeTime);
+            cell.put(INACTIVE, cellWindow.inactiveTime);
+            cell.put(WINDOWS, cellWindow.windows);
         }
         if(advertiseWindow != null) {
             bluetoothLeAdvertise.put(ACTIVE, advertiseWindow.activeTime);

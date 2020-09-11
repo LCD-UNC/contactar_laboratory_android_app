@@ -31,12 +31,13 @@ public class JsonFileWriter extends FileWriter {
         WindowConfiguration bluetoothWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.BLUETOOTH.name());
         WindowConfiguration bluetoothLeWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
         WindowConfiguration sensorWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.SENSORS.name());
+        WindowConfiguration cellWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.CELL.name());
         WindowConfiguration advertiseWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
         AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(experimentId);
         List<String> tags =  experimentRepository.getTagList(experimentId);
 
         representation = new ExperimentRepresentation(experiment, wifiWindow, bluetoothWindow,
-                bluetoothLeWindow, sensorWindow, advertiseWindow, advertiseConfiguration, tags);
+                bluetoothLeWindow, sensorWindow, cellWindow, advertiseWindow, advertiseConfiguration, tags);
     }
 
     @Override
