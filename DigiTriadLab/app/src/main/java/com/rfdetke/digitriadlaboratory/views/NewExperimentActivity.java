@@ -195,7 +195,8 @@ public class NewExperimentActivity extends AppCompatActivity {
                 experimentId = saveExperiment();
                 if(!wifiSwitch.isChecked() && !bluetoothSwitch.isChecked() &&
                         !bluetoothLeSwitch.isChecked() && !bluetoothLeAdvertiseSwitch.isChecked() &&
-                        !sensorsSwitch.isChecked()) {
+                        !sensorsSwitch.isChecked()&&
+                        !cellSwitch.isChecked()) {
                     errorMessage = errorMessage.concat(getResources().getString(R.string.at_least_one_configuration));
                     success = false;
                 } else {
