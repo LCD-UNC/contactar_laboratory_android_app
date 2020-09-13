@@ -33,7 +33,7 @@ public class TestUtils {
     private static final int MAX_INACTIVE = 2;
     private static final int MAX_WINDOWS = 2;
     private static final int MIN_INTERVAL = 100;
-    private static final int MAX_INTERVAL = 16777215;
+    private static final int MAX_INTERVAL = 10485759;
     private static final int MIN_PERIODIC_INTERVAL = 6;
     private static final int MAX_PERIODIC_INTERVAL = 65536;
     private static final int MIN_TX_POWER = -127;

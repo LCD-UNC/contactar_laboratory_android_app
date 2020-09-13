@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
@@ -23,7 +24,7 @@ import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
-import com.rfdetke.digitriadlaboratory.export.json.JsonFileWriter;
+import com.rfdetke.digitriadlaboratory.export.json.JsonExperimentFileWriter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.RunDetailViewModel;
 
@@ -80,7 +81,8 @@ public class RunDetailActivity extends AppCompatActivity {
             if (modules.contains(SourceTypeEnum.CELL.name()))
                 new CellCsvFileWriter(runs, database, context).execute();
 
-            new JsonFileWriter(currentRun.experimentId, database, context).execute();
+            new JsonExperimentFileWriter(currentRun.experimentId, database, context).execute();
+            Toast.makeText(this, "Files exported...", Toast.LENGTH_SHORT).show();
         });
 
         deleteButton.setOnClickListener(v -> {

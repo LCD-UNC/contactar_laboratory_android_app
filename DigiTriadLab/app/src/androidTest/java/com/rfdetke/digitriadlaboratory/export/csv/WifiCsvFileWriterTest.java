@@ -37,7 +37,6 @@ public class WifiCsvFileWriterTest extends SampleCsvFileWriterTest {
     @Test
     public void getContent() {
         assertNotNull(fileWriter.getContent());
-        assertFalse(fileWriter.getContent().isEmpty());
     }
 
     @Test

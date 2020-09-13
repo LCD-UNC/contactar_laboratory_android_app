@@ -9,10 +9,8 @@ import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.entities.BluetoothRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
-import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothRepository;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
-import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorDataBucket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,5 +53,14 @@ public class BluetoothScanScheduler extends Scheduler {
 
         context.unregisterReceiver(bluetoothDataBucket);
         bluetoothDataBucket = null;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if(bluetoothDataBucket!=null) {
+            context.unregisterReceiver(bluetoothDataBucket);
+            bluetoothDataBucket = null;
+        }
     }
 }

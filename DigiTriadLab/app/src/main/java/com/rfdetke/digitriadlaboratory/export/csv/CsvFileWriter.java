@@ -19,13 +19,16 @@ public abstract class CsvFileWriter extends FileWriter {
     @Override
     public String getContent() {
         List<CsvExportable> data = getExportableData();
-        String content = data.get(0).csvHeader();
-        for( CsvExportable sample : data) {
-            content = content.concat(sample.toCsv());
+        String content = "";
+        if (data.size() != 0) {
+            content = data.get(0).csvHeader();
+            for (CsvExportable sample : data) {
+                content = content.concat(sample.toCsv());
+            }
         }
         return content;
     }
 
     public abstract List<CsvExportable> getExportableData();
-    public abstract String getKey();
+
 }

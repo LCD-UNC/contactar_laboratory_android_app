@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public abstract class Scheduler implements ObservableScanner{
+public abstract class Scheduler implements ObservableTask {
 
     private static final int initialDelay = 500;
 
@@ -20,7 +20,7 @@ public abstract class Scheduler implements ObservableScanner{
     protected Context context;
 
     protected final WindowRepository windowRepository;
-    protected List<ScanObserver> observers;
+    protected List<TaskObserver> observers;
 
     protected String key;
 
@@ -77,19 +77,27 @@ public abstract class Scheduler implements ObservableScanner{
 
     protected abstract void endTask();
 
+    public void stop(){
+        activeTimer.cancel();
+        activeTimer.purge();
+        inactiveTimer.cancel();
+        inactiveTimer.purge();
+    }
+
+
     @Override
-    public void addObserver(ScanObserver scanObserver) {
-        this.observers.add(scanObserver);
+    public void addObserver(TaskObserver taskObserver) {
+        this.observers.add(taskObserver);
     }
 
     @Override
-    public void removeObserver(ScanObserver scanObserver) {
-        this.observers.remove(scanObserver);
+    public void removeObserver(TaskObserver taskObserver) {
+        this.observers.remove(taskObserver);
     }
 
     @Override
     public void setDone() {
-        for (ScanObserver observer: this.observers) {
+        for (TaskObserver observer: this.observers) {
             observer.update(this.key);
         }
     }

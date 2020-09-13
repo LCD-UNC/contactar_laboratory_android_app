@@ -19,22 +19,17 @@ public class CellDataBucket implements DataBucket {
     public CellDataBucket(long sampleId, Context context) {
         this.sampleId = sampleId;
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-
+        records = new ArrayList<>();
     }
 
-    private void saveCellInfo() {
+    @Override
+    public List<Object> getRecordsList() {
         if(telephonyManager != null) {
             ArrayList<CellInfo> results = (ArrayList<CellInfo>) telephonyManager.getAllCellInfo();
             for (CellInfo result : results) {
                 records.add(new CellRecord(result, sampleId));
             }
         }
-    }
-
-    @Override
-    public List<Object> getRecordsList() {
-        List<Object> records = new ArrayList<>();
-        saveCellInfo();
         return records;
     }
 

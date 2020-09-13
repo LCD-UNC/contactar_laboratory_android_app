@@ -31,7 +31,7 @@ public class JsonFileWriterTest extends DatabaseTest {
         device.id = deviceRepository.insert(device);
         Experiment experiment = TestUtils.getExperiment(device.id);
         experiment.id = experimentRepository.insert(experiment);
-        fileWriter = new JsonFileWriter(experiment.id, db, context);
+        fileWriter = new JsonExperimentFileWriter(experiment.id, db, context);
     }
 
     @Test

@@ -62,6 +62,10 @@ public class SensorDataBucket implements SensorEventListener, DataBucket {
         return records;
     }
 
+    public void unregisterSensors(){
+        sensorManager.unregisterListener(this);
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         Objects.requireNonNull(temporarySensorDataList.get(event.sensor.getType())).updateRecordValues(event);

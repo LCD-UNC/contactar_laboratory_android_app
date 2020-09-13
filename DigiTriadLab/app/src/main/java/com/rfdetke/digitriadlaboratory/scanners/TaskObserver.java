@@ -1,5 +1,5 @@
 package com.rfdetke.digitriadlaboratory.scanners;
 
-public interface ScanObserver {
+public interface TaskObserver {
     public void update(Object scannerKey);
 }

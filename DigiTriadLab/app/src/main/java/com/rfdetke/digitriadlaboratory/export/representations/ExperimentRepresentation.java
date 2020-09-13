@@ -3,6 +3,7 @@ package com.rfdetke.digitriadlaboratory.export.representations;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
+import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.export.json.JsonExportable;
@@ -18,6 +19,10 @@ public class ExperimentRepresentation implements JsonExportable {
     public static final String WINDOWS = "windows";
     public static final String TX_POWER = "tx_power";
     public static final String INTERVAL = "interval";
+    public static final String CODENAME = "codename";
+    public static final String BRAND = "brand";
+    public static final String MODEL = "model";
+    public static final String UUID = "uuid";
     public String codename;
     public String description;
 
@@ -27,6 +32,7 @@ public class ExperimentRepresentation implements JsonExportable {
     public Map<String, Long> sensors;
     public Map<String, Long> cell;
     public Map<String, Long> bluetoothLeAdvertise;
+    public Map<String, String> device;
 
     public List<String> tags;
 
@@ -38,7 +44,8 @@ public class ExperimentRepresentation implements JsonExportable {
                                     WindowConfiguration cellWindow,
                                     WindowConfiguration advertiseWindow,
                                     AdvertiseConfiguration advertiseConfiguration,
-                                    List<String> tags) {
+                                    List<String> tags,
+                                    Device device) {
         this.codename = experiment.codename;
         this.description = experiment.description;
         wifi = new HashMap<>();
@@ -47,6 +54,14 @@ public class ExperimentRepresentation implements JsonExportable {
         sensors = new HashMap<>();
         cell = new HashMap<>();
         bluetoothLeAdvertise = new HashMap<>();
+        this.device = new HashMap<>();
+        if(device!= null) {
+            this.device.put(CODENAME, device.codename);
+            this.device.put(BRAND, device.brand);
+            this.device.put(MODEL, device.model);
+            this.device.put(UUID, device.uuid.toString());
+        }
+
         if(wifiWindow != null) {
             wifi.put(ACTIVE, wifiWindow.activeTime);
             wifi.put(INACTIVE, wifiWindow.inactiveTime);
@@ -94,12 +109,13 @@ public class ExperimentRepresentation implements JsonExportable {
                 Objects.equals(bluetoothLe, that.bluetoothLe) &&
                 Objects.equals(sensors, that.sensors) &&
                 Objects.equals(bluetoothLeAdvertise, that.bluetoothLeAdvertise) &&
-                Objects.equals(tags, that.tags);
+                Objects.equals(tags, that.tags) &&
+                Objects.equals(device, that.device);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codename, description, wifi, bluetooth, bluetoothLe, sensors, bluetoothLeAdvertise, tags);
+        return Objects.hash(codename, description, wifi, bluetooth, bluetoothLe, sensors, bluetoothLeAdvertise, tags, device);
     }
 
     @Override

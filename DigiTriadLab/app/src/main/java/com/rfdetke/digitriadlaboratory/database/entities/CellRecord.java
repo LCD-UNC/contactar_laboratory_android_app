@@ -1,8 +1,11 @@
 package com.rfdetke.digitriadlaboratory.database.entities;
+import android.os.Build;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
+import android.telephony.CellInfoNr;
+import android.telephony.CellInfoTdscdma;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellSignalStrengthGsm;
 
@@ -36,22 +39,40 @@ public class CellRecord {
     public long windowId;
 
     public CellRecord(CellInfo cellInfo, long windowId) {
-        if (cellInfo.equals(CellInfoGsm.class)) {
+        if (cellInfo instanceof CellInfoGsm) {
             this.technology = "GSM";
             CellInfoGsm gsmCell = (CellInfoGsm) cellInfo;
             this.dbm = gsmCell.getCellSignalStrength().getDbm();
             this.asuLevel = gsmCell.getCellSignalStrength().getAsuLevel();
             this.operator = gsmCell.getCellIdentity().getOperatorAlphaLong().toString();
-        } else if (cellInfo.equals(CellInfoWcdma.class)) {
+        } else if (cellInfo instanceof CellInfoWcdma) {
             this.technology = "WCDMA";
             CellInfoWcdma wcdmaCell = (CellInfoWcdma) cellInfo;
             this.dbm = wcdmaCell.getCellSignalStrength().getDbm();
             this.asuLevel = wcdmaCell.getCellSignalStrength().getAsuLevel();
             this.operator = wcdmaCell.getCellIdentity().getOperatorAlphaLong().toString();
 
-        } else if (cellInfo.equals(CellInfoLte.class)) {
+        } else if (cellInfo instanceof CellInfoLte) {
             CellInfoLte lteCell = (CellInfoLte) cellInfo;
             this.technology = "LTE";
+            this.dbm = lteCell.getCellSignalStrength().getDbm();
+            this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
+            this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
+        } else if (cellInfo instanceof CellInfoCdma) {
+            CellInfoCdma lteCell = (CellInfoCdma) cellInfo;
+            this.technology = "CDMA";
+            this.dbm = lteCell.getCellSignalStrength().getDbm();
+            this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
+            this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && cellInfo instanceof CellInfoNr) {
+            CellInfoNr lteCell = (CellInfoNr) cellInfo;
+            this.technology = "5G NR";
+            this.dbm = lteCell.getCellSignalStrength().getDbm();
+            this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
+            this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && cellInfo instanceof CellInfoTdscdma) {
+            CellInfoTdscdma lteCell = (CellInfoTdscdma) cellInfo;
+            this.technology = "TD-SCDMA";
             this.dbm = lteCell.getCellSignalStrength().getDbm();
             this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
             this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();

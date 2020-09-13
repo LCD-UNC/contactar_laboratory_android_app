@@ -28,7 +28,7 @@ public class ShareTools {
         WindowConfiguration cellWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.CELL.name());
         WindowConfiguration advertiseWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
-        ExperimentRepresentation codedExperimentObject = new ExperimentRepresentation(experiment, wifiWindow, bluetoothWindow, bluetoothLeWindow, sensorWindow, cellWindow, advertiseWindow, advertiseConfiguration, tagList);
+        ExperimentRepresentation codedExperimentObject = new ExperimentRepresentation(experiment, wifiWindow, bluetoothWindow, bluetoothLeWindow, sensorWindow, cellWindow, advertiseWindow, advertiseConfiguration, tagList, null);
         Gson gson = new Gson();
         String jsonExperiment = gson.toJson(codedExperimentObject);
 
