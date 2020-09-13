@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
-import com.rfdetke.digitriadlaboratory.scanners.ScanObserver;
+import com.rfdetke.digitriadlaboratory.scanners.TaskObserver;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 
 import java.util.concurrent.CountDownLatch;
@@ -31,7 +31,7 @@ public class ObservableDataTestUtil {
     public static String getValue(final Scheduler scheduler, long duration) throws InterruptedException {
         final Object[] data = new Object[1];
         final CountDownLatch latch = new CountDownLatch(1);
-        ScanObserver observer = new ScanObserver() {
+        TaskObserver observer = new TaskObserver() {
             @Override
             public void update(Object scannerKey) {
                 data[0] = scannerKey;

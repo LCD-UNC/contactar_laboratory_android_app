@@ -25,7 +25,7 @@ import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
-import com.rfdetke.digitriadlaboratory.scanners.ScanObserver;
+import com.rfdetke.digitriadlaboratory.scanners.TaskObserver;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
@@ -36,7 +36,7 @@ import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExperimentService extends Service implements ScanObserver {
+public class ExperimentService extends Service implements TaskObserver {
 
     private static final String CHANNEL_ID = "ExperimentServiceChannel";
     Map<String, Boolean> doneMap;
