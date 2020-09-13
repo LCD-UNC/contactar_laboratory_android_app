@@ -26,9 +26,9 @@ public class CellRepository {
         return windowDao.getCellSamplesRecords(runs);
     }
 
-    /*public LiveData<Long> getLiveCount(long runId) {
-        return windowDao.getSensorLiveCount(runId);
-    }*/
+    public LiveData<Long> getLiveCount(long runId) {
+        return windowDao.getCellLiveCount(runId);
+    }
 
     public long[] insert(List<CellRecord> cellRecords) {
         return cellRecordDao.insert(cellRecords);

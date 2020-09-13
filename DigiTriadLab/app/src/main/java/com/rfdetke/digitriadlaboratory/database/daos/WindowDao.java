@@ -88,7 +88,7 @@ public interface WindowDao {
             "WHERE s.run_id == (:runId) GROUP BY s.run_id")
     LiveData<Long> getSensorLiveCount(long runId);
 
-    // ------------------- SENSORS -----------------------------------------------------------------
+    // ------------------- CELL -----------------------------------------------------------------
 
     @Query("SELECT s.run_id, s.id as window_id, s.timestamp, r.technology, r.dbm, r.asu_level " +
             "FROM window as s " +
@@ -96,11 +96,18 @@ public interface WindowDao {
             "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run_id, window_id")
     List<CellSampleRecord> getCellSamplesRecords(long[] runId);
 
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM cell_record AS r " +
+            "JOIN window AS s ON  r.window_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getCellLiveCount(long runId);
+
     @Insert
     long insert(Window window);
 
     @Query("SELECT * FROM window WHERE id==(:id)")
     Window getById(long id);
+
+
 
     static class BluetoothSampleRecord implements CsvExportable {
         @ColumnInfo(name = "record_timestamp")

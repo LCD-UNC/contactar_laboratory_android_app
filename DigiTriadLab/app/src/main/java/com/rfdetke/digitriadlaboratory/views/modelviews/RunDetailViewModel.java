@@ -12,6 +12,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothLeRepository;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothRepository;
+import com.rfdetke.digitriadlaboratory.repositories.CellRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SensorRepository;
@@ -30,6 +31,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
     private final RunRepository runRepository;
     private final ConfigurationRepository configurationRepository;
     private final SourceTypeRepository sourceTypeRepository;
+    private final CellRepository cellRepository;
 
     private LiveData<Long> wifiCount;
     private LiveData<Long> bluetoothCount;
@@ -49,6 +51,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
         bluetoothRepository = new BluetoothRepository(database);
         bluetoothLeRepository = new BluetoothLeRepository(database);
         sensorRepository = new SensorRepository(database);
+        cellRepository = new CellRepository(database);
         configurationRepository = new ConfigurationRepository(database);
         sourceTypeRepository = new SourceTypeRepository(database);
     }
@@ -60,6 +63,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
         bluetoothCount = bluetoothRepository.getLiveCount(runId);
         bluetoothLeCount = bluetoothLeRepository.getLiveCount(runId);
         sensorCount = sensorRepository.getLiveCount(runId);
+        cellCount = cellRepository.getLiveCount(runId);
         modules = new ArrayList<>();
         for (WindowConfiguration configuration :
                 configurationRepository.getConfigurationsForExperiment(currentRun.experimentId)) {

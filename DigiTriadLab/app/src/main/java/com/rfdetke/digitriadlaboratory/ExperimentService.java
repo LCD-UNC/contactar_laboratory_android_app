@@ -32,6 +32,7 @@ import com.rfdetke.digitriadlaboratory.scanners.ScanObserver;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
+import com.rfdetke.digitriadlaboratory.scanners.cell.CellScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorsScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
@@ -64,6 +65,7 @@ public class ExperimentService extends Service implements ScanObserver {
             WindowConfiguration bluetoothConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH.name());
             WindowConfiguration bluetoothLeConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
             WindowConfiguration sensorConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.SENSORS.name());
+            WindowConfiguration cellConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.CELL.name());
             WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
             Experiment currentExperiment = experimentRepository.getById(currentRun.experimentId);
@@ -103,6 +105,11 @@ public class ExperimentService extends Service implements ScanObserver {
 
             if (sensorConfiguration != null) {
                 SensorsScanScheduler scanScheduler = new SensorsScanScheduler(currentRun.id, sensorConfiguration, this, database);
+                registerScheduler(scanScheduler);
+            }
+
+            if (cellConfiguration != null) {
+                CellScanScheduler scanScheduler = new CellScanScheduler(currentRun.id, cellConfiguration, this, database);
                 registerScheduler(scanScheduler);
             }
 
