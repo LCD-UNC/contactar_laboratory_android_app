@@ -8,6 +8,7 @@ import com.rfdetke.digitriadlaboratory.database.daos.ExperimentDao.ExperimentDon
 import com.rfdetke.digitriadlaboratory.database.daos.TagDao;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.ExperimentTag;
+import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.Tag;
 
 import java.util.List;
@@ -59,5 +60,9 @@ public class ExperimentRepository {
 
     public List<String> getTagList(long experimentId) {
         return tagDao.getTagList(experimentId);
+    }
+
+    public List<Run> getOngoingRunsForExperiment(long id) {
+        return experimentDao.getOnGoingRunsForExperiment(id);
     }
 }

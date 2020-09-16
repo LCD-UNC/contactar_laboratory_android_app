@@ -95,6 +95,7 @@ public class RunDetailActivity extends AppCompatActivity {
         });
 
         runDetailViewModel.getCurrentLiveRun().observe(this, run -> {
+            topToolbar.setTitle(getString(R.string.run_label, currentRun.number));
             if (run.state.equals(RunStateEnum.RUNNING.name())) {
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(true);
@@ -176,36 +177,34 @@ public class RunDetailActivity extends AppCompatActivity {
     }
 
     public void deleteRun(MenuItem menuItem) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.dialog_confirm_delete)
-                .setPositiveButton(R.string.yes, (dialog, id) -> {
-                    if(!currentRun.state.equals(RunStateEnum.RUNNING.name())) {
-                        runDetailViewModel.getCurrentLiveRun().removeObservers(this);
-                        runDetailViewModel.getSensorCount().removeObservers(this);
-                        runDetailViewModel.getWifiCount().removeObservers(this);
-                        runDetailViewModel.getBluetoothCount().removeObservers(this);
-                        runDetailViewModel.getBluetoothLeCount().removeObservers(this);
-                        runDetailViewModel.getCellCount().removeObservers(this);
-                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-                        alarmIntent.putExtra(NewRunActivity.EXTRA_RUN_ID, currentRun.id);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                getApplicationContext(), (int)currentRun.id, alarmIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT);
-                        assert alarmManager != null;
-                        alarmManager.cancel(pendingIntent);
-                        stopService(new Intent(getApplicationContext(), ExperimentService.class));
-                        runDetailViewModel.delete();
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Cancel Run first!", Toast.LENGTH_LONG).show();
-                    }
-
-
-                })
-                .setNeutralButton(R.string.no, ((dialog, id) -> {
-                    dialog.dismiss();
-                }))
-                .create().show();
+        if(!currentRun.state.equals(RunStateEnum.RUNNING.name())) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.dialog_confirm_delete)
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
+                            runDetailViewModel.getCurrentLiveRun().removeObservers(this);
+                            runDetailViewModel.getSensorCount().removeObservers(this);
+                            runDetailViewModel.getWifiCount().removeObservers(this);
+                            runDetailViewModel.getBluetoothCount().removeObservers(this);
+                            runDetailViewModel.getBluetoothLeCount().removeObservers(this);
+                            runDetailViewModel.getCellCount().removeObservers(this);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+                            alarmIntent.putExtra(NewRunActivity.EXTRA_RUN_ID, currentRun.id);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                    getApplicationContext(), (int)currentRun.id, alarmIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                            assert alarmManager != null;
+                            alarmManager.cancel(pendingIntent);
+                            stopService(new Intent(getApplicationContext(), ExperimentService.class));
+                            runDetailViewModel.delete();
+                            finish();
+                    })
+                    .setNeutralButton(R.string.no, ((dialog, id) -> {
+                        dialog.dismiss();
+                    }))
+                    .create().show();
+        } else {
+            Toast.makeText(this, "Cancel Run first!", Toast.LENGTH_LONG).show();
+        }
     }
 }

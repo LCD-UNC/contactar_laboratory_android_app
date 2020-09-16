@@ -3,6 +3,7 @@ package com.rfdetke.digitriadlaboratory.views;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelUuid;
+import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class DeviceInfoActivity extends AppCompatActivity {
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
+        topToolbar.setTitle(getString(R.string.device_info_title));
 
         EditText deviceCodename = findViewById(R.id.device_codename);
         TextView deviceUuid = findViewById(R.id.device_uuid);
@@ -82,5 +84,12 @@ public class DeviceInfoActivity extends AppCompatActivity {
             tempUuid = new ParcelUuid(UUID.randomUUID());
             deviceUuid.setText(tempUuid.toString().toUpperCase());
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.simple_menu, menu);
+        return true;
     }
 }

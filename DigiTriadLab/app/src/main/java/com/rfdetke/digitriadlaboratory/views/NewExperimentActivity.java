@@ -101,6 +101,7 @@ public class NewExperimentActivity extends AppCompatActivity {
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
+        topToolbar.setTitle(getString(R.string.new_experiment));
 
         AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());
         experimentRepository = new ExperimentRepository(database);

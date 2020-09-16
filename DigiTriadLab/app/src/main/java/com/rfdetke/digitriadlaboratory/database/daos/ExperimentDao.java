@@ -8,6 +8,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
+import com.rfdetke.digitriadlaboratory.database.entities.Run;
 
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,8 @@ public interface ExperimentDao {
     @Query("SELECT * FROM experiment WHERE id == (:id) LIMIT 1")
     Experiment getExperimentById(long id);
 
+    @Query("SELECT * FROM run WHERE state==\"RUNNING\" AND  experiment_id == (:id)")
+    List<Run> getOnGoingRunsForExperiment(long id);
     @Insert
     long insert(Experiment experiment);
 

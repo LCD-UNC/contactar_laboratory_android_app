@@ -58,6 +58,7 @@ public class NewRunActivity extends AppCompatActivity {
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
+        topToolbar.setTitle(getString(R.string.title_activity_new_run));
 
         experimentId = getIntent().getLongExtra(ExperimentListAdapter.EXTRA_ID, 0);
         AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());

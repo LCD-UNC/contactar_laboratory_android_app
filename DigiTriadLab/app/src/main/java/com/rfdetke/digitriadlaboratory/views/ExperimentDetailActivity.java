@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -35,6 +36,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     private RunListAdapter adapter;
     private ExperimentDetailViewModel experimentDetailViewModel;
     private Toolbar topToolbar;
+    private Experiment currentExperiment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,9 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         ImageView qrContainer = findViewById(R.id.qr_container);
         qrContainer.setImageBitmap(experimentDetailViewModel.getExperimentQr());
 
-        Experiment currentExperiment = experimentDetailViewModel.getCurrentExperiment();
+        currentExperiment = experimentDetailViewModel.getCurrentExperiment();
+
+        topToolbar.setTitle(getString(R.string.experiment_detail, currentExperiment.codename));
 
         Button addRunButton = findViewById(R.id.add_run_button);
         addRunButton.setOnClickListener(v -> {
@@ -98,16 +102,20 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     }
 
     public void deleteExperiment(MenuItem item) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.dialog_confirm_delete)
-                .setPositiveButton(R.string.yes, (dialog, id) -> {
-                    experimentDetailViewModel.getRunsForExperiment().removeObservers(this);
-                    experimentDetailViewModel.delete();
-                    finish();
-                })
-                .setNeutralButton(R.string.no, ((dialog, id) -> {
-                    dialog.dismiss();
-                }))
-                .create().show();
+        if (!experimentDetailViewModel.hasOngoingRuns(currentExperiment.id)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.dialog_confirm_delete)
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
+                        experimentDetailViewModel.getRunsForExperiment().removeObservers(this);
+                        experimentDetailViewModel.delete();
+                        finish();
+                    })
+                    .setNeutralButton(R.string.no, ((dialog, id) -> {
+                        dialog.dismiss();
+                    }))
+                    .create().show();
+        }else{
+            Toast.makeText(this, "First cancel the ongoing Run!", Toast.LENGTH_LONG).show();
+        }
     }
 }

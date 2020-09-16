@@ -13,11 +13,13 @@
         android:theme="@style/ToolbarTheme"
         app:liftOnScroll="true"
         >
-        <androidx.appcompat.widget.Toolbar
+
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_toolbar"
-            android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
-            />
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/new_experiment_menu"
+            app:title="@string/new_experiment" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

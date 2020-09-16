@@ -69,6 +69,10 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
         return currentExperiment;
     }
 
+    public boolean hasOngoingRuns(long id) {
+        return experimentRepository.getOngoingRunsForExperiment(id).size()>0;
+    }
+
     public String getConfigurationString() {
         String configurationString = "";
         for(WindowConfiguration configuration : configurations) {
