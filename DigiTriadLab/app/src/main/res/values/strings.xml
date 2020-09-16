@@ -69,4 +69,6 @@
     <string name="delete_run">Delete this Run</string>
     <string name="about">About App</string>
     <string name="application_logo">Application Logo</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="upload">Upload to Drive</string>
 </resources>

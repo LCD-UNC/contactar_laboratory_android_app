@@ -1,16 +1,5 @@
 package com.rfdetke.digitriadlaboratory;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,31 +13,29 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabasePopulator;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao.StartDuration;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
-import com.rfdetke.digitriadlaboratory.export.gdrive.DriveServiceHelper;
+import com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.views.ApplicationInfo;
@@ -59,28 +46,27 @@ import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
+
+import static com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper.REQUEST_CODE_SIGN_IN;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 20;
     private static final int REQUEST_PERMISSIONS = 1;
-    private static final int REQUEST_CODE_SIGN_IN = 5;
 
     private List<String> permissionsList;
     private String[] permissionsArray;
     ExperimentListAdapter adapter;
     private AppDatabase database;
     private WifiManager wifiManager;
-    private DriveServiceHelper mDriveServiceHelper;
-    private GoogleSignInClient client;
+
 
     private Toolbar topToolbar;
+    private GoogleServicesHelper googleServicesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +95,22 @@ public class MainActivity extends AppCompatActivity {
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
 
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
+        bottomAppBar.setOnMenuItemClickListener((Toolbar.OnMenuItemClickListener) item -> {
+            switch (item.getItemId()) {
+                case R.id.sign_out:
+                    signOut();
+                    return true;
+
+                case R.id.new_experiment:
+                    addExperiment();
+                    return true;
+
+                default:
+                    return false;
+            }
+        });
+
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         adapter = new ExperimentListAdapter(this);
         recyclerView.setAdapter(adapter);
@@ -117,18 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
         ExperimentViewModel experimentViewModel = new ViewModelProvider(this).get(ExperimentViewModel.class);
         experimentViewModel.getAllExperimentDone().observe(this, experiments -> adapter.setExperiments(experiments));
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            if(!hasPermissions()) {
-                requestPermissions(permissionsArray, REQUEST_PERMISSIONS);
-            } else if(!wifiManager.isWifiEnabled()) {
-                showEnableWifiDialog();
-            } else {
-                Intent intent = new Intent(MainActivity.this, NewExperimentActivity.class);
-                startActivity(intent);
-            }
-        });
 
         database = DatabaseSingleton.getInstance(getApplicationContext());
         DatabasePopulator.prepopulate(database);
@@ -139,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
             deviceRepository.insert(new Device(null, Build.MANUFACTURER.toUpperCase(), Build.MODEL.toUpperCase(), new ParcelUuid(UUID.randomUUID())));
         }
         checkAllRunStates();
-//        requestSignIn();
+
+        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
     }
 
     @Override
@@ -148,49 +139,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
-
-    private void requestSignIn() {
-        Log.d("Main", "Requesting sign-in");
-
-        GoogleSignInOptions signInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .requestScopes(new Scope(DriveScopes.DRIVE))
-                        .build();
-        client = GoogleSignIn.getClient(getApplicationContext(), signInOptions);
-
-        // The result of the sign-in Intent is handled in onActivityResult.
-        startActivityForResult(client.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-    }
-
-    private void handleSignInResult(Intent result) {
-        GoogleSignIn.getSignedInAccountFromIntent(result)
-                .addOnSuccessListener(googleAccount -> {
-                    Log.d("Main", "Signed in as " + googleAccount.getEmail());
-
-                    // Use the authenticated account to sign in to the Drive service.
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(
-                                    this, Collections.singleton(DriveScopes.DRIVE));
-                    credential.setSelectedAccount(googleAccount.getAccount());
-                    Drive googleDriveService =
-                            new Drive.Builder(
-                                    AndroidHttp.newCompatibleTransport(),
-                                    new GsonFactory(),
-                                    credential)
-                                    .setApplicationName("DigiTriad Lab")
-                                    .build();
-
-                    // The DriveServiceHelper encapsulates all REST API and SAF functionality.
-                    // Its instantiation is required before handling any onClick actions.
-                    mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
-                })
-                .addOnFailureListener(exception -> {
-                    Toast.makeText(this, "Remember to sign in with an unc.edu.ar account", Toast.LENGTH_LONG).show();
-                });
-    }
-
-
 
     private void checkAllRunStates() {
         RunRepository runRepository = new RunRepository(database);
@@ -235,9 +183,32 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void signIn(View view) {
+        if(!googleServicesHelper.isSignedIn(getApplicationContext()))
+            startActivityForResult(googleServicesHelper.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+    }
+
+    public void signOut(){
+        if(googleServicesHelper.isSignedIn(getApplicationContext())){
+            googleServicesHelper.signOut(getApplicationContext());
+            Toast.makeText(this, "Signed out...", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void showDeviceInfo(MenuItem menuItem) {
         Intent intent = new Intent(MainActivity.this, DeviceInfoActivity.class);
         startActivity(intent);
+    }
+
+    public void addExperiment(){
+        if(!hasPermissions()) {
+            requestPermissions(permissionsArray, REQUEST_PERMISSIONS);
+        } else if(!wifiManager.isWifiEnabled()) {
+            showEnableWifiDialog();
+        } else {
+            Intent intent = new Intent(MainActivity.this, NewExperimentActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -251,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case REQUEST_CODE_SIGN_IN:
                 if (data != null) {
-                    handleSignInResult(data);
+                    googleServicesHelper.handleSignInResult(getApplicationContext(), data);
                 }
                 break;
         }

@@ -28,7 +28,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toTopOf="@id/export_button"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -266,19 +266,35 @@
                 </com.google.android.material.card.MaterialCardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-
-        <Button
-            android:id="@+id/export_button"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginStart="@dimen/big_padding"
-            android:layout_marginEnd="@dimen/big_padding"
-            android:layout_marginBottom="@dimen/small_padding"
-            android:text="@string/export"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:theme="@style/ToolbarTheme"
+
+        app:hideOnScroll="true"
+        app:fabAnimationMode="slide"
+        app:fabAlignmentMode="end"
+        app:fabCradleMargin="8dp"
+        app:fabCradleRoundedCornerRadius="@dimen/big_padding"
+        android:backgroundTint="@color/black"
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+        app:menu="@menu/bottom_detail_run_menu"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/signInFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFFFFF"
+        android:contentDescription="@string/common_signin_button_text_long"
+        android:foregroundTint="@color/colorPrimary"
+        android:onClick="signIn"
+        android:src="@drawable/googleg_standard_color_18"
+        app:borderWidth="3dp"
+        app:layout_anchor="@id/bottomAppBar"
+        app:tint="@null" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

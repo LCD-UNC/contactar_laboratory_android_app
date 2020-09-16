@@ -116,4 +116,33 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:theme="@style/ToolbarTheme"
+
+        app:hideOnScroll="true"
+        app:fabAnimationMode="slide"
+        app:fabAlignmentMode="end"
+        app:fabCradleMargin="8dp"
+        app:fabCradleRoundedCornerRadius="@dimen/big_padding"
+        android:backgroundTint="@color/black"
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+        app:menu="@menu/bottom_detail_experiment_menu"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/signInFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFFFFF"
+        android:contentDescription="@string/common_signin_button_text_long"
+        android:foregroundTint="@color/colorPrimary"
+        android:onClick="signIn"
+        android:src="@drawable/googleg_standard_color_18"
+        app:borderWidth="3dp"
+        app:layout_anchor="@id/bottomAppBar"
+        app:tint="@null" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

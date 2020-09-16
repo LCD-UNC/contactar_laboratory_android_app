@@ -1,5 +1,6 @@
 package com.rfdetke.digitriadlaboratory.views;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.rfdetke.digitriadlaboratory.AlarmReceiver;
 import com.rfdetke.digitriadlaboratory.ExperimentService;
 import com.rfdetke.digitriadlaboratory.R;
@@ -33,6 +35,7 @@ import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.json.JsonExperimentFileWriter;
+import com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.RunDetailViewModel;
 
@@ -40,11 +43,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper.REQUEST_CODE_SIGN_IN;
+
 public class RunDetailActivity extends AppCompatActivity {
 
     private RunDetailViewModel runDetailViewModel;
     private Toolbar topToolbar;
     private Run currentRun;
+    private GoogleServicesHelper googleServicesHelper;
+    private AppDatabase database;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,26 @@ public class RunDetailActivity extends AppCompatActivity {
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
+
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
+        bottomAppBar.setOnMenuItemClickListener((Toolbar.OnMenuItemClickListener) item -> {
+            switch (item.getItemId()) {
+                case R.id.sign_out:
+                    signOut();
+                    return true;
+
+                case R.id.export:
+                    exportData();
+                    return true;
+
+                case R.id.upload:
+                    uploadToDrive();
+                    return true;
+
+                default:
+                    return false;
+            }
+        });
 
         long runId = getIntent().getLongExtra(RunListAdapter.EXTRA_ID, 0);
 
@@ -63,36 +91,13 @@ public class RunDetailActivity extends AppCompatActivity {
         TextView cellCount = findViewById(R.id.cell_count);
 
         ProgressBar progressBar = findViewById(R.id.progress_bar);
-        Button exportButton = findViewById(R.id.export_button);
 
         runDetailViewModel = new ViewModelProvider(this).get(RunDetailViewModel.class);
         runDetailViewModel.setRun(runId);
 
-        List<String> modules = runDetailViewModel.getModules();
         currentRun = runDetailViewModel.getCurrentRun();
-        Context context = getApplicationContext();
-        AppDatabase database = DatabaseSingleton.getInstance(context);
-
-        exportButton.setOnClickListener(v -> {
-            long[] runs = {currentRun.id};
-            if (modules.contains(SourceTypeEnum.WIFI.name()))
-                new WifiCsvFileWriter(runs, database, context).execute();
-
-            if (modules.contains(SourceTypeEnum.BLUETOOTH.name()))
-                new BluetoothCsvFileWriter(runs, database, context).execute();
-
-            if (modules.contains(SourceTypeEnum.BLUETOOTH_LE.name()))
-                new BluetoothLeCsvFileWriter(runs, database, context).execute();
-
-            if (modules.contains(SourceTypeEnum.SENSORS.name()))
-                new SensorCsvFileWriter(runs, database, context).execute();
-
-            if (modules.contains(SourceTypeEnum.CELL.name()))
-                new CellCsvFileWriter(runs, database, context).execute();
-
-            new JsonExperimentFileWriter(currentRun.experimentId, database, context).execute();
-            Toast.makeText(this, "Files exported...", Toast.LENGTH_SHORT).show();
-        });
+        context = getApplicationContext();
+        database = DatabaseSingleton.getInstance(context);
 
         runDetailViewModel.getCurrentLiveRun().observe(this, run -> {
             topToolbar.setTitle(getString(R.string.run_label, currentRun.number));
@@ -138,6 +143,8 @@ public class RunDetailActivity extends AppCompatActivity {
             else
                 bluetoothLeCount.setText("0");
         });
+
+        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
     }
 
     @Override
@@ -145,6 +152,57 @@ public class RunDetailActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.detail_run_menu, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_SIGN_IN:
+                if (data != null) {
+                    googleServicesHelper.handleSignInResult(getApplicationContext(), data);
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void signIn(View view) {
+        if(!googleServicesHelper.isSignedIn(getApplicationContext()))
+            startActivityForResult(googleServicesHelper.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+    }
+
+    public void signOut(){
+        if(googleServicesHelper.isSignedIn(getApplicationContext())) {
+            googleServicesHelper.signOut(getApplicationContext());
+            Toast.makeText(this, "Signed out...", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void exportData() {
+        List<String> modules = runDetailViewModel.getModules();
+        long[] runs = {currentRun.id};
+        if (modules.contains(SourceTypeEnum.WIFI.name()))
+            new WifiCsvFileWriter(runs, database, context).execute();
+
+        if (modules.contains(SourceTypeEnum.BLUETOOTH.name()))
+            new BluetoothCsvFileWriter(runs, database, context).execute();
+
+        if (modules.contains(SourceTypeEnum.BLUETOOTH_LE.name()))
+            new BluetoothLeCsvFileWriter(runs, database, context).execute();
+
+        if (modules.contains(SourceTypeEnum.SENSORS.name()))
+            new SensorCsvFileWriter(runs, database, context).execute();
+
+        if (modules.contains(SourceTypeEnum.CELL.name()))
+            new CellCsvFileWriter(runs, database, context).execute();
+
+        new JsonExperimentFileWriter(currentRun.experimentId, database, context).execute();
+        Toast.makeText(this, "Files exported...", Toast.LENGTH_SHORT).show();
+    }
+
+    public void uploadToDrive() {
+        //TODO: Implementar para subir todas las corridas a Google Drive. Cambiar mensaje del Toast!
+        Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
     }
 
     public void cancelRun(MenuItem item) {

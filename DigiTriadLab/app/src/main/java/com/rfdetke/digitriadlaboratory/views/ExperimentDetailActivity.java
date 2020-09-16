@@ -1,5 +1,6 @@
 package com.rfdetke.digitriadlaboratory.views;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,7 +8,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,16 +21,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
+import com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper;
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentDetailViewModel;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper.REQUEST_CODE_SIGN_IN;
 
 public class ExperimentDetailActivity extends AppCompatActivity {
 
@@ -37,6 +44,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     private ExperimentDetailViewModel experimentDetailViewModel;
     private Toolbar topToolbar;
     private Experiment currentExperiment;
+    private GoogleServicesHelper googleServicesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,26 @@ public class ExperimentDetailActivity extends AppCompatActivity {
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
+
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
+        bottomAppBar.setOnMenuItemClickListener((Toolbar.OnMenuItemClickListener) item -> {
+            switch (item.getItemId()) {
+                case R.id.sign_out:
+                    signOut();
+                    return true;
+
+                case R.id.export:
+                    exportData();
+                    return true;
+
+                case R.id.upload:
+                    uploadToDrive();
+                    return true;
+
+                default:
+                    return false;
+            }
+        });
 
         long experimentId = getIntent().getLongExtra(ExperimentListAdapter.EXTRA_ID, 0);
         experimentDetailViewModel = new ViewModelProvider(this).get(ExperimentDetailViewModel.class);
@@ -92,6 +120,8 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         experimentDetailViewModel.getRunsForExperiment().observe(this, runs -> {
             adapter.setRuns(runs);
         });
+
+        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
     }
 
     @Override
@@ -99,6 +129,40 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.detail_experiment_menu, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_SIGN_IN:
+                if (data != null) {
+                    googleServicesHelper.handleSignInResult(getApplicationContext(), data);
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void signIn(View view) {
+        if(!googleServicesHelper.isSignedIn(getApplicationContext()))
+            startActivityForResult(googleServicesHelper.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+    }
+
+    public void signOut(){
+        if(googleServicesHelper.isSignedIn(getApplicationContext())){
+            googleServicesHelper.signOut(getApplicationContext());
+            Toast.makeText(this, "Signed out...", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void exportData() {
+        //TODO: Implementar para exportar todas las corridas. Cambiar mensaje del Toast!
+        Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void uploadToDrive() {
+        //TODO: Implementar para subir todas las corridas a Google Drive. Cambiar mensaje del Toast!
+        Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
     }
 
     public void deleteExperiment(MenuItem item) {

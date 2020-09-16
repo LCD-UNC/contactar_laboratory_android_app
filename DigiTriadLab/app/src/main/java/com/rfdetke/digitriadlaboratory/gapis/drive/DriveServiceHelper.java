@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.export.gdrive;
+package com.rfdetke.digitriadlaboratory.gapis.drive;
 
 import android.content.ContentResolver;
 import android.content.Intent;
