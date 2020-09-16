@@ -55,6 +55,7 @@
     <string name="collected_records">Collected records</string>
     <string name="export">Export</string>
     <string name="dialog_confirm_delete">Are you sure you want to delete?</string>
+    <string name="dialog_confirm_cancel">Are you sure you want to cancel?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="tags">Tags</string>
@@ -62,4 +63,8 @@
     <string name="sensor_configuration">Sensors Scan</string>
     <string name="cell_configuration">Cells Scan</string>
     <string name="cell">Cell</string>
+    <string name="scan_qr">Scan QR Code</string>
+    <string name="delete">Delete Item</string>
+    <string name="cancel_run">Cancel this Run</string>
+    <string name="delete_run">Delete this Run</string>
 </resources>

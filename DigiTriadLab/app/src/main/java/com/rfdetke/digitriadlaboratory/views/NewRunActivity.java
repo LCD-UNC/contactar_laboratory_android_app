@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.rfdetke.digitriadlaboratory.AlarmReceiver;
 import com.rfdetke.digitriadlaboratory.R;
@@ -46,6 +48,7 @@ public class NewRunActivity extends AppCompatActivity {
     private RunRepository runRepository;
     private long experimentId;
     private AlarmManager alarmManager;
+    private Toolbar topToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +56,12 @@ public class NewRunActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_run);
         simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.toolbar);
+        topToolbar = findViewById(R.id.top_toolbar);
+        setSupportActionBar(topToolbar);
 
         experimentId = getIntent().getLongExtra(ExperimentListAdapter.EXTRA_ID, 0);
         AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());
         runRepository = new RunRepository(database);
-
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(R.string.title_activity_new_run);
-        findViewById(R.id.toolbar_button).setVisibility(View.INVISIBLE);
 
         startDate = findViewById(R.id.datePicker);
         startDate.setMinDate(new Date().getTime());
@@ -95,6 +94,13 @@ public class NewRunActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.overlapped_run, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.simple_menu, menu);
+        return true;
     }
 
     private long saveRun(Date selectedDate) {

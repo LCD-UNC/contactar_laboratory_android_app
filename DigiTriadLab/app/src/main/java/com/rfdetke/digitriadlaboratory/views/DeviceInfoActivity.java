@@ -1,15 +1,14 @@
 package com.rfdetke.digitriadlaboratory.views;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelUuid;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
@@ -17,7 +16,6 @@ import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class DeviceInfoActivity extends AppCompatActivity {
@@ -25,18 +23,15 @@ public class DeviceInfoActivity extends AppCompatActivity {
     private AppDatabase database;
     private Device device;
     private ParcelUuid tempUuid;
+    private Toolbar topToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_info);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.toolbar);
-
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(R.string.device_info_title);
-        findViewById(R.id.toolbar_button).setVisibility(View.INVISIBLE);
+        topToolbar = findViewById(R.id.top_toolbar);
+        setSupportActionBar(topToolbar);
 
         EditText deviceCodename = findViewById(R.id.device_codename);
         TextView deviceUuid = findViewById(R.id.device_uuid);

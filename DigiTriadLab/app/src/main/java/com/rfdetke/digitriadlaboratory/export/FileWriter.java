@@ -24,7 +24,7 @@ public abstract class FileWriter extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        folder = new File(context.getExternalFilesDir(null)+"/"+getPath());
+        folder = new File(context.getExternalFilesDir(null)+File.separator+getPath());
         boolean success = folder.mkdirs();
         file = new File(folder, getFileName());
         try {

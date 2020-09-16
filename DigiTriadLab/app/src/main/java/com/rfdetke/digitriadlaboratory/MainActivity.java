@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,7 +17,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
@@ -24,17 +24,31 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabasePopulator;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
-import com.rfdetke.digitriadlaboratory.database.daos.RunDao;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao.StartDuration;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
+import com.rfdetke.digitriadlaboratory.export.gdrive.DriveServiceHelper;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.views.DeviceInfoActivity;
@@ -44,6 +58,7 @@ import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -54,14 +69,17 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 20;
     private static final int REQUEST_PERMISSIONS = 1;
+    private static final int REQUEST_CODE_SIGN_IN = 5;
 
     private List<String> permissionsList;
     private String[] permissionsArray;
-    private ExperimentViewModel experimentViewModel;
     ExperimentListAdapter adapter;
     private AppDatabase database;
-    private BluetoothAdapter bluetoothAdapter;
     private WifiManager wifiManager;
+    private DriveServiceHelper mDriveServiceHelper;
+    private GoogleSignInClient client;
+
+    private Toolbar topToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         preparePermissions();
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -87,17 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.toolbar);
-
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(getString(R.string.experiments));
-
-
-        Button toolbarButton = findViewById(R.id.toolbar_button);
-        toolbarButton.setOnClickListener(v -> {
-            showDeviceInfo();
-        });
+        topToolbar = findViewById(R.id.top_toolbar);
+        setSupportActionBar(topToolbar);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         adapter = new ExperimentListAdapter(this);
@@ -105,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        experimentViewModel = new ViewModelProvider(this).get(ExperimentViewModel.class);
+        ExperimentViewModel experimentViewModel = new ViewModelProvider(this).get(ExperimentViewModel.class);
         experimentViewModel.getAllExperimentDone().observe(this, experiments -> adapter.setExperiments(experiments));
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -129,7 +138,58 @@ public class MainActivity extends AppCompatActivity {
             deviceRepository.insert(new Device(null, Build.MANUFACTURER.toUpperCase(), Build.MODEL.toUpperCase(), new ParcelUuid(UUID.randomUUID())));
         }
         checkAllRunStates();
+//        requestSignIn();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    private void requestSignIn() {
+        Log.d("Main", "Requesting sign-in");
+
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestScopes(new Scope(DriveScopes.DRIVE))
+                        .build();
+        client = GoogleSignIn.getClient(getApplicationContext(), signInOptions);
+
+        // The result of the sign-in Intent is handled in onActivityResult.
+        startActivityForResult(client.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+    }
+
+    private void handleSignInResult(Intent result) {
+        GoogleSignIn.getSignedInAccountFromIntent(result)
+                .addOnSuccessListener(googleAccount -> {
+                    Log.d("Main", "Signed in as " + googleAccount.getEmail());
+
+                    // Use the authenticated account to sign in to the Drive service.
+                    GoogleAccountCredential credential =
+                            GoogleAccountCredential.usingOAuth2(
+                                    this, Collections.singleton(DriveScopes.DRIVE));
+                    credential.setSelectedAccount(googleAccount.getAccount());
+                    Drive googleDriveService =
+                            new Drive.Builder(
+                                    AndroidHttp.newCompatibleTransport(),
+                                    new GsonFactory(),
+                                    credential)
+                                    .setApplicationName("DigiTriad Lab")
+                                    .build();
+
+                    // The DriveServiceHelper encapsulates all REST API and SAF functionality.
+                    // Its instantiation is required before handling any onClick actions.
+                    mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
+                })
+                .addOnFailureListener(exception -> {
+                    Toast.makeText(this, "Remember to sign in with an unc.edu.ar account", Toast.LENGTH_LONG).show();
+                });
+    }
+
+
 
     private void checkAllRunStates() {
         RunRepository runRepository = new RunRepository(database);
@@ -174,18 +234,25 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void showDeviceInfo() {
+    public void showDeviceInfo(MenuItem menuItem) {
         Intent intent = new Intent(MainActivity.this, DeviceInfoActivity.class);
         startActivity(intent);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode != Activity.RESULT_OK) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
+        switch (requestCode) {
+            case REQUEST_ENABLE_BT:
+                if (resultCode != Activity.RESULT_OK) {
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                }
+                break;
+            case REQUEST_CODE_SIGN_IN:
+                if (data != null) {
+                    handleSignInResult(data);
+                }
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

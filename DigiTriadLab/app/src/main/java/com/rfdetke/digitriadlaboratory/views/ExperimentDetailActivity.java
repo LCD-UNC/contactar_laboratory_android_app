@@ -2,6 +2,7 @@ package com.rfdetke.digitriadlaboratory.views;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,14 +34,15 @@ public class ExperimentDetailActivity extends AppCompatActivity {
 
     private RunListAdapter adapter;
     private ExperimentDetailViewModel experimentDetailViewModel;
+    private Toolbar topToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiment_detail);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.delete_toolbar);
+        topToolbar = findViewById(R.id.top_toolbar);
+        setSupportActionBar(topToolbar);
 
         long experimentId = getIntent().getLongExtra(ExperimentListAdapter.EXTRA_ID, 0);
         experimentDetailViewModel = new ViewModelProvider(this).get(ExperimentDetailViewModel.class);
@@ -47,10 +52,6 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         qrContainer.setImageBitmap(experimentDetailViewModel.getExperimentQr());
 
         Experiment currentExperiment = experimentDetailViewModel.getCurrentExperiment();
-
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(getResources().getString(R.string.experiment_detail, currentExperiment.codename));
-        Button deleteButton = findViewById(R.id.delete_button);
 
         Button addRunButton = findViewById(R.id.add_run_button);
         addRunButton.setOnClickListener(v -> {
@@ -87,19 +88,26 @@ public class ExperimentDetailActivity extends AppCompatActivity {
         experimentDetailViewModel.getRunsForExperiment().observe(this, runs -> {
             adapter.setRuns(runs);
         });
+    }
 
-        deleteButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.dialog_confirm_delete)
-                    .setPositiveButton(R.string.yes, (dialog, id) -> {
-                        experimentDetailViewModel.getRunsForExperiment().removeObservers(this);
-                        experimentDetailViewModel.delete();
-                        finish();
-                    })
-                    .setNeutralButton(R.string.no, ((dialog, id) -> {
-                        dialog.dismiss();
-                    }))
-                    .create().show();
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.detail_experiment_menu, menu);
+        return true;
+    }
+
+    public void deleteExperiment(MenuItem item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_confirm_delete)
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
+                    experimentDetailViewModel.getRunsForExperiment().removeObservers(this);
+                    experimentDetailViewModel.delete();
+                    finish();
+                })
+                .setNeutralButton(R.string.no, ((dialog, id) -> {
+                    dialog.dismiss();
+                }))
+                .create().show();
     }
 }
