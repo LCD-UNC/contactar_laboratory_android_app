@@ -67,4 +67,6 @@
     <string name="delete">Delete Item</string>
     <string name="cancel_run">Cancel this Run</string>
     <string name="delete_run">Delete this Run</string>
+    <string name="about">About App</string>
+    <string name="application_logo">Application Logo</string>
 </resources>

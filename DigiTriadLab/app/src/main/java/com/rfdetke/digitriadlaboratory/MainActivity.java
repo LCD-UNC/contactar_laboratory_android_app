@@ -51,6 +51,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.Device;
 import com.rfdetke.digitriadlaboratory.export.gdrive.DriveServiceHelper;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
+import com.rfdetke.digitriadlaboratory.views.ApplicationInfo;
 import com.rfdetke.digitriadlaboratory.views.DeviceInfoActivity;
 import com.rfdetke.digitriadlaboratory.views.NewExperimentActivity;
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
@@ -255,6 +256,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void showAppInfo(MenuItem item) {
+        Intent intent = new Intent(MainActivity.this, ApplicationInfo.class);
+        startActivity(intent);
     }
 
     public static class EnableWifiDialogFragment extends DialogFragment {
