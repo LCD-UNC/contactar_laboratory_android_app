@@ -20,8 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.ApplicationInfo"></activity>
-        <activity android:name=".views.RunDetailActivity" />
+        <activity android:name=".gapis.drive.folderselector.FolderPickerActivity"></activity>
 
         <service
             android:name=".ExperimentService"
@@ -32,6 +31,8 @@
             android:name=".AlarmReceiver"
             android:process=":remote" />
 
+        <activity android:name=".views.ApplicationInfo" />
+        <activity android:name=".views.RunDetailActivity" />
         <activity android:name=".views.DeviceInfoActivity" />
         <activity android:name=".views.NewRunActivity" />
         <activity android:name=".views.ExperimentDetailActivity" />

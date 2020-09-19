@@ -6,14 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -32,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class NewRunActivity extends AppCompatActivity {
     public static final String EXTRA_RUN_ID = "com.rfdetke.digitriadlaboratory.RUN_ID";
@@ -58,7 +54,7 @@ public class NewRunActivity extends AppCompatActivity {
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
-        topToolbar.setTitle(getString(R.string.title_activity_new_run));
+        topToolbar.setTitle(getString(R.string.new_run));
 
         experimentId = getIntent().getLongExtra(ExperimentListAdapter.EXTRA_ID, 0);
         AppDatabase database = DatabaseSingleton.getInstance(getApplicationContext());
@@ -92,7 +88,7 @@ public class NewRunActivity extends AppCompatActivity {
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedDate.getTime(), pendingIntent);
                 finish();
             } else {
-                Toast.makeText(this, R.string.overlapped_run, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.invalid_datetime, Toast.LENGTH_SHORT).show();
             }
         });
     }

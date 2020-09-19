@@ -90,7 +90,7 @@ public class ExperimentListAdapter extends RecyclerView.Adapter<ExperimentListAd
             super(itemView);
             experimentItemView = itemView.findViewById(R.id.label);
             statusImageView = itemView.findViewById(R.id.status);
-            parentLayout = itemView.findViewById(R.id.experiment_list_item);
+            parentLayout = itemView.findViewById(R.id.folder_list_item);
         }
     }
 }

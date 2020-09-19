@@ -174,7 +174,7 @@ public class RunDetailActivity extends AppCompatActivity {
     public void signOut(){
         if(googleServicesHelper.isSignedIn(getApplicationContext())) {
             googleServicesHelper.signOut(getApplicationContext());
-            Toast.makeText(this, "Signed out...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.signed_out, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -197,7 +197,7 @@ public class RunDetailActivity extends AppCompatActivity {
             new CellCsvFileWriter(runs, database, context).execute();
 
         new JsonExperimentFileWriter(currentRun.experimentId, database, context).execute();
-        Toast.makeText(this, "Files exported...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.files_exported, Toast.LENGTH_SHORT).show();
     }
 
     public void uploadToDrive() {
@@ -262,7 +262,7 @@ public class RunDetailActivity extends AppCompatActivity {
                     }))
                     .create().show();
         } else {
-            Toast.makeText(this, "Cancel Run first!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.cancel_run_message, Toast.LENGTH_LONG).show();
         }
     }
 }

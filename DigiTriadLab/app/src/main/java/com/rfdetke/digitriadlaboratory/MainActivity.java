@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.CaseMap;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,12 +16,10 @@ import android.os.ParcelUuid;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -28,14 +27,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabasePopulator;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.daos.RunDao.StartDuration;
 import com.rfdetke.digitriadlaboratory.database.entities.Device;
-import com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper;
+import com.rfdetke.digitriadlaboratory.gapis.GoogleSessionAppCompatActivity;
+import com.rfdetke.digitriadlaboratory.gapis.drive.folderselector.FolderPickerActivity;
 import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.views.ApplicationInfo;
@@ -50,10 +49,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper.REQUEST_CODE_SIGN_IN;
-
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends GoogleSessionAppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 20;
     private static final int REQUEST_PERMISSIONS = 1;
@@ -66,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Toolbar topToolbar;
-    private GoogleServicesHelper googleServicesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
 
         preparePermissions();
@@ -82,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager != null) {
             if (!wifiManager.isWifiEnabled()) {
@@ -90,26 +85,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        setContentView(R.layout.activity_main);
-
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
-
-        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
-        bottomAppBar.setOnMenuItemClickListener((Toolbar.OnMenuItemClickListener) item -> {
-            switch (item.getItemId()) {
-                case R.id.sign_out:
-                    signOut();
-                    return true;
-
-                case R.id.new_experiment:
-                    addExperiment();
-                    return true;
-
-                default:
-                    return false;
-            }
-        });
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         adapter = new ExperimentListAdapter(this);
@@ -129,8 +106,22 @@ public class MainActivity extends AppCompatActivity {
             deviceRepository.insert(new Device(null, Build.MANUFACTURER.toUpperCase(), Build.MODEL.toUpperCase(), new ParcelUuid(UUID.randomUUID())));
         }
         checkAllRunStates();
+    }
 
-        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
+    @Override
+    public boolean onMenuItemClickListener(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                signOut();
+                return true;
+
+            case R.id.new_experiment:
+                addExperiment();
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -183,18 +174,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void signIn(View view) {
-        if(!googleServicesHelper.isSignedIn(getApplicationContext()))
-            startActivityForResult(googleServicesHelper.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-    }
-
-    public void signOut(){
-        if(googleServicesHelper.isSignedIn(getApplicationContext())){
-            googleServicesHelper.signOut(getApplicationContext());
-            Toast.makeText(this, "Signed out...", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void showDeviceInfo(MenuItem menuItem) {
         Intent intent = new Intent(MainActivity.this, DeviceInfoActivity.class);
         startActivity(intent);
@@ -213,20 +192,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode) {
-            case REQUEST_ENABLE_BT:
-                if (resultCode != Activity.RESULT_OK) {
-                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                }
-                break;
-            case REQUEST_CODE_SIGN_IN:
-                if (data != null) {
-                    googleServicesHelper.handleSignInResult(getApplicationContext(), data);
-                }
-                break;
-        }
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode != Activity.RESULT_OK) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+        }
     }
 
     public void showAppInfo(MenuItem item) {

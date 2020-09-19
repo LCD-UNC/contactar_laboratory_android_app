@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
@@ -78,29 +79,33 @@ public class GoogleServicesHelper {
         GoogleSignIn.getSignedInAccountFromIntent(result)
                 .addOnSuccessListener(googleAccount -> {
                     Toast.makeText(context, "Signed in as " + googleAccount.getEmail(), Toast.LENGTH_SHORT).show();
-
-                    // Use the authenticated account to sign in to the Drive service.
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(
-                                    context, Collections.singleton(DriveScopes.DRIVE));
-                    credential.setSelectedAccount(googleAccount.getAccount());
-                    Drive googleDriveService =
-                            new Drive.Builder(
-                                    AndroidHttp.newCompatibleTransport(),
-                                    new GsonFactory(),
-                                    credential)
-                                    .setApplicationName("DigiTriad Lab")
-                                    .build();
-
-                    // The DriveServiceHelper encapsulates all REST API and SAF functionality.
-                    // Its instantiation is required before handling any onClick actions.
                     signInButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.green300));
-                    driveServiceHelper = new DriveServiceHelper(googleDriveService);
                 })
                 .addOnFailureListener(exception -> {
                     signInButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.red300));
                     Toast.makeText(context, "Remember to sign in with an unc.edu.ar account", Toast.LENGTH_LONG).show();
                 });
+    }
+
+    public DriveServiceHelper getDriveService(Context context) {
+        if(driveServiceHelper == null && isSignedIn(context)) {
+            // Use the authenticated account to sign in to the Drive service.
+            GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(context);
+            GoogleAccountCredential credential =
+                    GoogleAccountCredential.usingOAuth2(
+                            context, Collections.singleton(DriveScopes.DRIVE));
+            assert googleAccount != null;
+            credential.setSelectedAccount(googleAccount.getAccount());
+            Drive googleDriveService =
+                    new Drive.Builder(
+                            AndroidHttp.newCompatibleTransport(),
+                            new GsonFactory(),
+                            credential)
+                            .setApplicationName("DigiTriad Lab")
+                            .build();
+            driveServiceHelper = new DriveServiceHelper(googleDriveService);
+        }
+        return driveServiceHelper;
     }
 
 }

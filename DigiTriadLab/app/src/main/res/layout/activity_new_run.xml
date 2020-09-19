@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/simple_menu"
-            app:title="@string/title_activity_new_run" />
+            app:title="@string/new_run" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +30,7 @@
             style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/when_run"
+            android:text="@string/schedule_run"
             android:textColor="@color/black"
             android:layout_marginStart="@dimen/big_padding"
             android:layout_marginTop="@dimen/big_padding"
