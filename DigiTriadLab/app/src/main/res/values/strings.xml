@@ -88,4 +88,6 @@
     <string name="go_back">Go Back</string>
     <string name="signed_as">Signed in as %s</string>
     <string name="unc_edu_ar_account">Remember to sign in with an unc.edu.ar account</string>
+    <string name="sign_in_first">Please sign in to Google first!</string>
+    <string name="cancel_run_first">Cancel the ongoing Run first!</string>
 </resources>

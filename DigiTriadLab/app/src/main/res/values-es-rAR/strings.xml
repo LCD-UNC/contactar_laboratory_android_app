@@ -83,4 +83,6 @@
     <string name="go_back">Volver</string>
     <string name="signed_as">Sesión iniciada como %s</string>
     <string name="unc_edu_ar_account">Recuerda iniciar sesión con una cuenta unc.edu.ar</string>
+    <string name="sign_in_first">Iniciá sesión en Google primero!</string>
+    <string name="cancel_run_first">Cancelá la Corrida en ejecución primero!</string>
 </resources>

@@ -196,8 +196,12 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
     }
 
     public void selectGoogleDriveDestination() {
-        Intent intent = new Intent(RunDetailActivity.this, FolderPickerActivity.class);
-        startActivityForResult(intent, FolderPickerActivity.REQUEST_PICK_FOLDER);
+        if(googleServicesHelper.isSignedIn(getApplicationContext())) {
+            Intent intent = new Intent(RunDetailActivity.this, FolderPickerActivity.class);
+            startActivityForResult(intent, FolderPickerActivity.REQUEST_PICK_FOLDER);
+        } else {
+            Toast.makeText(this, R.string.sign_in_first, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void uploadToDrive(String folderId) {
