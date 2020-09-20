@@ -107,6 +107,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/drives_progress_bar"/>
 
+        <Button
+            android:id="@+id/parent_folder_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/big_padding"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/white"
+            android:text="@string/go_back"
+            app:layout_constraintBottom_toBottomOf="@id/folders_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/folders_title" />
+
         <View
             android:id="@+id/separator2"
             android:layout_width="match_parent"
@@ -115,7 +128,7 @@
             android:layout_marginStart="@dimen/small_padding"
             android:layout_marginEnd="@dimen/small_padding"
             android:layout_marginTop="@dimen/small_padding"
-            app:layout_constraintTop_toBottomOf="@id/folders_title"/>
+            app:layout_constraintTop_toBottomOf="@id/parent_folder_button"/>
 
         <ProgressBar
             android:id="@+id/folders_progress_bar"

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -58,6 +59,12 @@ public class FolderPickerActivity extends GoogleSessionAppCompatActivity {
 
         ProgressBar drivesProgress = findViewById(R.id.drives_progress_bar);
         ProgressBar foldersProgress = findViewById(R.id.folders_progress_bar);
+
+        Button parentFolderButton = findViewById(R.id.parent_folder_button);
+
+        parentFolderButton.setOnClickListener(v -> {
+            folderModelView.removeLastFolder(foldersProgress, recyclerView);
+        });
 
         folderModelView.getDrives().observe(this, drives -> {
             for (int i = 0; i < drives.size(); i++) {
@@ -125,7 +132,7 @@ public class FolderPickerActivity extends GoogleSessionAppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra(EXTRA_FOLDER_PATH, selectedFolderPath);
             intent.putExtra(EXTRA_FOLDER_ID, selectedFolderId);
-            setResult(REQUEST_PICK_FOLDER, intent);
+            setResult(RESULT_OK, intent);
             finish();
         } else {
             Toast.makeText(this, R.string.pick_folder_message, Toast.LENGTH_SHORT).show();

@@ -78,12 +78,12 @@ public class GoogleServicesHelper {
     public void handleSignInResult(Context context, Intent result) {
         GoogleSignIn.getSignedInAccountFromIntent(result)
                 .addOnSuccessListener(googleAccount -> {
-                    Toast.makeText(context, "Signed in as " + googleAccount.getEmail(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, String.format(context.getString(R.string.signed_as), googleAccount.getEmail()), Toast.LENGTH_SHORT).show();
                     signInButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.green300));
                 })
                 .addOnFailureListener(exception -> {
                     signInButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.red300));
-                    Toast.makeText(context, "Remember to sign in with an unc.edu.ar account", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.unc_edu_ar_account, Toast.LENGTH_LONG).show();
                 });
     }
 

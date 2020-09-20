@@ -26,7 +26,7 @@ public abstract class GoogleSessionAppCompatActivity extends AppCompatActivity {
     public void signOut(){
         if(googleServicesHelper.isSignedIn(getApplicationContext())){
             googleServicesHelper.signOut(getApplicationContext());
-            Toast.makeText(this, "Signed out...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.signed_out, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -1,16 +1,19 @@
 package com.rfdetke.digitriadlaboratory.views;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.CaseMap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.rfdetke.digitriadlaboratory.AlarmReceiver;
 import com.rfdetke.digitriadlaboratory.ExperimentService;
@@ -29,6 +34,7 @@ import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
+import com.rfdetke.digitriadlaboratory.export.FileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
@@ -36,6 +42,9 @@ import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.json.JsonExperimentFileWriter;
 import com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper;
+import com.rfdetke.digitriadlaboratory.gapis.GoogleSessionAppCompatActivity;
+import com.rfdetke.digitriadlaboratory.gapis.drive.DriveServiceHelper;
+import com.rfdetke.digitriadlaboratory.gapis.drive.folderselector.FolderPickerActivity;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.RunDetailViewModel;
 
@@ -45,42 +54,21 @@ import java.util.Objects;
 
 import static com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper.REQUEST_CODE_SIGN_IN;
 
-public class RunDetailActivity extends AppCompatActivity {
+public class RunDetailActivity extends GoogleSessionAppCompatActivity {
 
     private RunDetailViewModel runDetailViewModel;
     private Toolbar topToolbar;
     private Run currentRun;
-    private GoogleServicesHelper googleServicesHelper;
     private AppDatabase database;
     private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_detail);
+        super.onCreate(savedInstanceState);
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
-
-        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
-        bottomAppBar.setOnMenuItemClickListener((Toolbar.OnMenuItemClickListener) item -> {
-            switch (item.getItemId()) {
-                case R.id.sign_out:
-                    signOut();
-                    return true;
-
-                case R.id.export:
-                    exportData();
-                    return true;
-
-                case R.id.upload:
-                    uploadToDrive();
-                    return true;
-
-                default:
-                    return false;
-            }
-        });
 
         long runId = getIntent().getLongExtra(RunListAdapter.EXTRA_ID, 0);
 
@@ -143,8 +131,6 @@ public class RunDetailActivity extends AppCompatActivity {
             else
                 bluetoothLeCount.setText("0");
         });
-
-        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
     }
 
     @Override
@@ -156,25 +142,34 @@ public class RunDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_SIGN_IN:
-                if (data != null) {
-                    googleServicesHelper.handleSignInResult(getApplicationContext(), data);
-                }
-                break;
-        }
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == FolderPickerActivity.REQUEST_PICK_FOLDER) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                String folderId = data.getStringExtra(FolderPickerActivity.EXTRA_FOLDER_ID);
+                String folderPath = data.getStringExtra(FolderPickerActivity.EXTRA_FOLDER_PATH);
+                Toast.makeText(this, getResources().getString(R.string.uploading_to_folder, folderPath), Toast.LENGTH_SHORT).show();
+                uploadToDrive(folderId);
+            }
+        }
     }
 
-    public void signIn(View view) {
-        if(!googleServicesHelper.isSignedIn(getApplicationContext()))
-            startActivityForResult(googleServicesHelper.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-    }
+    @Override
+    public boolean onMenuItemClickListener(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                signOut();
+                return true;
 
-    public void signOut(){
-        if(googleServicesHelper.isSignedIn(getApplicationContext())) {
-            googleServicesHelper.signOut(getApplicationContext());
-            Toast.makeText(this, R.string.signed_out, Toast.LENGTH_SHORT).show();
+            case R.id.export:
+                exportData();
+                return true;
+
+            case R.id.upload:
+                selectGoogleDriveDestination();
+                return true;
+
+            default:
+                return false;
         }
     }
 
@@ -200,9 +195,45 @@ public class RunDetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.files_exported, Toast.LENGTH_SHORT).show();
     }
 
-    public void uploadToDrive() {
-        //TODO: Implementar para subir todas las corridas a Google Drive. Cambiar mensaje del Toast!
-        Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
+    public void selectGoogleDriveDestination() {
+        Intent intent = new Intent(RunDetailActivity.this, FolderPickerActivity.class);
+        startActivityForResult(intent, FolderPickerActivity.REQUEST_PICK_FOLDER);
+    }
+
+    public void uploadToDrive(String folderId) {
+        List<String> modules = runDetailViewModel.getModules();
+        long[] runs = {currentRun.id};
+        if (modules.contains(SourceTypeEnum.WIFI.name()))
+            writeDriveFile(folderId, new WifiCsvFileWriter(runs, database, context));
+
+        if (modules.contains(SourceTypeEnum.BLUETOOTH.name()))
+            writeDriveFile(folderId, new BluetoothCsvFileWriter(runs, database, context));
+
+        if (modules.contains(SourceTypeEnum.BLUETOOTH_LE.name()))
+            writeDriveFile(folderId, new BluetoothLeCsvFileWriter(runs, database, context));
+
+        if (modules.contains(SourceTypeEnum.SENSORS.name()))
+            writeDriveFile(folderId, new SensorCsvFileWriter(runs, database, context));
+
+        if (modules.contains(SourceTypeEnum.CELL.name()))
+            writeDriveFile(folderId, new CellCsvFileWriter(runs, database, context));
+
+        writeDriveFile(folderId, new JsonExperimentFileWriter(currentRun.experimentId, database, context));
+    }
+
+    private void writeDriveFile(String folderId, FileWriter fileWriter) {
+        DriveServiceHelper driveServiceHelper = googleServicesHelper.getDriveService(getApplicationContext());
+        driveServiceHelper.createFile(fileWriter.getFileName(), folderId)
+                .addOnSuccessListener(s ->
+                        driveServiceHelper.updateFileContent(s, fileWriter.getContent())
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getApplicationContext(),
+                                                getString(R.string.failed_uploading),
+                                                Toast.LENGTH_SHORT).show()))
+                .addOnFailureListener(e ->
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.failed_creating),
+                                Toast.LENGTH_SHORT).show());
     }
 
     public void cancelRun(MenuItem item) {
