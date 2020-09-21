@@ -198,7 +198,7 @@ public class ExperimentDetailActivity extends AppCompatActivity {
             new CellCsvFileWriter(runs, database, context).execute();
 
         new JsonExperimentFileWriter(currentExperiment.id, database, context).execute();
-        Toast.makeText(this, "Exporting results...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "File exported...", Toast.LENGTH_SHORT).show();
     }
 
     public void uploadToDrive() {
