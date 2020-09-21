@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ToolbarTheme"
+        android:translationZ="@dimen/small_padding"
         app:liftOnScroll="true"
         >
 
@@ -37,6 +38,7 @@
                 android:id="@+id/qr_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:translationZ="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -79,7 +81,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/experiment_description"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_run_button"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

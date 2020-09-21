@@ -57,7 +57,6 @@ public class MainActivity extends GoogleSessionAppCompatActivity {
     private AppDatabase database;
     private WifiManager wifiManager;
 
-
     private Toolbar topToolbar;
 
     @Override

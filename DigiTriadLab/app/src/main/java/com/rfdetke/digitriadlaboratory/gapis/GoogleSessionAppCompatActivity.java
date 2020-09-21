@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.rfdetke.digitriadlaboratory.R;
@@ -34,10 +33,10 @@ public abstract class GoogleSessionAppCompatActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
-
         BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
         bottomAppBar.setOnMenuItemClickListener(this::onMenuItemClickListener);
+
+        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
     }
 
     @Override
@@ -49,6 +48,12 @@ public abstract class GoogleSessionAppCompatActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        googleServicesHelper = GoogleServicesHelper.getInstance(getApplicationContext(), findViewById(R.id.signInFab));
     }
 
     public abstract boolean onMenuItemClickListener(MenuItem item);
