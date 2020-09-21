@@ -34,7 +34,7 @@ public abstract class CsvSampleFileWriter extends CsvFileWriter{
     @Override
     public String getFileName() {
         if(runIds.length>1) {
-            return String.format(Locale.ENGLISH, "multiple-runs-%s.csv", getKey().toLowerCase());
+            return String.format(Locale.ENGLISH, "M-R-%s.csv", getKey().toLowerCase());
         } else {
             Run run = new RunRepository(database).getById(runIds[0]);
             return String.format(Locale.ENGLISH, "X-%s_R-%d_%s_%s.csv",

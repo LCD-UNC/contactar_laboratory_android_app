@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,12 +26,26 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.rfdetke.digitriadlaboratory.R;
+import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
+import com.rfdetke.digitriadlaboratory.database.AppDatabase;
+import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
+import com.rfdetke.digitriadlaboratory.database.entities.Run;
+import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
+import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.json.JsonExperimentFileWriter;
 import com.rfdetke.digitriadlaboratory.gapis.GoogleServicesHelper;
+import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
+import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentDetailViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,11 +60,17 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     private Toolbar topToolbar;
     private Experiment currentExperiment;
     private GoogleServicesHelper googleServicesHelper;
+    private AppDatabase database;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_experiment_detail);
+
+        context = getApplicationContext();
+        database = DatabaseSingleton.getInstance(context);
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
@@ -156,8 +177,28 @@ public class ExperimentDetailActivity extends AppCompatActivity {
     }
 
     public void exportData() {
+
         //TODO: Implementar para exportar todas las corridas. Cambiar mensaje del Toast!
-        Toast.makeText(this, "Not implemented yet!", Toast.LENGTH_SHORT).show();
+
+        long[] runs = experimentDetailViewModel.getRunIdsForExperiment(currentExperiment.id);
+
+        if (experimentDetailViewModel.getModules().contains(SourceTypeEnum.WIFI.name()))
+            new WifiCsvFileWriter(runs, database, context).execute();
+
+        if (experimentDetailViewModel.getModules().contains(SourceTypeEnum.BLUETOOTH.name()))
+            new BluetoothCsvFileWriter(runs, database, context).execute();
+
+        if (experimentDetailViewModel.getModules().contains(SourceTypeEnum.BLUETOOTH_LE.name()))
+            new BluetoothLeCsvFileWriter(runs, database, context).execute();
+
+        if (experimentDetailViewModel.getModules().contains(SourceTypeEnum.SENSORS.name()))
+            new SensorCsvFileWriter(runs, database, context).execute();
+
+        if (experimentDetailViewModel.getModules().contains(SourceTypeEnum.CELL.name()))
+            new CellCsvFileWriter(runs, database, context).execute();
+
+        new JsonExperimentFileWriter(currentExperiment.id, database, context).execute();
+        Toast.makeText(this, "Exporting results...", Toast.LENGTH_SHORT).show();
     }
 
     public void uploadToDrive() {

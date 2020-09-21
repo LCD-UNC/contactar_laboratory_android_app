@@ -21,6 +21,7 @@ import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
 import com.rfdetke.digitriadlaboratory.utils.ShareTools;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,10 +38,17 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
     private AdvertiseConfiguration advertiseConfiguration;
     private List<String> tagList;
     private Bitmap experimentQr;
+    private AppDatabase database;
+
+    private List<String> modules;
+
+    public List<String> getModules() {
+        return modules;
+    }
 
     public ExperimentDetailViewModel(@NonNull Application application) {
         super(application);
-        AppDatabase database = DatabaseSingleton.getInstance(application.getApplicationContext());
+        database = DatabaseSingleton.getInstance(application.getApplicationContext());
         runRepository = new RunRepository(database);
         experimentRepository = new ExperimentRepository(database);
         configurationRepository = new ConfigurationRepository(database);
@@ -55,6 +63,13 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
         this.tagList = experimentRepository.getTagList(experimentId);
         this.experimentQr = ShareTools.getQrExperiment(currentExperiment, configurationRepository,
                 advertiseConfiguration, tagList);
+        ConfigurationRepository configurationRepository = new ConfigurationRepository(database);
+        SourceTypeRepository sourceTypeRepository = new SourceTypeRepository(database);
+        modules = new ArrayList<>();
+        for (WindowConfiguration configuration :
+                configurationRepository.getConfigurationsForExperiment(currentExperiment.id)) {
+            modules.add(sourceTypeRepository.getById(configuration.sourceType).type);
+        }
     }
 
     public LiveData<List<Run>> getRunsForExperiment() {
@@ -93,5 +108,9 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
 
     public List<String> getTagList() {
         return tagList;
+    }
+
+    public long[] getRunIdsForExperiment(long id) {
+        return runRepository.getRunIdsForExperiment(id);
     }
 }
