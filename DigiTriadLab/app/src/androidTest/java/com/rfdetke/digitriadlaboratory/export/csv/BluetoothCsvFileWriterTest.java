@@ -25,8 +25,8 @@ public class BluetoothCsvFileWriterTest extends SampleCsvFileWriterTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        windowRepository.insert(runs2[0], SourceTypeEnum.BLUETOOTH.name());
-        windowRepository.insert(runs2[1], SourceTypeEnum.BLUETOOTH.name());
+        windowRepository.insert(runs2[0], 0, SourceTypeEnum.BLUETOOTH.name());
+        windowRepository.insert(runs2[1],0, SourceTypeEnum.BLUETOOTH.name());
         fileWriter = new BluetoothCsvFileWriter(runs1, db, context);
         fileWriterMultiple = new BluetoothCsvFileWriter(runs2, db, context);
     }

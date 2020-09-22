@@ -27,7 +27,7 @@ public abstract class Scheduler implements ObservableTask {
     private Timer activeTimer;
     private Timer inactiveTimer;
 
-    private int windowCount;
+    protected int windowCount;
 
     public Scheduler(long runId, final WindowConfiguration windowConfiguration, Context context,
                      AppDatabase database) {

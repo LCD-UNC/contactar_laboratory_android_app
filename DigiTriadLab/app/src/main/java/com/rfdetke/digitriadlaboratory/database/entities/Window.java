@@ -25,14 +25,16 @@ public class Window {
     public long id;
 
     public Date timestamp;
+    public long number;
 
     @ColumnInfo(name = "run_id")
     public long runId;
     @ColumnInfo(name = "source_type")
     public long sourceType;
 
-    public Window(Date timestamp, long runId, long sourceType) {
+    public Window(Date timestamp, long number, long runId, long sourceType) {
         this.timestamp = timestamp;
+        this.number = number;
         this.runId = runId;
         this.sourceType = sourceType;
     }

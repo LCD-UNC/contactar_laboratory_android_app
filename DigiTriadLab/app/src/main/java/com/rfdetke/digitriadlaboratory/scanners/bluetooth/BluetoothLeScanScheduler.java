@@ -33,7 +33,7 @@ public class BluetoothLeScanScheduler extends Scheduler {
 
     @Override
     protected void startTask() {
-        long sampleId = windowRepository.insert(runId, key);
+        long sampleId = windowRepository.insert(runId, this.windowCount, key);
         bluetoothLeDataBucket = new BluetoothLeDataBucket(sampleId, context);
 
         // TODO: Implementar un mutex para hacer escaneo despues porque no se pueden hacer escaneos

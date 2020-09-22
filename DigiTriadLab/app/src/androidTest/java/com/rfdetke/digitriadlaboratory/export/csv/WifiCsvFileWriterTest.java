@@ -17,8 +17,8 @@ public class WifiCsvFileWriterTest extends SampleCsvFileWriterTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        windowRepository.insert(runs2[0], SourceTypeEnum.WIFI.name());
-        windowRepository.insert(runs2[1], SourceTypeEnum.WIFI.name());
+        windowRepository.insert(runs2[0], 0, SourceTypeEnum.WIFI.name());
+        windowRepository.insert(runs2[1], 0, SourceTypeEnum.WIFI.name());
         fileWriter = new WifiCsvFileWriter(runs1, db, context);
         fileWriterMultiple = new WifiCsvFileWriter(runs2, db, context);
     }

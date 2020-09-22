@@ -34,7 +34,7 @@ public class WindowRepositoryTest extends DatabaseTest {
 
     @Test
     public void insert() {
-        long id = repository.insert(run.id, SourceTypeEnum.WIFI.name());
+        long id = repository.insert(run.id, 0, SourceTypeEnum.WIFI.name());
         assertNotNull(repository.getById(id));
     }
 }

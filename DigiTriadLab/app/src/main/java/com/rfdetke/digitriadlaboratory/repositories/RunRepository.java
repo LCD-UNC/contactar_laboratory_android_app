@@ -21,6 +21,10 @@ public class RunRepository {
         return runDao.getLiveDataRunsByExperimentId(id);
     }
 
+    public long[] getRunIdsForExperiment(long id) {
+        return runDao.getRunIdsByExperimentId(id);
+    }
+
     public void updateState(long id, String state) {
         runDao.updateRunState(id, state);
     }

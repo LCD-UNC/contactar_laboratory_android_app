@@ -39,7 +39,7 @@ public class WifiRepositoryTest extends DatabaseTest {
         experiment.id = experimentRepository.insert(experiment);
         run = TestUtils.getRun(0, experiment.id);
         run.id = runRepository.insert(run);
-        windowId = windowRepository.insert(run.id, SourceTypeEnum.WIFI.name());
+        windowId = windowRepository.insert(run.id, 0, SourceTypeEnum.WIFI.name());
     }
 
     @Test

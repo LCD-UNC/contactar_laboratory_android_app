@@ -39,7 +39,7 @@ public class BluetoothRepositoryTest extends DatabaseTest {
         experiment.id = experimentRepository.insert(experiment);
         run = TestUtils.getRun(0, experiment.id);
         run.id = runRepository.insert(run);
-        windowId = windowRepository.insert(run.id, SourceTypeEnum.BLUETOOTH.name());
+        windowId = windowRepository.insert(run.id, 0, SourceTypeEnum.BLUETOOTH.name());
     }
 
     @Test

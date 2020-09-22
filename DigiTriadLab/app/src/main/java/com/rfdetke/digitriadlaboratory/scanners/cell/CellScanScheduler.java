@@ -31,7 +31,7 @@ public class CellScanScheduler extends Scheduler {
 
     @Override
     protected void startTask() {
-        long sampleId = windowRepository.insert(runId, key);
+        long sampleId = windowRepository.insert(runId, this.windowCount, key);
         cellDataBucket = new CellDataBucket(sampleId,context);
         List<CellRecord> cellRecords = new ArrayList<>();
         for(Object record : cellDataBucket.getRecordsList()) {

@@ -30,7 +30,7 @@ public class BluetoothScanScheduler extends Scheduler {
 
     @Override
     protected void startTask() {
-        long sampleId = windowRepository.insert(runId, key);
+        long sampleId = windowRepository.insert(runId, this.windowCount, key);
         IntentFilter bluetoothIntentFilter = new IntentFilter();
         bluetoothIntentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         bluetoothDataBucket = new BluetoothDataBucket(sampleId, context);

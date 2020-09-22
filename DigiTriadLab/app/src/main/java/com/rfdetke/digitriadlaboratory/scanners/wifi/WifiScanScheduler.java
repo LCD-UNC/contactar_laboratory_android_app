@@ -29,7 +29,7 @@ public class WifiScanScheduler extends Scheduler {
 
     @Override
     protected void startTask() {
-        long sampleId = windowRepository.insert(runId, key);
+        long sampleId = windowRepository.insert(runId, this.windowCount, key);
         IntentFilter wifiIntentFilter = new IntentFilter();
         wifiIntentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         wifiDataBucket = new WifiDataBucket(sampleId, context);

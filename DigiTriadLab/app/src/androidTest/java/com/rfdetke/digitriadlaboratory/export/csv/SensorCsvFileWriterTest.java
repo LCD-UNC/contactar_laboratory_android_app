@@ -24,8 +24,8 @@ public class SensorCsvFileWriterTest extends SampleCsvFileWriterTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        windowRepository.insert(runs2[0], SourceTypeEnum.SENSORS.name());
-        windowRepository.insert(runs2[1], SourceTypeEnum.SENSORS.name());
+        windowRepository.insert(runs2[0], 0, SourceTypeEnum.SENSORS.name());
+        windowRepository.insert(runs2[1], 0, SourceTypeEnum.SENSORS.name());
         fileWriter = new SensorCsvFileWriter(runs1, db, context);
         fileWriterMultiple = new SensorCsvFileWriter(runs2, db, context);
     }
