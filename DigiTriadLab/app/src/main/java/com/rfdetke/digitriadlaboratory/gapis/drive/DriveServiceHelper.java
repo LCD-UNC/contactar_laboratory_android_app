@@ -19,7 +19,9 @@ import java.util.concurrent.Executors;
  */
 public class DriveServiceHelper {
     public static final String MIMETYPE_FOLDER = "application/vnd.google-apps.folder";
+    public static final String MIMETYPE_TEXT = "text/plain";
     private static final String FOLDERS_LOOKUP = "'%s' in parents and mimeType = '"+MIMETYPE_FOLDER+"'";
+    private static final String FILE_LOOKUP = "name = '%s' and '%s' in parents and mimeType = '"+MIMETYPE_TEXT+"'";
 
     private final Executor mExecutor = Executors.newSingleThreadExecutor();
     private final Drive mDriveService;
@@ -44,7 +46,16 @@ public class DriveServiceHelper {
     }
 
     public Task<String> createFile(String fileName, String folderId) {
+        String query = String.format(FILE_LOOKUP, fileName, folderId);
         return Tasks.call(mExecutor, () -> {
+            FileList files = mDriveService.files().list()
+                    .setQ(query)
+                    .setIncludeTeamDriveItems(true)
+                    .setSupportsTeamDrives(true)
+                    .execute();
+            for(File file : files.getFiles()) {
+                mDriveService.files().delete(file.getId()).execute();
+            }
             File metadata = new File()
                     .setParents(Collections.singletonList(folderId))
                     .setMimeType("text/plain")
@@ -63,7 +74,7 @@ public class DriveServiceHelper {
         return Tasks.call(mExecutor, () -> {
             File metadata = new File();
 
-            ByteArrayContent contentStream = ByteArrayContent.fromString("text/plain", content);
+            ByteArrayContent contentStream = ByteArrayContent.fromString(MIMETYPE_TEXT, content);
 
             mDriveService.files().update(fileId, metadata, contentStream).setSupportsTeamDrives(true).execute();
             return null;

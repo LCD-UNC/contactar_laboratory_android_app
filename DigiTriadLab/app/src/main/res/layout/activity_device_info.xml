@@ -51,30 +51,30 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <TextView
-            android:id="@+id/device_uuid_title"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/uuid_input_layout"
+            style="@style/OutlinedBox.Dense"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/big_padding"
+            android:layout_marginLeft="@dimen/big_padding"
             android:layout_marginTop="@dimen/big_padding"
-            android:text="@string/device_uuid_title"
-            android:textColor="@color/black"
+            android:layout_marginRight="@dimen/big_padding"
+            android:hint="@string/device_uuid_title"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/codename_input_layout" />
+            app:layout_constraintTop_toBottomOf="@id/codename_input_layout">
 
-        <TextView
-            android:id="@+id/device_uuid"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/small_padding"
-            android:layout_marginTop="@dimen/small_padding"
-            android:text="@string/no_information"
-            android:textColor="@color/grey"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/device_uuid_title" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/device_uuid"
+                style="@android:style/Widget.Material.EditText"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/device_brand_title"
@@ -86,7 +86,7 @@
             android:text="@string/device_brand_title"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/device_uuid" />
+            app:layout_constraintTop_toBottomOf="@id/uuid_input_layout" />
 
         <TextView
             android:id="@+id/device_brand"

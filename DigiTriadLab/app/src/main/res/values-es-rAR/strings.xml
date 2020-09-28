@@ -85,4 +85,5 @@
     <string name="unc_edu_ar_account">Recuerda iniciar sesión con una cuenta unc.edu.ar</string>
     <string name="sign_in_first">Iniciá sesión en Google primero!</string>
     <string name="cancel_run_first">Cancelá la Corrida en ejecución primero!</string>
+    <string name="invalid_uuid">UUID inválido</string>
 </resources>

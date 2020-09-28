@@ -352,6 +352,9 @@ public class NewExperimentActivity extends AppCompatActivity {
         return !bluetoothLeAdvertiseActive.getText().toString().isEmpty() &&
                 !bluetoothLeAdvertiseInactive.getText().toString().isEmpty() &&
                 !bluetoothLeAdvertiseTxPower.getText().toString().isEmpty() &&
+                (Integer.parseInt(bluetoothLeAdvertiseActive.getText().toString()) > 0) &&
+                (Integer.parseInt(bluetoothLeAdvertiseInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(bluetoothLeAdvertiseWindows.getText().toString()) > 0) &&
                 (Integer.parseInt(bluetoothLeAdvertiseTxPower.getText().toString()) >= AdvertisingSetParameters.TX_POWER_MIN) &&
                 (Integer.parseInt(bluetoothLeAdvertiseTxPower.getText().toString()) <= AdvertisingSetParameters.TX_POWER_MAX) &&
                 !bluetoothLeAdvertiseInterval.getText().toString().isEmpty() &&
@@ -367,31 +370,46 @@ public class NewExperimentActivity extends AppCompatActivity {
     private boolean validateWifiConfig() {
         return  !wifiActive.getText().toString().isEmpty() &&
                 !wifiInactive.getText().toString().isEmpty() &&
-                !wifiWindows.getText().toString().isEmpty();
+                !wifiWindows.getText().toString().isEmpty() &&
+                (Integer.parseInt(wifiActive.getText().toString()) > 0) &&
+                (Integer.parseInt(wifiInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(wifiWindows.getText().toString()) > 0);
     }
 
     private boolean validateBluetoothConfig() {
         return  !bluetoothActive.getText().toString().isEmpty() &&
                 !bluetoothInactive.getText().toString().isEmpty() &&
-                !bluetoothWindows.getText().toString().isEmpty();
+                !bluetoothWindows.getText().toString().isEmpty() &&
+                (Integer.parseInt(bluetoothActive.getText().toString()) > 0) &&
+                (Integer.parseInt(bluetoothInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(bluetoothWindows.getText().toString()) > 0);
     }
 
     private boolean validateBluetoothLeConfig() {
         return  !bluetoothLeActive.getText().toString().isEmpty() &&
                 !bluetoothLeInactive.getText().toString().isEmpty() &&
-                !bluetoothLeWindows.getText().toString().isEmpty();
+                !bluetoothLeWindows.getText().toString().isEmpty() &&
+                (Integer.parseInt(bluetoothLeActive.getText().toString()) > 0) &&
+                (Integer.parseInt(bluetoothLeInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(bluetoothLeWindows.getText().toString()) > 0);
     }
 
     private boolean validateSensorsConfig() {
         return !sensorsActive.getText().toString().isEmpty() &&
                 !sensorsInactive.getText().toString().isEmpty() &&
-                !sensorsWindows.getText().toString().isEmpty();
+                !sensorsWindows.getText().toString().isEmpty() &&
+                (Integer.parseInt(sensorsActive.getText().toString()) > 0) &&
+                (Integer.parseInt(sensorsInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(sensorsWindows.getText().toString()) > 0);
     }
 
     private boolean validateCellConfig() {
         return !cellActive.getText().toString().isEmpty() &&
                 !cellInactive.getText().toString().isEmpty() &&
-                !cellWindows.getText().toString().isEmpty();
+                !cellWindows.getText().toString().isEmpty() &&
+                (Integer.parseInt(cellActive.getText().toString()) > 0) &&
+                (Integer.parseInt(cellInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(cellWindows.getText().toString()) > 0);
     }
 
     private long saveExperiment() {
@@ -399,7 +417,6 @@ public class NewExperimentActivity extends AppCompatActivity {
                 description.getText().toString(),
                 deviceRepository.getDevice().id));
     }
-
 
     private void saveBluetoothLeConfig(long experimentId) {
         long active = Long.parseLong(bluetoothLeActive.getText().toString());

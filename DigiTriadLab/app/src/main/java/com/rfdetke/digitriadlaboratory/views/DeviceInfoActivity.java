@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,7 +24,6 @@ public class DeviceInfoActivity extends AppCompatActivity {
 
     private AppDatabase database;
     private Device device;
-    private ParcelUuid tempUuid;
     private Toolbar topToolbar;
 
     @Override
@@ -36,7 +36,7 @@ public class DeviceInfoActivity extends AppCompatActivity {
         topToolbar.setTitle(getString(R.string.device_info_title));
 
         EditText deviceCodename = findViewById(R.id.device_codename);
-        TextView deviceUuid = findViewById(R.id.device_uuid);
+        EditText deviceUuid = findViewById(R.id.device_uuid);
         TextView deviceBrand = findViewById(R.id.device_brand);
         TextView deviceModel = findViewById(R.id.device_model);
 
@@ -68,20 +68,25 @@ public class DeviceInfoActivity extends AppCompatActivity {
             deviceModel.setText(device.model.toUpperCase());
         }
 
-        saveButton.setOnClickListener( v -> {
-            if (tempUuid != null && !tempUuid.equals(device.uuid)) {
-                device.uuid = tempUuid;
-            }
+        saveButton.setOnClickListener(v -> {
+            if(deviceUuid.getText().toString().matches("[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$")) {
+                ParcelUuid tempUuid = new ParcelUuid(UUID.fromString(deviceUuid.getText().toString()));
+                if (!tempUuid.equals(device.uuid)) {
+                    device.uuid = tempUuid;
+                }
 
-            if (!deviceCodename.getText().toString().isEmpty()) {
-                device.codename = deviceCodename.getText().toString();
+                if (!deviceCodename.getText().toString().isEmpty()) {
+                    device.codename = deviceCodename.getText().toString();
+                }
+                deviceRepository.update(device);
+                finish();
+            } else {
+                Toast.makeText(this, R.string.invalid_uuid, Toast.LENGTH_SHORT).show();
             }
-            deviceRepository.update(device);
-            finish();
         });
 
         newUuidButton.setOnClickListener( v -> {
-            tempUuid = new ParcelUuid(UUID.randomUUID());
+            ParcelUuid tempUuid = new ParcelUuid(UUID.randomUUID());
             deviceUuid.setText(tempUuid.toString().toUpperCase());
         });
     }
