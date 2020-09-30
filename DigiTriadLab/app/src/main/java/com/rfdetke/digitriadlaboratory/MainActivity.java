@@ -38,7 +38,7 @@ import com.rfdetke.digitriadlaboratory.views.ApplicationInfo;
 import com.rfdetke.digitriadlaboratory.views.DeviceInfoActivity;
 import com.rfdetke.digitriadlaboratory.views.NewExperimentActivity;
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
-import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentViewModel;
+import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentListViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,8 +90,8 @@ public class MainActivity extends GoogleSessionAppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ExperimentViewModel experimentViewModel = new ViewModelProvider(this).get(ExperimentViewModel.class);
-        experimentViewModel.getAllExperimentDone().observe(this, experiments -> adapter.setExperiments(experiments));
+        ExperimentListViewModel experimentListViewModel = new ViewModelProvider(this).get(ExperimentListViewModel.class);
+        experimentListViewModel.getAllExperimentDone().observe(this, experiments -> adapter.setExperiments(experiments));
 
         database = DatabaseSingleton.getInstance(getApplicationContext());
         DatabasePopulator.prepopulate(database);

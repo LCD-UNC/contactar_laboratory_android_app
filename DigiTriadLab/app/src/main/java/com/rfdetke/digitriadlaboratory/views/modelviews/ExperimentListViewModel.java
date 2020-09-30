@@ -14,12 +14,12 @@ import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 
 import java.util.List;
 
-public class ExperimentViewModel extends AndroidViewModel {
+public class ExperimentListViewModel extends AndroidViewModel {
 
     private ExperimentRepository experimentRepository;
     private LiveData<List<ExperimentDone>> allExperimentDone;
 
-    public ExperimentViewModel(@NonNull Application application) {
+    public ExperimentListViewModel(@NonNull Application application) {
         super(application);
         AppDatabase appDatabase = DatabaseSingleton.getInstance(application.getApplicationContext());
         experimentRepository = new ExperimentRepository(appDatabase);

@@ -725,7 +725,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/wifi_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -735,7 +735,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/wifi_title" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/bluetooth_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -745,7 +745,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/bluetooth_title" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/bluetooth_le_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -755,7 +755,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/bluetooth_le_title" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/sensors_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -765,7 +765,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/sensors_title" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/cell_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -775,7 +775,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/cell_title" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/bluetooth_le_advertise_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

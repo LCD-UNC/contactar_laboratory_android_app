@@ -91,4 +91,6 @@
     <string name="sign_in_first">Please sign in to Google first!</string>
     <string name="cancel_run_first">Cancel the ongoing Run first!</string>
     <string name="invalid_uuid">Invalid UUID</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="edit">Edit</string>
 </resources>

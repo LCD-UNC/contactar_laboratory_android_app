@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.rfdetke.digitriadlaboratory.MainActivity;
 import com.rfdetke.digitriadlaboratory.R;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
@@ -238,4 +239,17 @@ public class ExperimentDetailActivity extends GoogleSessionAppCompatActivity {
             Toast.makeText(this, R.string.cancel_run_first, Toast.LENGTH_LONG).show();
         }
     }
+
+    public void duplicateExperiment(MenuItem item) {
+        Intent intent = new Intent(ExperimentDetailActivity.this, NewExperimentActivity.class);
+        intent.putExtra(NewExperimentActivity.EXTRA_EXPERIMENT_ID, currentExperiment.id);
+        startActivity(intent);
+    }
+
+//    public void editExperiment(MenuItem item) {
+//        Intent intent = new Intent(ExperimentDetailActivity.this, NewExperimentActivity.class);
+//        intent.putExtra(NewExperimentActivity.EXTRA_EXPERIMENT_ID, currentExperiment.id);
+//        intent.putExtra(NewExperimentActivity.EXTRA_EDIT, true);
+//        startActivity(intent);
+//    }
 }

@@ -15,11 +15,12 @@ import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
+import com.rfdetke.digitriadlaboratory.export.representations.ExperimentRepresentation;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
 import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.repositories.SourceTypeRepository;
-import com.rfdetke.digitriadlaboratory.utils.ShareTools;
+import com.rfdetke.digitriadlaboratory.qr.QR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
         this.advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
         this.runsForExperiment = runRepository.getLiveRunsForExperiment(experimentId);
         this.tagList = experimentRepository.getTagList(experimentId);
-        this.experimentQr = ShareTools.getQrExperiment(currentExperiment, configurationRepository,
+        this.experimentQr = QR.getQrExperiment(currentExperiment, configurationRepository,
                 advertiseConfiguration, tagList);
         ConfigurationRepository configurationRepository = new ConfigurationRepository(database);
         SourceTypeRepository sourceTypeRepository = new SourceTypeRepository(database);
@@ -112,5 +113,20 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
 
     public long[] getRunIdsForExperiment(long id) {
         return runRepository.getRunIdsForExperiment(id);
+    }
+
+    public ExperimentRepresentation getExperimentRepresentation() {
+        WindowConfiguration wifiWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.WIFI.name());
+        WindowConfiguration bluetoothWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.BLUETOOTH.name());
+        WindowConfiguration bluetoothLeWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.BLUETOOTH_LE.name());
+        WindowConfiguration sensorWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.SENSORS.name());
+        WindowConfiguration cellWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.CELL.name());
+        WindowConfiguration advertiseWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
+        AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
+        List<String> tags =  experimentRepository.getTagList(currentExperiment.id);
+
+        return new ExperimentRepresentation(currentExperiment, wifiWindow, bluetoothWindow,
+                bluetoothLeWindow, sensorWindow, cellWindow, advertiseWindow, advertiseConfiguration, tags, null);
+
     }
 }

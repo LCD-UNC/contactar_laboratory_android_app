@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.utils;
+package com.rfdetke.digitriadlaboratory.qr;
 
 import android.graphics.Bitmap;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class ShareTools {
+public class QR {
 
     public static Bitmap getQrExperiment(Experiment experiment,
                                          ConfigurationRepository configurationRepository,
@@ -33,10 +33,5 @@ public class ShareTools {
         String jsonExperiment = gson.toJson(codedExperimentObject);
 
         return new QRGEncoder(jsonExperiment, null, QRGContents.Type.TEXT, 600).getBitmap();
-    }
-
-    public static ExperimentRepresentation getCodedExperiment(String jsonExperiment) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonExperiment, ExperimentRepresentation.class);
     }
 }

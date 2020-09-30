@@ -113,6 +113,11 @@ public class ExperimentRepresentation implements JsonExportable {
                 Objects.equals(device, that.device);
     }
 
+    public static ExperimentRepresentation getCodedExperiment(String jsonExperiment) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonExperiment, ExperimentRepresentation.class);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(codename, description, wifi, bluetooth, bluetoothLe, sensors, bluetoothLeAdvertise, tags, device);

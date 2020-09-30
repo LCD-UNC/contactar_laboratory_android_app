@@ -7,4 +7,14 @@
         android:onClick="deleteExperiment"
         android:title="@string/delete"
         app:showAsAction="always" />
+
+    <item
+        android:onClick="duplicateExperiment"
+        android:title="@string/duplicate"
+        />
+
+<!--    <item-->
+<!--        android:onClick="editExperiment"-->
+<!--        android:title="@string/edit"-->
+<!--        />-->
 </menu>

@@ -86,4 +86,6 @@
     <string name="sign_in_first">Iniciá sesión en Google primero!</string>
     <string name="cancel_run_first">Cancelá la Corrida en ejecución primero!</string>
     <string name="invalid_uuid">UUID inválido</string>
+    <string name="duplicate">Duplicar</string>
+    <string name="edit">Editar</string>
 </resources>

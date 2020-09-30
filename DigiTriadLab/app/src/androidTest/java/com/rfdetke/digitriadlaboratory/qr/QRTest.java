@@ -1,4 +1,4 @@
-package com.rfdetke.digitriadlaboratory.utils;
+package com.rfdetke.digitriadlaboratory.qr;
 
 import com.google.gson.Gson;
 import com.rfdetke.digitriadlaboratory.DatabaseTest;
@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ShareToolsTest extends DatabaseTest {
+public class QRTest extends DatabaseTest {
 
     private Experiment experiment;
     private ConfigurationRepository configurationRepository;
@@ -50,13 +50,13 @@ public class ShareToolsTest extends DatabaseTest {
 
     @Test
     public void getQrExperiment() {
-        assertNotNull(ShareTools.getQrExperiment(experiment, configurationRepository, null, null));
+        assertNotNull(QR.getQrExperiment(experiment, configurationRepository, null, null));
     }
 
     @Test
     public void getCodedExperiment() {
         Gson gson = new Gson();
         String string = gson.toJson(representation, ExperimentRepresentation.class);
-        assertEquals(representation, ShareTools.getCodedExperiment(string));
+        assertEquals(representation, QR.getCodedExperiment(string));
     }
 }
