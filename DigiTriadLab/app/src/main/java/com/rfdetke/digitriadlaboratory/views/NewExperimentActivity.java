@@ -54,6 +54,7 @@ public class NewExperimentActivity extends AppCompatActivity {
 
     private EditText codename;
     private EditText description;
+    private EditText randomTime;
 
     private TextView wifiTitle;
     private EditText wifiActive;
@@ -113,6 +114,7 @@ public class NewExperimentActivity extends AppCompatActivity {
 
         codename = findViewById(R.id.experiment_codename);
         description = findViewById(R.id.experiment_description);
+        randomTime = findViewById(R.id.random_initial_time);
 
         wifiActive = findViewById(R.id.wifi_active);
         wifiInactive = findViewById(R.id.wifi_inactive);
@@ -422,8 +424,9 @@ public class NewExperimentActivity extends AppCompatActivity {
 
     private long saveExperiment() {
         return experimentRepository.insert( new Experiment(codename.getText().toString(),
-                description.getText().toString(),
-                deviceRepository.getDevice().id));
+                                                description.getText().toString(),
+                                                deviceRepository.getDevice().id,
+                                                Integer.parseInt(randomTime.getText().toString())) );
     }
 
     private void saveBluetoothLeConfig(long experimentId) {

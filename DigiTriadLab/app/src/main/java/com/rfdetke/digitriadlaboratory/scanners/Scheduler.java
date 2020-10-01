@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Scheduler implements ObservableTask {
 
@@ -29,7 +30,7 @@ public abstract class Scheduler implements ObservableTask {
 
     protected int windowCount;
 
-    public Scheduler(long runId, final WindowConfiguration windowConfiguration, Context context,
+    public Scheduler(long runId, long randomTime, final WindowConfiguration windowConfiguration, Context context,
                      AppDatabase database) {
 
         this.runId = runId;
@@ -38,6 +39,7 @@ public abstract class Scheduler implements ObservableTask {
         activeTimer = new Timer();
         inactiveTimer = new Timer();
         long period =  (windowConfiguration.activeTime + windowConfiguration.inactiveTime)*1000;
+        long initialRandomTime = ThreadLocalRandom.current().nextInt(0, (int)randomTime*60)*1000;
         windowCount = 0;
         observers = new ArrayList<>();
 
@@ -65,8 +67,8 @@ public abstract class Scheduler implements ObservableTask {
             }
         };
 
-        activeTimer.scheduleAtFixedRate(activeTask, initialDelay, period);
-        inactiveTimer.scheduleAtFixedRate(inactiveTask, (windowConfiguration.activeTime*1000)+initialDelay, period);
+        activeTimer.scheduleAtFixedRate(activeTask, initialDelay+initialRandomTime, period);
+        inactiveTimer.scheduleAtFixedRate(inactiveTask, (windowConfiguration.activeTime*1000)+initialDelay+initialRandomTime, period);
     }
 
     public String getKey() {

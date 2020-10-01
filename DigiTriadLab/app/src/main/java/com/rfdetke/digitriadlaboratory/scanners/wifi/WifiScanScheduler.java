@@ -19,10 +19,10 @@ public class WifiScanScheduler extends Scheduler {
     private final WifiRepository wifiRepository;
     WifiDataBucket wifiDataBucket;
 
-    public WifiScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
+    public WifiScanScheduler(long runId, long randomTime, WindowConfiguration windowConfiguration, Context context,
                              AppDatabase database) {
 
-        super(runId, windowConfiguration, context, database);
+        super(runId, randomTime, windowConfiguration, context, database);
         this.wifiRepository = new WifiRepository(database);
         this.key = SourceTypeEnum.WIFI.toString();
     }

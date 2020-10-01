@@ -22,9 +22,9 @@ public class BluetoothLeScanScheduler extends Scheduler {
     private final BluetoothLeRepository bluetoothLeRepository;
     BluetoothLeDataBucket bluetoothLeDataBucket;
 
-    public BluetoothLeScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
+    public BluetoothLeScanScheduler(long runId, long randomTime, WindowConfiguration windowConfiguration, Context context,
                                     AppDatabase database) {
-        super(runId, windowConfiguration, context, database);
+        super(runId, randomTime, windowConfiguration, context, database);
 
         this.bluetoothLeRepository = new BluetoothLeRepository(database);
         this.key = SourceTypeEnum.BLUETOOTH_LE.toString();

@@ -22,10 +22,10 @@ public class BluetoothLeAdvertiseScheduler extends Scheduler {
     private BluetoothLeAdvertiser advertiser;
     private AdvertisingSetCallback callback;
 
-    public BluetoothLeAdvertiseScheduler(long runId, WindowConfiguration windowConfiguration,
+    public BluetoothLeAdvertiseScheduler(long runId, long randomTime, WindowConfiguration windowConfiguration,
                                          AdvertiseConfiguration advertiseConfiguration,
                                          Context context, AppDatabase database) {
-        super(runId, windowConfiguration, context, database);
+        super(runId, randomTime, windowConfiguration, context, database);
 
         advertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
         parameters = (new AdvertisingSetParameters.Builder())

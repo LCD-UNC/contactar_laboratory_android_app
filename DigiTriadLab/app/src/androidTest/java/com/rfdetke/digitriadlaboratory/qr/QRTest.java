@@ -45,7 +45,7 @@ public class QRTest extends DatabaseTest {
         configuration.id = configurationRepository.insert(configuration);
         representation = new ExperimentRepresentation(experiment, null,
                 null, null, null,
-                null,null,null);
+                null,null,null, null, null);
     }
 
     @Test
@@ -57,6 +57,6 @@ public class QRTest extends DatabaseTest {
     public void getCodedExperiment() {
         Gson gson = new Gson();
         String string = gson.toJson(representation, ExperimentRepresentation.class);
-        assertEquals(representation, QR.getCodedExperiment(string));
+        assertEquals(representation, ExperimentRepresentation.getCodedExperiment(string));
     }
 }

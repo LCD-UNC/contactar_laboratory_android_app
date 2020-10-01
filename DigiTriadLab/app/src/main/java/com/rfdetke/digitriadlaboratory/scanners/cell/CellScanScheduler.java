@@ -22,9 +22,9 @@ public class CellScanScheduler extends Scheduler {
     private final CellRepository cellRepository;
     CellDataBucket cellDataBucket;
 
-    public CellScanScheduler(long runId, WindowConfiguration windowConfiguration, Context context,
+    public CellScanScheduler(long runId, long randomTime, WindowConfiguration windowConfiguration, Context context,
                              AppDatabase database) {
-        super(runId, windowConfiguration, context, database);
+        super(runId, randomTime, windowConfiguration, context, database);
         this.cellRepository = new CellRepository(database);
         this.key = SourceTypeEnum.CELL.toString();
     }

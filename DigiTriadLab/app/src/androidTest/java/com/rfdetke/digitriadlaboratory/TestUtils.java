@@ -56,7 +56,7 @@ public class TestUtils {
     public static Experiment getExperiment(long deviceId) {
         return new Experiment(RandomStringUtils.randomAlphanumeric(6),
                                 RandomStringUtils.randomAlphanumeric(125),
-                                deviceId);
+                                deviceId, 0);
     }
 
     public static Run getRun(long last, long experimentId) {

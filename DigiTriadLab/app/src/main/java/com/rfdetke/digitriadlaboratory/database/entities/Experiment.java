@@ -17,13 +17,15 @@ public class Experiment {
     public long id;
     public String codename;
     public String description;
+    public long maxRandomTime;
 
     @ColumnInfo(name = "device_id")
     public long deviceId;
 
-    public Experiment(String codename, String description, long deviceId) {
+    public Experiment(String codename, String description, long deviceId, long maxRandomTime) {
         this.codename = codename;
         this.description = description;
         this.deviceId = deviceId;
+        this.maxRandomTime = maxRandomTime;
     }
 }
