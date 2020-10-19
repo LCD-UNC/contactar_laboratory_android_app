@@ -22,6 +22,7 @@
     <string name="bluetooth_le_configuration">BLE Scan</string>
     <string name="sensor_configuration">Sensors Scan</string>
     <string name="cell_configuration">Cells Scan</string>
+    <string name="gps_configuration">GPS Scan</string>
     <string name="bluetooth_le_advertise_configuration">BLE Advertise</string>
     <string name="new_run">New Run</string>
     <string name="schedule_run">Schedule this to:</string>
@@ -44,6 +45,7 @@
     <string name="bluetooth_le_error">"Some BLE configuration is empty.\n"</string>
     <string name="sensors_error">"Some Sensors configuration is empty.\n"</string>
     <string name="cell_error">"Some Cell configuration is empty.\n"</string>
+    <string name="gps_error">"Some GPS configuration is empty.\n"</string>
     <string name="bluetooth_le_advertise_error">"Some BLE configuration is wrong or empty. Remember that Tx Power should be in range of [-127, 1] and Interval should be in range of [100, 10485759]\n"</string>
     <string name="ok" translatable="false">OK</string>
     <string name="copy_experiment">Copy experiment</string>
@@ -52,6 +54,7 @@
     <string name="bluetooth_le" translatable="false">Bluetooth LE</string>
     <string name="sensors">Sensors</string>
     <string name="cell">Cell</string>
+    <string name="gps">GPS</string>
     <string name="collected_records">Collected records</string>
     <string name="export">Export</string>
     <string name="dialog_confirm_delete">Are you sure you want to delete?</string>

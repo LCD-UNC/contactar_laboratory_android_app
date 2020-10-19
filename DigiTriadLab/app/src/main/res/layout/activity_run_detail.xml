@@ -265,6 +265,91 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/gps_samples_container"
+                    android:layout_width="0dp"
+                    android:layout_height="160dp"
+                    android:layout_margin="@dimen/big_padding"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintStart_toEndOf="@id/bluetooth_le_samples_container"
+                    app:layout_constraintTop_toBottomOf="@id/sensors_samples_container"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent">
+
+                        <TextView
+                            android:id="@+id/gps_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@id/sensors_label"
+                            android:layout_marginStart="@dimen/small_padding"
+                            android:layout_marginEnd="@dimen/small_padding"
+                            style="@style/TextAppearance.MaterialComponents.Headline4"/>
+
+                        <TextView
+                            android:id="@+id/gps_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/gps"
+                            android:textAlignment="center"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginBottom="@dimen/big_padding"
+                            android:layout_marginStart="@dimen/big_padding"
+                            android:layout_marginEnd="@dimen/big_padding"
+                            style="@style/TextAppearance.MaterialComponents.Headline5"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/sensors_samples_container"
+                    android:layout_width="0dp"
+                    android:layout_height="160dp"
+                    android:layout_margin="@dimen/big_padding"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintStart_toEndOf="@id/bluetooth_le_samples_container"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_samples_container"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent">
+
+                        <TextView
+                            android:id="@+id/sensors_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@id/sensors_label"
+                            android:layout_marginStart="@dimen/small_padding"
+                            android:layout_marginEnd="@dimen/small_padding"
+                            style="@style/TextAppearance.MaterialComponents.Headline4"/>
+
+                        <TextView
+                            android:id="@+id/sensors_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sensors"
+                            android:textAlignment="center"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginBottom="@dimen/big_padding"
+                            android:layout_marginStart="@dimen/big_padding"
+                            android:layout_marginEnd="@dimen/big_padding"
+                            style="@style/TextAppearance.MaterialComponents.Headline5"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

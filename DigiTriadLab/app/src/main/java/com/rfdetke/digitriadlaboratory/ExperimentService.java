@@ -23,6 +23,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.GpsCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.repositories.ConfigurationRepository;
@@ -33,6 +34,7 @@ import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.cell.CellScanScheduler;
+import com.rfdetke.digitriadlaboratory.scanners.gps.GpsScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorsScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
@@ -53,6 +55,7 @@ public class ExperimentService extends Service implements TaskObserver {
     private SensorsScanScheduler sensorsScanScheduler;
     private BluetoothLeAdvertiseScheduler bluetoothLeAdvertiseScheduler;
     private CellScanScheduler cellScanScheduler;
+    private GpsScanScheduler gpsScanScheduler;
     private Experiment currentExperiment;
 
 
@@ -89,6 +92,7 @@ public class ExperimentService extends Service implements TaskObserver {
             WindowConfiguration bluetoothLeConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
             WindowConfiguration sensorConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.SENSORS.name());
             WindowConfiguration cellConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.CELL.name());
+            WindowConfiguration gpsConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.GPS.name());
             WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
             doneMap = new HashMap<>();
@@ -117,6 +121,11 @@ public class ExperimentService extends Service implements TaskObserver {
             if (cellConfiguration != null) {
                 cellScanScheduler = new CellScanScheduler(currentRun.id, currentExperiment.maxRandomTime, cellConfiguration, this, database);
                 registerScheduler(cellScanScheduler);
+            }
+
+            if (gpsConfiguration != null) {
+                gpsScanScheduler = new GpsScanScheduler(currentRun.id, currentExperiment.maxRandomTime, gpsConfiguration, this, database);
+                registerScheduler(gpsScanScheduler);
             }
 
             if (bluetoothLeAdvertiseWindowConfiguration != null) {
@@ -159,6 +168,10 @@ public class ExperimentService extends Service implements TaskObserver {
             cellScanScheduler.stop();
         }
 
+        if(gpsScanScheduler != null) {
+            gpsScanScheduler.stop();
+        }
+
         if(bluetoothLeAdvertiseScheduler != null) {
             bluetoothLeAdvertiseScheduler.stop();
         }
@@ -195,6 +208,9 @@ public class ExperimentService extends Service implements TaskObserver {
 
         if (doneMap.containsKey(SourceTypeEnum.CELL.name()))
             new CellCsvFileWriter(runs, database, getApplicationContext()).execute();
+
+        if (doneMap.containsKey(SourceTypeEnum.GPS.name()))
+            new GpsCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);

@@ -23,6 +23,7 @@
     <string name="bluetooth_le_configuration">Escaneo BLE</string>
     <string name="sensor_configuration">Escaneo de Sensores</string>
     <string name="cell_configuration">Escaneo de Celdas</string>
+    <string name="gps_configuration">Escaneo de Satélites GPS</string>
     <string name="bluetooth_le_advertise_configuration">Baliza BLE</string>
     <string name="new_run">Nueva Corrida</string>
     <string name="schedule_run">Programar para:</string>
@@ -44,10 +45,12 @@
     <string name="bluetooth_le_error">Algún campo de la configuración de BLE está vacío.\n</string>
     <string name="sensors_error">Algún campo de la configuración de Sensores está vació.\n</string>
     <string name="cell_error">Algún campo de  la configuración de Celdas está vacío.\n</string>
+    <string name="gps_error">Algún campo de  la configuración de GPS está vacío.\n</string>
     <string name="bluetooth_le_advertise_error">Algún campo de la configuración de Baliza BLE es inválido o está vacío. Recuerda que la Potencia Tx debe estar en un rango de [-127, 1] y el Intervalo debe estar en un rango de [100, 10485759]\n</string>
     <string name="copy_experiment">Copiar Experimento</string>
     <string name="sensors">Sensores</string>
     <string name="cell">Celdas</string>
+    <string name="gps">GPS</string>
     <string name="collected_records">Registros recolectados</string>
     <string name="export">Exportar</string>
     <string name="dialog_confirm_delete">¿Estás seguro de que querés borrar?</string>
