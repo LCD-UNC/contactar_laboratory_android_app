@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -62,10 +63,13 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
     private AppDatabase database;
     private Context context;
 
+    private boolean keepScreenOn = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_run_detail);
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         topToolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(topToolbar);
@@ -298,6 +302,18 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
                     .create().show();
         } else {
             Toast.makeText(this, R.string.cancel_run_message, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void changeScreenBehaviour(MenuItem item) {
+        if(keepScreenOn) {
+            item.setIcon(R.drawable.ic_baseline_mobile_off_24);
+            keepScreenOn = false;
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            item.setIcon(R.drawable.ic_baseline_screen_lock_portrait_24);
+            keepScreenOn = true;
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
 }

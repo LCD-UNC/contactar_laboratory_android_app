@@ -43,10 +43,12 @@ public interface WindowDao {
     @Query("SELECT rn.number as run, s.number as window, r.timestamp AS record_timestamp, " +
             "r.address, r.rssi, r.tx_power, " +
             "r.advertising_set_id, r.primary_physical_layer, r.seconary_physical_layer, " +
-            "r.periodic_advertising_interval, r.connectable, r.legacy, r.uuid " +
+            "r.periodic_advertising_interval, r.connectable, r.legacy, r.device_uuid as uuid, " +
+            "r.device_codename as tx_device_codename " +
             "FROM window as s " +
-            "LEFT JOIN (SELECT r.*, uu.uuid FROM bluetooth_le_record as r " +
-                        "LEFT JOIN bluetooth_le_uuid as uu ON r.id=uu.record_id) as r ON r.window_id=s.id " +
+            "LEFT JOIN bluetooth_le_record as r ON r.window_id=s.id " +
+//            "LEFT JOIN (SELECT r.*, uu.uuid FROM bluetooth_le_record as r " +
+//                        "LEFT JOIN bluetooth_le_uuid as uu ON r.id=uu.record_id) as r ON r.window_id=s.id " +
             "INNER JOIN run as rn ON rn.id=s.run_id " +
             "INNER JOIN source_type AS st ON s.source_type=st.id " +
             "WHERE s.run_id IN(:runId) AND st.type=\"BLUETOOTH_LE\" ORDER BY record_timestamp, run, window")
@@ -158,20 +160,23 @@ public interface WindowDao {
         public int connectable;
         public int legacy;
         public ParcelUuid uuid;
+        @ColumnInfo(name = "tx_device_codename")
+        public String txDeviceCodename;
 
         @Override
         public String csvHeader() {
             return "record_timestamp,run,window,address,rssi," +
                     "tx_power,advertising_set_id,primary_physical_layer,seconary_physical_layer," +
-                    "periodic_advertising_interval,connectable,legacy,uuid\n";
+                    "periodic_advertising_interval,connectable,legacy,uuid,tx_device_codename\n";
         }
 
         @Override
         public String toCsv() {
-            return String.format(Locale.ENGLISH, "%d,%d,%d,%s,%f,%f,%d,%s,%s,%f,%d,%d,%s\n",
+            return String.format(Locale.ENGLISH, "%d,%d,%d,%s,%f,%f,%d,%s,%s,%f,%d,%d,%s,%s\n",
                     DateConverter.dateToTimestamp(recordTimestamp), run, window, address,
                     rssi, txPower, advertisingSetId, primaryPhysicalLayer, secondaryPhysicalLayer,
-                    periodicAdvertisingInterval, connectable, legacy, UuidConverter.uuidToString(uuid));
+                    periodicAdvertisingInterval, connectable, legacy, UuidConverter.uuidToString(uuid),
+                    txDeviceCodename);
         }
     }
 

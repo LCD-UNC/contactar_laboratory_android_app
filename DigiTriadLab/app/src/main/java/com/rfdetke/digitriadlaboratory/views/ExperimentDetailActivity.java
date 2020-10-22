@@ -39,6 +39,7 @@ import com.rfdetke.digitriadlaboratory.gapis.drive.folderselector.FolderPickerAc
 import com.rfdetke.digitriadlaboratory.views.listadapters.ExperimentListAdapter;
 import com.rfdetke.digitriadlaboratory.views.listadapters.RunListAdapter;
 import com.rfdetke.digitriadlaboratory.views.modelviews.ExperimentDetailViewModel;
+import com.rfdetke.digitriadlaboratory.repositories.DeviceRepository;
 
 import java.util.List;
 

@@ -12,4 +12,10 @@
         android:onClick="cancelRun"
         android:title="@string/cancel_run"
         app:showAsAction="always" />
+
+    <item
+        android:icon="@drawable/ic_baseline_mobile_off_24"
+        android:onClick="changeScreenBehaviour"
+        android:title="@string/change_screen_behaviour"
+        app:showAsAction="ifRoom" />
 </menu>

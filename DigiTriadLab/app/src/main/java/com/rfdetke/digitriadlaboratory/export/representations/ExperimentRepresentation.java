@@ -25,6 +25,7 @@ public class ExperimentRepresentation implements JsonExportable {
     public static final String UUID = "uuid";
     public String codename;
     public String description;
+    public long maxRandomTime;
 
     public Map<String, Long> wifi;
     public Map<String, Long> bluetooth;
@@ -48,6 +49,8 @@ public class ExperimentRepresentation implements JsonExportable {
                                     Device device) {
         this.codename = experiment.codename;
         this.description = experiment.description;
+        this.maxRandomTime = experiment.maxRandomTime;
+
         wifi = new HashMap<>();
         bluetooth = new HashMap<>();
         bluetoothLe = new HashMap<>();
@@ -55,6 +58,7 @@ public class ExperimentRepresentation implements JsonExportable {
         cell = new HashMap<>();
         bluetoothLeAdvertise = new HashMap<>();
         this.device = new HashMap<>();
+
         if(device!= null) {
             this.device.put(CODENAME, device.codename);
             this.device.put(BRAND, device.brand);

@@ -423,10 +423,15 @@ public class NewExperimentActivity extends AppCompatActivity {
     }
 
     private long saveExperiment() {
+        int randTime;
+        if (randomTime.getText().toString().isEmpty())
+            randTime = 0;
+        else
+            randTime = Integer.parseInt(randomTime.getText().toString());
         return experimentRepository.insert( new Experiment(codename.getText().toString(),
                                                 description.getText().toString(),
                                                 deviceRepository.getDevice().id,
-                                                Integer.parseInt(randomTime.getText().toString())) );
+                                                randTime));
     }
 
     private void saveBluetoothLeConfig(long experimentId) {
@@ -540,6 +545,7 @@ public class NewExperimentActivity extends AppCompatActivity {
         if (experiment != null) {
             codename.setText(experiment.codename);
             description.setText(experiment.description);
+            randomTime.setText(String.format(Locale.ENGLISH, "%d", experiment.maxRandomTime));
 
             if(!experiment.wifi.isEmpty()) {
                 wifiSwitch.setChecked(true);

@@ -39,7 +39,12 @@ public abstract class Scheduler implements ObservableTask {
         activeTimer = new Timer();
         inactiveTimer = new Timer();
         long period =  (windowConfiguration.activeTime + windowConfiguration.inactiveTime)*1000;
-        long initialRandomTime = ThreadLocalRandom.current().nextInt(0, (int)randomTime*60)*1000;
+        long initialRandomTime = 0;
+
+        if(randomTime > 0) {
+            initialRandomTime = ThreadLocalRandom.current().nextInt(0, (int)randomTime*60)*1000;
+        }
+
         windowCount = 0;
         observers = new ArrayList<>();
 

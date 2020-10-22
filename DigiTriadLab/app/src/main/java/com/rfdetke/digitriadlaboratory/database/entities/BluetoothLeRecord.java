@@ -2,6 +2,7 @@ package com.rfdetke.digitriadlaboratory.database.entities;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
+import android.os.ParcelUuid;
 import android.os.SystemClock;
 
 import androidx.room.ColumnInfo;
@@ -10,7 +11,12 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.rfdetke.digitriadlaboratory.export.representations.DeviceRepresentation;
+
 import java.util.Date;
+import java.util.UUID;
+
+import static com.rfdetke.digitriadlaboratory.advertisers.BluetoothLeAdvertiseScheduler.EXPERIMENT_SERVICE_UUID;
 
 @Entity(tableName = "bluetooth_le_record",
         indices = {@Index(value = "id", unique = true),
@@ -38,6 +44,10 @@ public class BluetoothLeRecord {
     public double periodicAdvertisingInterval;
     public int connectable;
     public int legacy;
+    @ColumnInfo(name = "device_uuid")
+    public ParcelUuid deviceUuid;
+    @ColumnInfo(name = "device_codename")
+    public String deviceCodename;
 
     @ColumnInfo(name = "window_id")
     public long windowId;
@@ -45,10 +55,17 @@ public class BluetoothLeRecord {
     public BluetoothLeRecord(ScanResult result, long windowId) {
         this.address = result.getDevice().getAddress();
         this.rssi = result.getRssi();
-        if(result.getScanRecord() != null)
+        if(result.getScanRecord() != null) {
             this.txPower = result.getScanRecord().getTxPowerLevel();
-        else
+            byte[] serviceData = result.getScanRecord().getServiceData(EXPERIMENT_SERVICE_UUID);
+            if (serviceData!=null) {
+                DeviceRepresentation device = DeviceRepresentation.fromJson(new String(serviceData));
+                this.deviceUuid = new ParcelUuid(UUID.fromString(device.uuid));
+                this.deviceCodename = device.codename;
+            }
+        } else {
             this.txPower = Integer.MIN_VALUE;
+        }
         this.advertisingSetId = result.getAdvertisingSid();
         this.primaryPhysicalLayer = parsePhysicalLayer(result.getPrimaryPhy());
         this.secondaryPhysicalLayer = parsePhysicalLayer(result.getSecondaryPhy());

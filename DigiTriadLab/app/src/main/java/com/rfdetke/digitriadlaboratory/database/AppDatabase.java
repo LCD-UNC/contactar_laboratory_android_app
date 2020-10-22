@@ -54,7 +54,7 @@ import java.util.concurrent.Executors;
                         Tag.class,
                         Run.class,
                         SourceType.class},
-          version = 17)
+          version = 18)
 
 @TypeConverters({DateConverter.class, UuidConverter.class})
 public abstract class AppDatabase extends RoomDatabase {

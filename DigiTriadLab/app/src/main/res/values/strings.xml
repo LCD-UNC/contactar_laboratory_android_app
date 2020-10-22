@@ -94,4 +94,5 @@
     <string name="duplicate">Duplicate</string>
     <string name="edit">Edit</string>
     <string name="max_random_time">Random Time [min]</string>
+    <string name="change_screen_behaviour">Change Screen Behaviour</string>
 </resources>

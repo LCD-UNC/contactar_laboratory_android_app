@@ -1,6 +1,8 @@
 package com.rfdetke.digitriadlaboratory.scanners.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.ParcelUuid;
 import android.util.Log;
@@ -16,8 +18,13 @@ import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
+
+import static com.rfdetke.digitriadlaboratory.advertisers.BluetoothLeAdvertiseScheduler.EXPERIMENT_SERVICE_UUID;
 
 public class BluetoothLeScanScheduler extends Scheduler {
+
+    public static final ParcelUuid EXPERIMENT_SERVICE_UUID_MASK = new ParcelUuid(UUID.fromString("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"));
 
     private final BluetoothLeRepository bluetoothLeRepository;
     BluetoothLeDataBucket bluetoothLeDataBucket;
@@ -36,9 +43,15 @@ public class BluetoothLeScanScheduler extends Scheduler {
         long sampleId = windowRepository.insert(runId, this.windowCount, key);
         bluetoothLeDataBucket = new BluetoothLeDataBucket(sampleId, context);
 
+        ScanFilter filter = new ScanFilter.Builder().setServiceUuid(EXPERIMENT_SERVICE_UUID, EXPERIMENT_SERVICE_UUID_MASK).build();
+        ArrayList<ScanFilter> scanFilterList = new ArrayList<>();
+        scanFilterList.add(filter);
+
+        ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).setLegacy(false).setReportDelay(0).build();
+
         // TODO: Implementar un mutex para hacer escaneo despues porque no se pueden hacer escaneos
         //       clasicos y low energy al mismo tiempo.
-        BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(bluetoothLeDataBucket);
+        BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanFilterList, scanSettings, bluetoothLeDataBucket);
     }
 
     @Override
