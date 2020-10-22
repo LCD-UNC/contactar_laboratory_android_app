@@ -30,6 +30,7 @@ import com.rfdetke.digitriadlaboratory.export.FileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.GpsCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.SensorCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.WifiCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.json.JsonExperimentFileWriter;
@@ -174,6 +175,9 @@ public class ExperimentDetailActivity extends GoogleSessionAppCompatActivity {
         if (experimentDetailViewModel.getModules().contains(SourceTypeEnum.CELL.name()))
             new CellCsvFileWriter(runs, database, context).execute();
 
+        if (experimentDetailViewModel.getModules().contains(SourceTypeEnum.GPS.name()))
+            new GpsCsvFileWriter(runs, database, context).execute();
+
         new JsonExperimentFileWriter(currentExperiment.id, database, context).execute();
         Toast.makeText(this, R.string.files_exported, Toast.LENGTH_SHORT).show();
     }
@@ -204,6 +208,9 @@ public class ExperimentDetailActivity extends GoogleSessionAppCompatActivity {
 
         if (modules.contains(SourceTypeEnum.CELL.name()))
             writeDriveFile(folderId, new CellCsvFileWriter(runs, database, context));
+
+        if (modules.contains(SourceTypeEnum.GPS.name()))
+            writeDriveFile(folderId, new GpsCsvFileWriter(runs, database, context));
 
         writeDriveFile(folderId, new JsonExperimentFileWriter(currentExperiment.id, database, context));
     }

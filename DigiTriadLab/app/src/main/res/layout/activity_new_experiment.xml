@@ -614,6 +614,92 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
+                    android:id="@+id/gps_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/gps_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cell_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gps_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/gps_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/gps_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gps_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/gps_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/gps_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gps_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/gps_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/gps_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
                     android:id="@+id/bluetooth_le_advertise_title"
                     style="@style/TextAppearance.MaterialComponents.Headline5"
                     android:layout_width="wrap_content"
@@ -623,7 +709,7 @@
                     android:text="@string/bluetooth_le_advertise_configuration"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cell_active_input_layout" />
+                    app:layout_constraintTop_toBottomOf="@id/gps_active_input_layout" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/bluetooth_le_advertise_active_input_layout"
@@ -800,6 +886,16 @@
                     app:layout_constraintBottom_toBottomOf="@id/cell_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/cell_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/gps_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/gps_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/gps_title" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/bluetooth_le_advertise_switch"

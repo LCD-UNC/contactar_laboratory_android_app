@@ -36,12 +36,13 @@ public class JsonExperimentFileWriter extends JsonFileWriter {
         WindowConfiguration bluetoothLeWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.BLUETOOTH_LE.name());
         WindowConfiguration sensorWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.SENSORS.name());
         WindowConfiguration cellWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.CELL.name());
+        WindowConfiguration gpsWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.GPS.name());
         WindowConfiguration advertiseWindow = configurationRepository.getConfigurationForExperimentByType(experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
         AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(experimentId);
         List<String> tags =  experimentRepository.getTagList(experimentId);
 
         representation = new ExperimentRepresentation(experiment, wifiWindow, bluetoothWindow,
-                bluetoothLeWindow, sensorWindow, cellWindow, advertiseWindow, advertiseConfiguration, tags, device);
+                bluetoothLeWindow, sensorWindow, cellWindow, gpsWindow,advertiseWindow, advertiseConfiguration, tags, device);
     }
 
     @Override

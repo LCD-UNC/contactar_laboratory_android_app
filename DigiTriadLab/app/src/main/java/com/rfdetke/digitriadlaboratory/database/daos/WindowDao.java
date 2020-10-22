@@ -107,12 +107,25 @@ public interface WindowDao {
             "WHERE s.run_id == (:runId) GROUP BY s.run_id")
     LiveData<Long> getCellLiveCount(long runId);
 
+    // ------------------- GPS -----------------------------------------------------------------
+
+    @Query("SELECT rn.number as run, s.number as window, s.timestamp,r.satellite_id, r.freq, r.constType, r.snr " +
+            "FROM window as s " +
+            "LEFT JOIN gps_record as r ON r.window_id=s.id " +
+            "INNER JOIN run as rn ON rn.id=s.run_id " +
+            "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run, window")
+    List<GpsSampleRecord> getGpsSamplesRecords(long[] runId);
+
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM gps_record AS r " +
+            "JOIN window AS s ON  r.window_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getGpsLiveCount(long runId);
+
     @Insert
     long insert(Window window);
 
     @Query("SELECT * FROM window WHERE id==(:id)")
     Window getById(long id);
-
 
 
     class BluetoothSampleRecord implements CsvExportable {
@@ -254,6 +267,32 @@ public interface WindowDao {
             return String.format(Locale.ENGLISH, "%d,%d,%d,%s,%d,%d\n",
                     DateConverter.dateToTimestamp(timestamp), run, window, technology,
                     dbm, asuLevel);
+        }
+    }
+
+    class GpsSampleRecord implements CsvExportable {
+        public Date timestamp;
+        public long run;
+        public long window;
+        @ColumnInfo(name = "snr")
+        public double snr;
+
+        @ColumnInfo(name = "satellite_id")
+        public int satId;
+
+        public float freq;
+
+        public int constType;
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run,window,satellite_id, carrier_freq, const_type, snr\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%d,%d,%d,%d,%f,%d,%f\n",
+                    DateConverter.dateToTimestamp(timestamp), run, window, satId, freq, constType, snr);
         }
     }
 }

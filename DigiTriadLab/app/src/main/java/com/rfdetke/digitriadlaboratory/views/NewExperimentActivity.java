@@ -86,6 +86,12 @@ public class NewExperimentActivity extends AppCompatActivity {
     private EditText cellWindows;
     private SwitchCompat cellSwitch;
 
+    private TextView gpsTitle;
+    private EditText gpsActive;
+    private EditText gpsInactive;
+    private EditText gpsWindows;
+    private SwitchCompat gpsSwitch;
+
     private TextView bluetoothLeAdvertiseTitle;
     private EditText bluetoothLeAdvertiseActive;
     private EditText bluetoothLeAdvertiseInactive;
@@ -146,6 +152,12 @@ public class NewExperimentActivity extends AppCompatActivity {
         cellTitle = findViewById(R.id.cell_title);
         cellSwitch = findViewById(R.id.cell_switch);
 
+        gpsActive = findViewById(R.id.gps_active);
+        gpsInactive = findViewById(R.id.gps_inactive);
+        gpsWindows = findViewById(R.id.gps_windows);
+        gpsTitle = findViewById(R.id.gps_title);
+        gpsSwitch = findViewById(R.id.gps_switch);
+
         bluetoothLeAdvertiseActive = findViewById(R.id.bluetooth_le_advertise_active);
         bluetoothLeAdvertiseInactive = findViewById(R.id.bluetooth_le_advertise_inactive);
         bluetoothLeAdvertiseWindows = findViewById(R.id.bluetooth_le_advertise_windows);
@@ -195,7 +207,8 @@ public class NewExperimentActivity extends AppCompatActivity {
                 if(!wifiSwitch.isChecked() && !bluetoothSwitch.isChecked() &&
                         !bluetoothLeSwitch.isChecked() && !bluetoothLeAdvertiseSwitch.isChecked() &&
                         !sensorsSwitch.isChecked()&&
-                        !cellSwitch.isChecked()) {
+                        !cellSwitch.isChecked() &&
+                        !gpsSwitch.isChecked()){
                     errorMessage = errorMessage.concat(getResources().getString(R.string.at_least_one_configuration));
                     success = false;
                 } else {
@@ -236,6 +249,14 @@ public class NewExperimentActivity extends AppCompatActivity {
                             saveCellConfig(experimentId);
                         } else {
                             errorMessage = errorMessage.concat(getResources().getString(R.string.cell_error));
+                            success = false;
+                        }
+                    }
+                    if(gpsSwitch.isChecked()) {
+                        if (validateGpsConfig()) {
+                            saveGpsConfig(experimentId);
+                        } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.gps_error));
                             success = false;
                         }
                     }
@@ -313,6 +334,15 @@ public class NewExperimentActivity extends AppCompatActivity {
             cellTitle.setTextColor(getColor(color));
         });
 
+        gpsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            gpsActive.setEnabled(isChecked);
+            gpsInactive.setEnabled(isChecked);
+            gpsWindows.setEnabled(isChecked);
+            int color;
+            color = isChecked ? R.color.black : R.color.grey;
+            gpsTitle.setTextColor(getColor(color));
+        });
+
         bluetoothLeAdvertiseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             bluetoothLeAdvertiseActive.setEnabled(isChecked);
             bluetoothLeAdvertiseInactive.setEnabled(isChecked);
@@ -329,6 +359,7 @@ public class NewExperimentActivity extends AppCompatActivity {
         bluetoothLeSwitch.setChecked(false);
         sensorsSwitch.setChecked(false);
         cellSwitch.setChecked(false);
+        gpsSwitch.setChecked(false);
         bluetoothLeAdvertiseSwitch.setChecked(false);
 
         long experimentId = getIntent().getLongExtra(EXTRA_EXPERIMENT_ID, 0);
@@ -422,6 +453,15 @@ public class NewExperimentActivity extends AppCompatActivity {
                 (Integer.parseInt(cellWindows.getText().toString()) > 0);
     }
 
+    private boolean validateGpsConfig() {
+        return !gpsActive.getText().toString().isEmpty() &&
+                !gpsInactive.getText().toString().isEmpty() &&
+                !gpsWindows.getText().toString().isEmpty() &&
+                (Integer.parseInt(gpsActive.getText().toString()) > 0) &&
+                (Integer.parseInt(gpsInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(gpsWindows.getText().toString()) > 0);
+    }
+
     private long saveExperiment() {
         int randTime;
         if (randomTime.getText().toString().isEmpty())
@@ -479,6 +519,16 @@ public class NewExperimentActivity extends AppCompatActivity {
         long inactive = Long.parseLong(cellInactive.getText().toString());
         long windows = Long.parseLong(cellWindows.getText().toString());
         long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.CELL.name()).id;
+        WindowConfiguration configuration = new WindowConfiguration(active,
+                inactive, windows, sourceId, experimentId);
+        configurationRepository.insert(configuration);
+    }
+
+    private void saveGpsConfig(long experimentId) {
+        long active = Long.parseLong(gpsActive.getText().toString());
+        long inactive = Long.parseLong(gpsInactive.getText().toString());
+        long windows = Long.parseLong(gpsWindows.getText().toString());
+        long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.GPS.name()).id;
         WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
         configurationRepository.insert(configuration);
@@ -580,6 +630,13 @@ public class NewExperimentActivity extends AppCompatActivity {
                 cellActive.setText(longOrNullToEmpty(experiment.cell.get(ExperimentRepresentation.ACTIVE)));
                 cellInactive.setText(longOrNullToEmpty(experiment.cell.get(ExperimentRepresentation.INACTIVE)));
                 cellWindows.setText(longOrNullToEmpty(experiment.cell.get(ExperimentRepresentation.WINDOWS)));
+            }
+
+            if(!experiment.gps.isEmpty()) {
+                gpsSwitch.setChecked(true);
+                gpsActive.setText(longOrNullToEmpty(experiment.gps.get(ExperimentRepresentation.ACTIVE)));
+                gpsInactive.setText(longOrNullToEmpty(experiment.gps.get(ExperimentRepresentation.INACTIVE)));
+                gpsWindows.setText(longOrNullToEmpty(experiment.gps.get(ExperimentRepresentation.WINDOWS)));
             }
 
             if(!experiment.bluetoothLeAdvertise.isEmpty()) {
