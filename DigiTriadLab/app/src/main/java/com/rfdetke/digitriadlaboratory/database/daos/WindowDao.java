@@ -274,19 +274,16 @@ public interface WindowDao {
         public Date timestamp;
         public long run;
         public long window;
-        @ColumnInfo(name = "snr")
         public double snr;
 
         @ColumnInfo(name = "satellite_id")
         public int satId;
-
         public float freq;
-
         public int constType;
 
         @Override
         public String csvHeader() {
-            return "timestamp,run,window,satellite_id, carrier_freq, const_type, snr\n";
+            return "timestamp,run,window,satellite_id,carrier_freq,const_type, snr\n";
         }
 
         @Override

@@ -22,17 +22,18 @@ public class GpsScanScheduler extends Scheduler {
         super(runId, randomTime, windowConfiguration, context, database);
         this.gpsRepository = new GpsRepository(database);
         this.key = SourceTypeEnum.GPS.toString();
+        gpsDataBucket = new GpsDataBucket(context);
     }
 
     @Override
     protected void startTask() {
         long sampleId = windowRepository.insert(runId, this.windowCount, key);
-        gpsDataBucket = new GpsDataBucket(sampleId,context);
-
+        gpsDataBucket.setSampleId(sampleId);
     }
 
     @Override
     protected void endTask() {
+        gpsDataBucket.stop();
         List<GpsRecord> gpsRecords = new ArrayList<>();
         List<Object> records = gpsDataBucket.getRecordsList();
         for(Object record : records) {

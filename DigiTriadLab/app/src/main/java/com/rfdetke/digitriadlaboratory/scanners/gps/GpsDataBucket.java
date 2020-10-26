@@ -23,58 +23,46 @@ import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GpsDataBucket implements DataBucket {
-    private final long sampleId;
+public class GpsDataBucket extends GnssMeasurementsEvent.Callback implements DataBucket {
+
+    private long sampleId;
     LocationManager locationManager;
     Context context;
-    List<Object> records = new ArrayList<>();
+    List<Object> records;
 
-    public GpsDataBucket(long sId, Context context) {
-        this.sampleId = sId;
+    public GpsDataBucket(Context context) {
         this.context = context;
-        locationManager = (LocationManager) this.context.getSystemService(Context.LOCATION_SERVICE);
-        myLocationListener locationListener = new myLocationListener();
-        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled) {
-            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            ((Activity) this.context).startActivity(settingsIntent);
-        }
-        if (locationManager != null) {
-            Log.d("GPS", "listener created!");
-            GnssMeasurementsEvent.Callback gnssMeasurementsEventListener = new GnssMeasurementsEvent.Callback() {
+        this.records = new ArrayList<>();
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-                @Override
-                public void onGnssMeasurementsReceived(GnssMeasurementsEvent event) {
-                    Log.d("GPS", "onGnssMeasurementsReceived: invoked!");
-                    /*super.onGnssMeasurementsReceived(event);
-                    for (GnssMeasurement measurement : event.getMeasurements())
-                    {
-                        records.add(new GpsRecord(measurement, sampleId));
-                    }*/
-                }
+    }
 
-                @Override
-                public void onStatusChanged(int status) {
-                    super.onStatusChanged(status);
-                }
-            };
-            if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) this.context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            }
-            if(locationManager.registerGnssMeasurementsCallback(gnssMeasurementsEventListener))
-            {
-                Log.d("GPS", "listener registered");
-            };
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) locationListener);
+    public void setSampleId(long sampleId) {
+        this.sampleId = sampleId;
+        try {
+            Log.d("GPS", "Registered!");
+            locationManager.registerGnssMeasurementsCallback(this);
+        } catch (SecurityException e) {
+            Log.d("GPS", "Failed");
         }
+    }
+
+    public void stop() {
+        locationManager.unregisterGnssMeasurementsCallback(this);
     }
 
     @Override
     public List<Object> getRecordsList() {
-
         return records;
     }
 
-
+    @Override
+    public void onGnssMeasurementsReceived(GnssMeasurementsEvent event) {
+        Log.d("GPS", "GNSS received");
+        super.onGnssMeasurementsReceived(event);
+        for (GnssMeasurement measurement : event.getMeasurements())
+        {
+            records.add(new GpsRecord(measurement, sampleId));
+        }
+    }
 }

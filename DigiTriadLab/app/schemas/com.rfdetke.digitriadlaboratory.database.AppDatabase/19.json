@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 19,
-    "identityHash": "f078dc4d709e288ab52413be6400b076",
+    "identityHash": "ba473418c23ec9e5c34b8ebe28d8f5b9",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -595,6 +595,85 @@
         ]
       },
       {
+        "tableName": "gps_record",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `snr` REAL NOT NULL, `satellite_id` INTEGER NOT NULL, `freq` REAL NOT NULL, `constType` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "snr",
+            "columnName": "snr",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "satId",
+            "columnName": "satellite_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "freq",
+            "columnName": "freq",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "constType",
+            "columnName": "constType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windowId",
+            "columnName": "window_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_gps_record_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_gps_record_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_gps_record_window_id",
+            "unique": false,
+            "columnNames": [
+              "window_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_gps_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "window",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "window_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "wifi_record",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `channel_width` TEXT, `center_frequency_0` INTEGER NOT NULL, `center_frequency_1` INTEGER NOT NULL, `frequency` INTEGER NOT NULL, `level` INTEGER NOT NULL, `passpoint` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
@@ -1146,7 +1225,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f078dc4d709e288ab52413be6400b076')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba473418c23ec9e5c34b8ebe28d8f5b9')"
     ]
   }
 }

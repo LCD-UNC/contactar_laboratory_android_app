@@ -41,7 +41,10 @@ public class GpsRecord {
     public long windowId;
 
     public GpsRecord(GnssMeasurement measurement, long windowId) {
-        this.snr = measurement.getSnrInDb();
+        if(measurement.hasSnrInDb())
+            this.snr = measurement.getSnrInDb();
+        else
+            this.snr = Double.MIN_VALUE;
         this.satId = measurement.getSvid();
         this.freq = measurement.getCarrierFrequencyHz();
         this.constType = measurement.getConstellationType();

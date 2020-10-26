@@ -1,14 +1,20 @@
 package com.rfdetke.digitriadlaboratory;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
@@ -35,6 +41,7 @@ import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanSchedul
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.cell.CellScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.gps.GpsScanScheduler;
+import com.rfdetke.digitriadlaboratory.scanners.gps.myLocationListener;
 import com.rfdetke.digitriadlaboratory.scanners.sensors.SensorsScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.wifi.WifiScanScheduler;
 import com.rfdetke.digitriadlaboratory.views.NewRunActivity;
@@ -57,6 +64,8 @@ public class ExperimentService extends Service implements TaskObserver {
     private CellScanScheduler cellScanScheduler;
     private GpsScanScheduler gpsScanScheduler;
     private Experiment currentExperiment;
+    private LocationManager locationManager;
+    private myLocationListener locationListener;
 
 
     @Override
@@ -85,7 +94,7 @@ public class ExperimentService extends Service implements TaskObserver {
         long runId = intent.getLongExtra(NewRunActivity.EXTRA_RUN_ID, 0);
         currentRun = runRepository.getById(runId);
 
-        if(currentRun != null ) {
+        if (currentRun != null) {
             currentExperiment = experimentRepository.getById(currentRun.experimentId);
             WindowConfiguration wifiConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.WIFI.name());
             WindowConfiguration bluetoothConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH.name());
@@ -124,6 +133,17 @@ public class ExperimentService extends Service implements TaskObserver {
             }
 
             if (gpsConfiguration != null) {
+                locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+                locationListener = new myLocationListener();
+                if(locationManager != null)
+                    try {
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) locationListener);
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) locationListener);
+                    } catch (SecurityException e) {
+                        stopForeground(true);
+                        stopSelf();
+                    }
+
                 gpsScanScheduler = new GpsScanScheduler(currentRun.id, currentExperiment.maxRandomTime, gpsConfiguration, this, database);
                 registerScheduler(gpsScanScheduler);
             }
@@ -169,6 +189,7 @@ public class ExperimentService extends Service implements TaskObserver {
         }
 
         if(gpsScanScheduler != null) {
+            locationManager.removeUpdates(locationListener);
             gpsScanScheduler.stop();
         }
 
