@@ -121,6 +121,20 @@ public interface WindowDao {
             "WHERE s.run_id == (:runId) GROUP BY s.run_id")
     LiveData<Long> getGpsLiveCount(long runId);
 
+    // ------------------- BATTERY -----------------------------------------------------------------
+
+    @Query("SELECT rn.number as run, s.number as window, s.timestamp,r.low_battery,r.usb_charging, r.ac_charging, r.is_charging, r.charge " +
+            "FROM window as s " +
+            "LEFT JOIN battery_record as r ON r.window_id=s.id " +
+            "INNER JOIN run as rn ON rn.id=s.run_id " +
+            "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run, window")
+    List<BatterySampleRecord> getBatterySamplesRecords(long[] runId);
+
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM battery_record AS r " +
+            "JOIN window AS s ON  r.window_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getBatteryLiveCount(long runId);
+
     @Insert
     long insert(Window window);
 
@@ -290,6 +304,36 @@ public interface WindowDao {
         public String toCsv() {
             return String.format(Locale.ENGLISH, "%d,%d,%d,%d,%f,%d,%f\n",
                     DateConverter.dateToTimestamp(timestamp), run, window, satId, freq, constType, snr);
+        }
+    }
+    class BatterySampleRecord implements CsvExportable {
+        public Date timestamp;
+        public long run;
+        public long window;
+        @ColumnInfo(name = "low_battery")
+        public boolean lowBattery;
+
+        @ColumnInfo(name = "is_charging")
+        public boolean isCharging;
+
+        @ColumnInfo(name = "usb_charging")
+        public boolean usbCharging;
+
+        @ColumnInfo(name = "ac_charging")
+        public boolean acCharging;
+
+        @ColumnInfo(name = "charge")
+        public float charge;
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run,window,low_battery,is_charging,usb_charging,ac_charging,charge\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%d,%d,%d,%b,%b,%b,%b,%f\n",
+                    DateConverter.dateToTimestamp(timestamp), run, window, lowBattery, isCharging, usbCharging, acCharging, charge);
         }
     }
 }

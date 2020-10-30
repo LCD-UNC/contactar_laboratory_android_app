@@ -4,20 +4,19 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 
-import com.rfdetke.digitriadlaboratory.database.entities.CellRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.BatteryRecord;
 
 import java.util.List;
 
 @Dao
-public interface CellRecordDao {
+public interface BatteryRecordDao {
 
     @Insert
-    long[] insert(List<CellRecord> cellRecord);
+    long[] insert(List<BatteryRecord> batteryRecord);
 
     @Insert
-    long insert(CellRecord cellRecord);
+    long insert(BatteryRecord batteryRecord);
 
     @Delete
-    void delete(CellRecord cellRecord);
+    void delete(BatteryRecord batteryRecord);
 }

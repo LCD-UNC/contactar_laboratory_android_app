@@ -7,5 +7,6 @@ public enum SourceTypeEnum {
     BLUETOOTH_LE_ADVERTISE,
     SENSORS,
     CELL,
-    GPS
+    GPS,
+    BATTERY
 }

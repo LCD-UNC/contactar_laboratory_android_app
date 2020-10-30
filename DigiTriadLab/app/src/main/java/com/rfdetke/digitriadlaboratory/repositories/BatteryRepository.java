@@ -3,34 +3,31 @@ package com.rfdetke.digitriadlaboratory.repositories;
 import androidx.lifecycle.LiveData;
 
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
-import com.rfdetke.digitriadlaboratory.database.daos.CellRecordDao;
-import com.rfdetke.digitriadlaboratory.database.daos.SensorRecordDao;
+import com.rfdetke.digitriadlaboratory.database.daos.BatteryRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WindowDao;
-import com.rfdetke.digitriadlaboratory.database.daos.WindowDao.SensorSampleRecord;
-import com.rfdetke.digitriadlaboratory.database.daos.WindowDao.CellSampleRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.CellRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.SensorRecord;
+import com.rfdetke.digitriadlaboratory.database.daos.WindowDao.BatterySampleRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.BatteryRecord;
 
 import java.util.List;
 
-public class CellRepository {
+public class BatteryRepository {
     private WindowDao windowDao;
-    private CellRecordDao cellRecordDao;
+    private BatteryRecordDao batteryRecordDao;
 
-    public CellRepository(AppDatabase database) {
-        cellRecordDao = database.getCellRecordDao();
+    public BatteryRepository(AppDatabase database) {
+        batteryRecordDao = database.getBatteryRecordDao();
         windowDao = database.getWindowDao();
     }
 
-    public List<CellSampleRecord> getAllSamples(long[] runs) {
-        return windowDao.getCellSamplesRecords(runs);
+    public List<BatterySampleRecord> getAllSamples(long[] runs) {
+        return windowDao.getBatterySamplesRecords(runs);
     }
 
     public LiveData<Long> getLiveCount(long runId) {
-        return windowDao.getCellLiveCount(runId);
+        return windowDao.getBatteryLiveCount(runId);
     }
 
-    public long[] insert(List<CellRecord> cellRecords) {
-        return cellRecordDao.insert(cellRecords);
+    public long[] insert(List<BatteryRecord> batteryRecords) {
+        return batteryRecordDao.insert(batteryRecords);
     }
 }

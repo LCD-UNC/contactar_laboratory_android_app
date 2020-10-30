@@ -26,6 +26,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
+import com.rfdetke.digitriadlaboratory.export.csv.BatteryCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
@@ -37,6 +38,7 @@ import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.scanners.TaskObserver;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
+import com.rfdetke.digitriadlaboratory.scanners.battery.BatteryScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.cell.CellScanScheduler;
@@ -63,6 +65,7 @@ public class ExperimentService extends Service implements TaskObserver {
     private BluetoothLeAdvertiseScheduler bluetoothLeAdvertiseScheduler;
     private CellScanScheduler cellScanScheduler;
     private GpsScanScheduler gpsScanScheduler;
+    private BatteryScanScheduler batteryScanScheduler;
     private Experiment currentExperiment;
     private LocationManager locationManager;
     private myLocationListener locationListener;
@@ -102,6 +105,7 @@ public class ExperimentService extends Service implements TaskObserver {
             WindowConfiguration sensorConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.SENSORS.name());
             WindowConfiguration cellConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.CELL.name());
             WindowConfiguration gpsConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.GPS.name());
+            WindowConfiguration batteryConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BATTERY.name());
             WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
             doneMap = new HashMap<>();
@@ -146,6 +150,11 @@ public class ExperimentService extends Service implements TaskObserver {
 
                 gpsScanScheduler = new GpsScanScheduler(currentRun.id, currentExperiment.maxRandomTime, gpsConfiguration, this, database);
                 registerScheduler(gpsScanScheduler);
+            }
+
+            if (batteryConfiguration != null) {
+                batteryScanScheduler = new BatteryScanScheduler(currentRun.id, currentExperiment.maxRandomTime, batteryConfiguration, this, database);
+                registerScheduler(batteryScanScheduler);
             }
 
             if (bluetoothLeAdvertiseWindowConfiguration != null) {
@@ -193,6 +202,10 @@ public class ExperimentService extends Service implements TaskObserver {
             gpsScanScheduler.stop();
         }
 
+        if(batteryScanScheduler != null) {
+            batteryScanScheduler.stop();
+        }
+
         if(bluetoothLeAdvertiseScheduler != null) {
             bluetoothLeAdvertiseScheduler.stop();
         }
@@ -232,6 +245,9 @@ public class ExperimentService extends Service implements TaskObserver {
 
         if (doneMap.containsKey(SourceTypeEnum.GPS.name()))
             new GpsCsvFileWriter(runs, database, getApplicationContext()).execute();
+
+        if (doneMap.containsKey(SourceTypeEnum.BATTERY.name()))
+            new BatteryCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);

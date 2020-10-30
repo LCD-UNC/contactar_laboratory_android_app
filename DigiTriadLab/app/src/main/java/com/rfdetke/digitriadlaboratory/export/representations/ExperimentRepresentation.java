@@ -33,6 +33,7 @@ public class ExperimentRepresentation implements JsonExportable {
     public Map<String, Long> sensors;
     public Map<String, Long> cell;
     public Map<String, Long> gps;
+    public Map<String, Long> battery;
     public Map<String, Long> bluetoothLeAdvertise;
     public Map<String, String> device;
 

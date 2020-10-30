@@ -1,13 +1,5 @@
 package com.rfdetke.digitriadlaboratory.database.entities;
-import android.os.Build;
-import android.telephony.CellInfo;
-import android.telephony.CellInfoCdma;
-import android.telephony.CellInfoGsm;
-import android.telephony.CellInfoLte;
-import android.telephony.CellInfoNr;
-import android.telephony.CellInfoTdscdma;
-import android.telephony.CellInfoWcdma;
-import android.telephony.CellSignalStrengthGsm;
+
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -15,76 +7,44 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "cell_record",
+@Entity(tableName = "battery_record",
         indices = {@Index(value = "id", unique = true),
                 @Index(value = "window_id")},
         foreignKeys = @ForeignKey(entity = Window.class,
                 parentColumns = "id",
                 childColumns = "window_id",
                 onDelete = ForeignKey.CASCADE))
-public class CellRecord {
+public class BatteryRecord {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-    @ColumnInfo(name = "operator")
-    public String operator;
-    @ColumnInfo(name = "technology")
-    public String technology;
-    @ColumnInfo(name = "dbm")
-    public int dbm;
-    @ColumnInfo(name = "asu_level")
-    public int asuLevel;
+    @ColumnInfo(name = "low_battery")
+    public boolean lowBattery;
+
+    @ColumnInfo(name = "is_charging")
+    public boolean isCharging;
+
+    @ColumnInfo(name = "usb_charging")
+    public boolean usbCharge;
+
+    @ColumnInfo(name = "ac_charging")
+    public boolean acCharge;
+
+    @ColumnInfo(name = "charge")
+    public float charge;
 
     @ColumnInfo(name = "window_id")
     public long windowId;
 
-    public CellRecord(CellInfo cellInfo, long windowId) {
-        if (cellInfo instanceof CellInfoGsm) {
-            this.technology = "GSM";
-            CellInfoGsm gsmCell = (CellInfoGsm) cellInfo;
-            this.dbm = gsmCell.getCellSignalStrength().getDbm();
-            this.asuLevel = gsmCell.getCellSignalStrength().getAsuLevel();
-            this.operator = gsmCell.getCellIdentity().getOperatorAlphaLong().toString();
-        } else if (cellInfo instanceof CellInfoWcdma) {
-            this.technology = "WCDMA";
-            CellInfoWcdma wcdmaCell = (CellInfoWcdma) cellInfo;
-            this.dbm = wcdmaCell.getCellSignalStrength().getDbm();
-            this.asuLevel = wcdmaCell.getCellSignalStrength().getAsuLevel();
-            this.operator = wcdmaCell.getCellIdentity().getOperatorAlphaLong().toString();
 
-        } else if (cellInfo instanceof CellInfoLte) {
-            CellInfoLte lteCell = (CellInfoLte) cellInfo;
-            this.technology = "LTE";
-            this.dbm = lteCell.getCellSignalStrength().getDbm();
-            this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
-            this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
-        } else if (cellInfo instanceof CellInfoCdma) {
-            CellInfoCdma lteCell = (CellInfoCdma) cellInfo;
-            this.technology = "CDMA";
-            this.dbm = lteCell.getCellSignalStrength().getDbm();
-            this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
-            this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
-        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && cellInfo instanceof CellInfoNr) {
-            CellInfoNr lteCell = (CellInfoNr) cellInfo;
-            this.technology = "5G NR";
-            this.dbm = lteCell.getCellSignalStrength().getDbm();
-            this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
-            this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
-        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && cellInfo instanceof CellInfoTdscdma) {
-            CellInfoTdscdma lteCell = (CellInfoTdscdma) cellInfo;
-            this.technology = "TD-SCDMA";
-            this.dbm = lteCell.getCellSignalStrength().getDbm();
-            this.asuLevel = lteCell.getCellSignalStrength().getAsuLevel();
-            this.operator = lteCell.getCellIdentity().getOperatorAlphaLong().toString();
-        }
+    public BatteryRecord(boolean lowBattery, boolean isCharging, boolean usbCharge, boolean acCharge, float charge, long windowId) {
+        this.lowBattery = lowBattery;
+        this.isCharging = isCharging;
+        this.usbCharge = usbCharge;
+        this.acCharge = acCharge;
+        this.charge = charge;
         this.windowId = windowId;
     }
 
-    public CellRecord(String operator, String technology, int dbm, int asuLevel, long windowId) {
-        this.operator = operator;
-        this.technology = technology;
-        this.dbm = dbm;
-        this.asuLevel = asuLevel;
-        this.windowId = windowId;
-    }
+
 }

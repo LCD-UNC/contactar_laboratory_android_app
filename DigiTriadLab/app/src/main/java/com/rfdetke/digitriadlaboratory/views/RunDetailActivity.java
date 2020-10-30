@@ -36,6 +36,7 @@ import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.export.FileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.BatteryCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.CellCsvFileWriter;
@@ -83,6 +84,7 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
         TextView bluetoothLeCount = findViewById(R.id.bluetooth_le_count);
         TextView cellCount = findViewById(R.id.cell_count);
         TextView gpsCount = findViewById(R.id.gps_count);
+        TextView batteryCount = findViewById(R.id.battery_count);
 
         ProgressBar progressBar = findViewById(R.id.progress_bar);
 
@@ -122,6 +124,13 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
                 gpsCount.setText(String.format(Locale.ENGLISH, "%d", count));
             else
                 gpsCount.setText("0");
+        });
+
+        runDetailViewModel.getBatteryCount().observe(this, count -> {
+            if (count != null)
+                batteryCount.setText(String.format(Locale.ENGLISH, "%d", count));
+            else
+                batteryCount.setText("0");
         });
 
         runDetailViewModel.getWifiCount().observe(this, count -> {
@@ -207,6 +216,9 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
         if (modules.contains(SourceTypeEnum.GPS.name()))
             new GpsCsvFileWriter(runs, database, context).execute();
 
+        if (modules.contains(SourceTypeEnum.BATTERY.name()))
+            new BatteryCsvFileWriter(runs, database, context).execute();
+
         new JsonExperimentFileWriter(currentRun.experimentId, database, context).execute();
         Toast.makeText(this, R.string.files_exported, Toast.LENGTH_SHORT).show();
     }
@@ -240,6 +252,9 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
 
         if (modules.contains(SourceTypeEnum.GPS.name()))
             writeDriveFile(folderId, new GpsCsvFileWriter(runs, database, context));
+
+        if (modules.contains(SourceTypeEnum.BATTERY.name()))
+            writeDriveFile(folderId, new BatteryCsvFileWriter(runs, database, context));
 
         writeDriveFile(folderId, new JsonExperimentFileWriter(currentRun.experimentId, database, context));
     }
@@ -300,6 +315,7 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
                             runDetailViewModel.getBluetoothLeCount().removeObservers(this);
                             runDetailViewModel.getCellCount().removeObservers(this);
                             runDetailViewModel.getGpsCount().removeObservers(this);
+                            runDetailViewModel.getBatteryCount().removeObservers(this);
                             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
                             alarmIntent.putExtra(NewRunActivity.EXTRA_RUN_ID, currentRun.id);
