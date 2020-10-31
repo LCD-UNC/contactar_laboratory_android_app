@@ -36,9 +36,11 @@ public class BatteryScanScheduler extends Scheduler {
     protected void startTask() {
         long sampleId = windowRepository.insert(runId, this.windowCount, key);
         IntentFilter batteryIntentFilter = new IntentFilter();
-        //batteryIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
         batteryIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
         batteryIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        batteryIntentFilter.addAction(Intent.ACTION_BATTERY_LOW);
+        batteryIntentFilter.addAction(Intent.ACTION_BATTERY_OKAY);
+        batteryIntentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
         batteryDataBucket = new BatteryDataBucket(sampleId, context);
         context.registerReceiver(batteryDataBucket, batteryIntentFilter);
     };

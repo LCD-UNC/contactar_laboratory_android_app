@@ -21,13 +21,16 @@ public class BatteryDataBucket extends BroadcastReceiver implements DataBucket {
     private final long sampleId;
     private BatteryManager batteryManager;
     private List<Object> records;
+    boolean lowBattery = false;
+    boolean isCharging = false;
+    float batteryCharge = 0;
+    boolean usbCharge = false;
+    boolean acCharge = false;
 
     public BatteryDataBucket(long sampleId, Context context) {
         this.sampleId = sampleId;
         records = new ArrayList<>();
         batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-
-        //saveScanResults();
     }
 
     @Override
@@ -35,43 +38,39 @@ public class BatteryDataBucket extends BroadcastReceiver implements DataBucket {
         String intentAction = intent.getAction();
         if (intentAction != null) {
             switch (intentAction) {
+                case Intent.ACTION_BATTERY_LOW:
+                    lowBattery = true;
+                    break;
+                case Intent.ACTION_BATTERY_OKAY:
+                    lowBattery = false;
+                    break;
                 case Intent.ACTION_POWER_CONNECTED:
-                    IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-                    Intent batteryStatus = context.registerReceiver(null, ifilter);
-                    int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-                    int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-                    int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-                    int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-
-                    float batteryCharge = level * 100 / (float)scale;
-
-                    boolean lowBattery = batteryStatus.getBooleanExtra(BatteryManager.EXTRA_BATTERY_LOW, false);
-                    boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                            status == BatteryManager.BATTERY_STATUS_FULL;
-                    boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-                    boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-                    records.add(new BatteryRecord(lowBattery,isCharging, usbCharge, acCharge,batteryCharge,sampleId));
+                    isCharging = true;
                     break;
                 case Intent.ACTION_POWER_DISCONNECTED:
-                    records.add(new BatteryRecord(false,false, false, false,-999,sampleId));
+                    isCharging = false;
+                    usbCharge = false;
+                    acCharge = false;
                     break;
                 case Intent.ACTION_BATTERY_CHANGED:
-                    /*int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+                    int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
                     int chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
                     int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
                     int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-                    float batteryCharge = level * 100 / (float)scale;
+                    batteryCharge = level * 100 / (float)scale;
 
-                    boolean lowBattery = intent.getBooleanExtra(BatteryManager.EXTRA_BATTERY_LOW, false);
-                    boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                    lowBattery = intent.getBooleanExtra(BatteryManager.EXTRA_BATTERY_LOW, false);
+                    isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                             status == BatteryManager.BATTERY_STATUS_FULL;
-                    boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-                    boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-
-                    records.add(new BatteryRecord(lowBattery,isCharging, usbCharge, acCharge,batteryCharge,sampleId));*/
+                    usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
+                    acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
                     break;
+
             }
+
+            //records.add(new BatteryRecord(lowBattery,isCharging,batteryCharge,sampleId));
+            records.add(new BatteryRecord(lowBattery,isCharging, usbCharge, acCharge, batteryCharge, sampleId));
         }
 
     }
