@@ -25,6 +25,7 @@
     <string name="cell_configuration">Escaneo de Celdas</string>
     <string name="gps_configuration">Escaneo de Satélites GPS</string>
     <string name="battery_configuration">Escaneo de Batería</string>
+    <string name="activity_configuration">Escaneo de Actividades</string>
     <string name="bluetooth_le_advertise_configuration">Baliza BLE</string>
     <string name="new_run">Nueva Corrida</string>
     <string name="schedule_run">Programar para:</string>

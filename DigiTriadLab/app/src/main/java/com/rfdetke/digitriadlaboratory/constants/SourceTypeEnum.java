@@ -8,5 +8,6 @@ public enum SourceTypeEnum {
     SENSORS,
     CELL,
     GPS,
-    BATTERY
+    BATTERY,
+    ACTIVITY
 }

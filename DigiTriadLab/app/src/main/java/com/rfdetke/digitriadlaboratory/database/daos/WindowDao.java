@@ -135,6 +135,22 @@ public interface WindowDao {
             "WHERE s.run_id == (:runId) GROUP BY s.run_id")
     LiveData<Long> getBatteryLiveCount(long runId);
 
+    // ------------------- ACTIVITIES -----------------------------------------------------------------
+
+
+    @Query("SELECT rn.number as run, s.number as window, r.activity " +
+            "FROM window as s " +
+            "LEFT JOIN activity_record as r ON r.window_id=s.id " +
+            "INNER JOIN run as rn ON rn.id=s.run_id " +
+            "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run, window")
+    List<ActivitySampleRecord> getActivitySamplesRecords(long[] runId);
+
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM battery_record AS r " +
+            "JOIN window AS s ON  r.window_id=s.id " +
+            "WHERE s.run_id == (:runId) GROUP BY s.run_id")
+    LiveData<Long> getActivityLiveCount(long runId);
+
+
     @Insert
     long insert(Window window);
 
@@ -334,6 +350,25 @@ public interface WindowDao {
         public String toCsv() {
             return String.format(Locale.ENGLISH, "%d,%d,%d,%b,%b,%b,%b,%f\n",
                     DateConverter.dateToTimestamp(timestamp), run, window, lowBattery, isCharging, usbCharging, acCharging, charge);
+        }
+    }
+    class ActivitySampleRecord implements CsvExportable {
+        public Date timestamp;
+        public long run;
+        public long window;
+
+        @ColumnInfo(name = "activity")
+        public int activity;
+
+        @Override
+        public String csvHeader() {
+            return "timestamp,run,window,activity\n";
+        }
+
+        @Override
+        public String toCsv() {
+            return String.format(Locale.ENGLISH, "%d,%d,%d,%d\n",
+                    DateConverter.dateToTimestamp(timestamp), run, window, activity);
         }
     }
 }

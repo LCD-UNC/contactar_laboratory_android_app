@@ -24,6 +24,7 @@
     <string name="cell_configuration">Cells Scan</string>
     <string name="gps_configuration">GPS Scan</string>
     <string name="battery_configuration">Battery Scan</string>
+    <string name="activity_configuration">Activity Scan</string>
     <string name="bluetooth_le_advertise_configuration">BLE Advertise</string>
     <string name="new_run">New Run</string>
     <string name="schedule_run">Schedule this to:</string>

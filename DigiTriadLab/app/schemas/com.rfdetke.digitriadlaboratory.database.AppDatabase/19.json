@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 19,
-    "identityHash": "9b6cb749019c153cc60cf1035f43fa8c",
+    "identityHash": "f80b4e63171d769ece50440a3d08c9b3",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
@@ -759,6 +759,73 @@
         ]
       },
       {
+        "tableName": "activity_record",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `activity` INTEGER NOT NULL, `transition` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activity",
+            "columnName": "activity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transition",
+            "columnName": "transition",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windowId",
+            "columnName": "window_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_activity_record_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_activity_record_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_activity_record_window_id",
+            "unique": false,
+            "columnNames": [
+              "window_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_activity_record_window_id` ON `${TABLE_NAME}` (`window_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "window",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "window_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "wifi_record",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `channel_width` TEXT, `center_frequency_0` INTEGER NOT NULL, `center_frequency_1` INTEGER NOT NULL, `frequency` INTEGER NOT NULL, `level` INTEGER NOT NULL, `passpoint` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
@@ -1310,7 +1377,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9b6cb749019c153cc60cf1035f43fa8c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f80b4e63171d769ece50440a3d08c9b3')"
     ]
   }
 }

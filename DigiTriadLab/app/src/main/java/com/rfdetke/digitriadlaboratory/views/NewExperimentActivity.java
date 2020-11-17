@@ -98,6 +98,9 @@ public class NewExperimentActivity extends AppCompatActivity {
     private EditText batteryWindows;
     private SwitchCompat batterySwitch;
 
+    private TextView activityTitle;
+    private SwitchCompat activitySwitch;
+
     private TextView bluetoothLeAdvertiseTitle;
     private EditText bluetoothLeAdvertiseActive;
     private EditText bluetoothLeAdvertiseInactive;
@@ -169,6 +172,10 @@ public class NewExperimentActivity extends AppCompatActivity {
         batteryWindows = findViewById(R.id.battery_windows);
         batteryTitle = findViewById(R.id.battery_title);
         batterySwitch = findViewById(R.id.battery_switch);
+
+        activityTitle = findViewById(R.id.activity_title);
+        activitySwitch = findViewById(R.id.activity_switch);
+
 
         bluetoothLeAdvertiseActive = findViewById(R.id.bluetooth_le_advertise_active);
         bluetoothLeAdvertiseInactive = findViewById(R.id.bluetooth_le_advertise_inactive);
@@ -280,6 +287,10 @@ public class NewExperimentActivity extends AppCompatActivity {
                             errorMessage = errorMessage.concat(getResources().getString(R.string.battery_error));
                             success = false;
                         }
+                    }
+                    if(activitySwitch.isChecked()) {
+                        saveActivityConfig(experimentId);
+
                     }
                     if(bluetoothLeAdvertiseSwitch.isChecked()) {
                         if (validateBluetoothLeAdvertiseConfig()) {
@@ -582,6 +593,13 @@ public class NewExperimentActivity extends AppCompatActivity {
         WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
         configurationRepository.insert(configuration);
+    }
+
+    private void saveActivityConfig(long experimentId) {
+        long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.ACTIVITY.name()).id;
+        /*WindowConfiguration configuration = new WindowConfiguration(active,
+                inactive, windows, sourceId, experimentId);
+        configurationRepository.insert(configuration);*/
     }
 
     private void saveBluetoothLeAdvertiseConfig(long experimentId) {
