@@ -5,10 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.BatteryManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,28 +21,21 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.rfdetke.digitriadlaboratory.BuildConfig;
 import com.rfdetke.digitriadlaboratory.database.entities.ActivityRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.BatteryRecord;
 import com.rfdetke.digitriadlaboratory.scanners.DataBucket;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class ActivityDataBucket extends BroadcastReceiver implements DataBucket {
 
     private final long windowId;
     private List<Object> records;
-
     private List<ActivityTransition> activityTransitionList;
     private PendingIntent mActivityTransitionsPendingIntent;
     private boolean runningQOrLater =
             android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
     private final String TRANSITIONS_RECEIVER_ACTION =
             BuildConfig.APPLICATION_ID + "TRANSITIONS_RECEIVER_ACTION";
-    private boolean activityTrackingEnabled;
-    private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 45;
 
     public ActivityDataBucket(long WindowId, Context context) {
         this.windowId = WindowId;
@@ -91,7 +82,6 @@ public class ActivityDataBucket extends BroadcastReceiver implements DataBucket 
             return;
         }
 
-        // TODO: Extract activity transition information from listener.
         if (ActivityTransitionResult.hasResult(intent)) {
 
             ActivityTransitionResult result = ActivityTransitionResult.extractResult(intent);

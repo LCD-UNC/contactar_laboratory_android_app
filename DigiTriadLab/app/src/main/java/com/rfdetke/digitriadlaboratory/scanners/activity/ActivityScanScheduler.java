@@ -3,28 +3,16 @@ package com.rfdetke.digitriadlaboratory.scanners.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-
-import com.google.android.gms.location.ActivityRecognition;
-import com.google.android.gms.location.ActivityTransitionRequest;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.rfdetke.digitriadlaboratory.BuildConfig;
 import com.rfdetke.digitriadlaboratory.constants.SourceTypeEnum;
 import com.rfdetke.digitriadlaboratory.database.AppDatabase;
-import com.rfdetke.digitriadlaboratory.database.entities.BatteryRecord;
+import com.rfdetke.digitriadlaboratory.database.entities.ActivityRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
 import com.rfdetke.digitriadlaboratory.repositories.ActivityRepository;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
-import com.rfdetke.digitriadlaboratory.scanners.battery.BatteryDataBucket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +45,12 @@ public class ActivityScanScheduler extends Scheduler {
 
     @Override
     protected void endTask() {
+        List<ActivityRecord> activityRecords = new ArrayList<>();
+        for (Object record : activityDataBucket.getRecordsList()) {
+            activityRecords.add((ActivityRecord) record);
+        }
+        activityRepository.insert(activityRecords);
+        context.unregisterReceiver(activityDataBucket);
         activityDataBucket = null;
     }
 
@@ -71,7 +65,6 @@ public class ActivityScanScheduler extends Scheduler {
 
     public void enableActivityRecognition() {
 
-        // TODO: Enable/Disable activity tracking and ask for permissions if needed.
         if (activityRecognitionPermissionApproved()) {
                 activityDataBucket.enableActivityTransitions(context);
 
@@ -91,7 +84,6 @@ public class ActivityScanScheduler extends Scheduler {
 
     private boolean activityRecognitionPermissionApproved() {
 
-        // TODO: Review permission check for 29+.
         if (runningQOrLater) {
 
             return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(

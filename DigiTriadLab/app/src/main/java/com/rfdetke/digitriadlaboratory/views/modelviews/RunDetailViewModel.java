@@ -10,6 +10,7 @@ import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
+import com.rfdetke.digitriadlaboratory.repositories.ActivityRepository;
 import com.rfdetke.digitriadlaboratory.repositories.BatteryRepository;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothLeRepository;
 import com.rfdetke.digitriadlaboratory.repositories.BluetoothRepository;
@@ -36,6 +37,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
     private final CellRepository cellRepository;
     private final GpsRepository gpsRepository;
     private final BatteryRepository batteryRepository;
+    private final ActivityRepository activityRepository;
 
     private LiveData<Long> wifiCount;
     private LiveData<Long> bluetoothCount;
@@ -44,6 +46,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
     private LiveData<Long> cellCount;
     private LiveData<Long> gpsCount;
     private LiveData<Long> batteryCount;
+    private LiveData<Long> activityCount;
     private LiveData<Run> currentLiveRun;
     private Run currentRun;
 
@@ -60,6 +63,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
         cellRepository = new CellRepository(database);
         gpsRepository = new GpsRepository(database);
         batteryRepository = new BatteryRepository(database);
+        activityRepository = new ActivityRepository(database);
         configurationRepository = new ConfigurationRepository(database);
         sourceTypeRepository = new SourceTypeRepository(database);
     }
@@ -73,6 +77,7 @@ public class RunDetailViewModel  extends AndroidViewModel {
         sensorCount = sensorRepository.getLiveCount(runId);
         cellCount = cellRepository.getLiveCount(runId);
         batteryCount = batteryRepository.getLiveCount(runId);
+        activityCount = activityRepository.getLiveCount(runId);
         gpsCount = gpsRepository.getLiveCount(runId);
         modules = new ArrayList<>();
         for (WindowConfiguration configuration :
@@ -104,6 +109,8 @@ public class RunDetailViewModel  extends AndroidViewModel {
     public LiveData<Long> getGpsCount() { return gpsCount; }
 
     public LiveData<Long> getBatteryCount() { return batteryCount; }
+
+    public LiveData<Long> getActivityCount() { return activityCount; }
 
     public LiveData<Run> getCurrentLiveRun() {
         return currentLiveRun;

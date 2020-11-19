@@ -27,9 +27,24 @@ public class QR {
         WindowConfiguration sensorWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.SENSORS.name());
         WindowConfiguration cellWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.CELL.name());
         WindowConfiguration gpsWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.GPS.name());
+        WindowConfiguration batteryWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.BATTERY.name());
+        WindowConfiguration activityWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.ACTIVITY.name());
         WindowConfiguration advertiseWindow = configurationRepository.getConfigurationForExperimentByType(experiment.id, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
-        ExperimentRepresentation codedExperimentObject = new ExperimentRepresentation(experiment, wifiWindow, bluetoothWindow, bluetoothLeWindow, sensorWindow, cellWindow,gpsWindow, advertiseWindow, advertiseConfiguration, tagList, null);
+        ExperimentRepresentation codedExperimentObject = new ExperimentRepresentation(
+                experiment,
+                wifiWindow,
+                bluetoothWindow,
+                bluetoothLeWindow,
+                sensorWindow,
+                cellWindow,
+                gpsWindow,
+                batteryWindow,
+                activityWindow,
+                advertiseWindow,
+                advertiseConfiguration,
+                tagList,
+                null);
         Gson gson = new Gson();
         String jsonExperiment = gson.toJson(codedExperimentObject);
 

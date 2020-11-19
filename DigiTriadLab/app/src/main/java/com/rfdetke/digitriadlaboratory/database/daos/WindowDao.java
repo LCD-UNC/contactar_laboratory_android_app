@@ -138,14 +138,14 @@ public interface WindowDao {
     // ------------------- ACTIVITIES -----------------------------------------------------------------
 
 
-    @Query("SELECT rn.number as run, s.number as window, r.activity " +
+    @Query("SELECT rn.number as run, s.number as window, r.activity, r.transition " +
             "FROM window as s " +
             "LEFT JOIN activity_record as r ON r.window_id=s.id " +
             "INNER JOIN run as rn ON rn.id=s.run_id " +
             "WHERE s.run_id IN (:runId) ORDER BY s.timestamp, run, window")
     List<ActivitySampleRecord> getActivitySamplesRecords(long[] runId);
 
-    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM battery_record AS r " +
+    @Query("SELECT COUNT(DISTINCT r.id) as quantity FROM activity_record AS r " +
             "JOIN window AS s ON  r.window_id=s.id " +
             "WHERE s.run_id == (:runId) GROUP BY s.run_id")
     LiveData<Long> getActivityLiveCount(long runId);
@@ -359,16 +359,17 @@ public interface WindowDao {
 
         @ColumnInfo(name = "activity")
         public int activity;
+        public int transition;
 
         @Override
         public String csvHeader() {
-            return "timestamp,run,window,activity\n";
+            return "timestamp,run,window,activity,transition\n";
         }
 
         @Override
         public String toCsv() {
-            return String.format(Locale.ENGLISH, "%d,%d,%d,%d\n",
-                    DateConverter.dateToTimestamp(timestamp), run, window, activity);
+            return String.format(Locale.ENGLISH, "%d,%d,%d,%d,%d\n",
+                    DateConverter.dateToTimestamp(timestamp), run, window, activity, transition);
         }
     }
 }

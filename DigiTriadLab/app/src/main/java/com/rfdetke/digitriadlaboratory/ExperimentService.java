@@ -1,6 +1,7 @@
 package com.rfdetke.digitriadlaboratory;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,7 +15,6 @@ import android.location.LocationManager;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.rfdetke.digitriadlaboratory.constants.RunStateEnum;
@@ -26,6 +26,7 @@ import com.rfdetke.digitriadlaboratory.database.entities.AdvertiseConfiguration;
 import com.rfdetke.digitriadlaboratory.database.entities.Experiment;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.database.entities.WindowConfiguration;
+import com.rfdetke.digitriadlaboratory.export.csv.ActivityCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BatteryCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
@@ -38,6 +39,7 @@ import com.rfdetke.digitriadlaboratory.repositories.ExperimentRepository;
 import com.rfdetke.digitriadlaboratory.repositories.RunRepository;
 import com.rfdetke.digitriadlaboratory.scanners.TaskObserver;
 import com.rfdetke.digitriadlaboratory.scanners.Scheduler;
+import com.rfdetke.digitriadlaboratory.scanners.activity.ActivityScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.battery.BatteryScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothLeScanScheduler;
 import com.rfdetke.digitriadlaboratory.scanners.bluetooth.BluetoothScanScheduler;
@@ -66,6 +68,7 @@ public class ExperimentService extends Service implements TaskObserver {
     private CellScanScheduler cellScanScheduler;
     private GpsScanScheduler gpsScanScheduler;
     private BatteryScanScheduler batteryScanScheduler;
+    private ActivityScanScheduler activityScanScheduler;
     private Experiment currentExperiment;
     private LocationManager locationManager;
     private myLocationListener locationListener;
@@ -106,6 +109,7 @@ public class ExperimentService extends Service implements TaskObserver {
             WindowConfiguration cellConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.CELL.name());
             WindowConfiguration gpsConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.GPS.name());
             WindowConfiguration batteryConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BATTERY.name());
+            WindowConfiguration activityConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.ACTIVITY.name());
             WindowConfiguration bluetoothLeAdvertiseWindowConfiguration = configurationRepository.getConfigurationForExperimentByType(currentRun.experimentId, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
 
             doneMap = new HashMap<>();
@@ -157,6 +161,11 @@ public class ExperimentService extends Service implements TaskObserver {
                 registerScheduler(batteryScanScheduler);
             }
 
+            if (activityConfiguration != null) {
+                activityScanScheduler = new ActivityScanScheduler(currentRun.id, currentExperiment.maxRandomTime, activityConfiguration, this, database);
+                registerScheduler(activityScanScheduler);
+            }
+
             if (bluetoothLeAdvertiseWindowConfiguration != null) {
                 AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentRun.experimentId);
                 bluetoothLeAdvertiseScheduler = new BluetoothLeAdvertiseScheduler(
@@ -206,6 +215,10 @@ public class ExperimentService extends Service implements TaskObserver {
             batteryScanScheduler.stop();
         }
 
+        if(activityScanScheduler != null) {
+            activityScanScheduler.stop();
+        }
+
         if(bluetoothLeAdvertiseScheduler != null) {
             bluetoothLeAdvertiseScheduler.stop();
         }
@@ -248,6 +261,9 @@ public class ExperimentService extends Service implements TaskObserver {
 
         if (doneMap.containsKey(SourceTypeEnum.BATTERY.name()))
             new BatteryCsvFileWriter(runs, database, getApplicationContext()).execute();
+
+        if (doneMap.containsKey(SourceTypeEnum.ACTIVITY.name()))
+            new ActivityCsvFileWriter(runs, database, getApplicationContext()).execute();
 
         runRepository.updateState(currentRun.id, RunStateEnum.DONE.name());
         stopForeground(true);

@@ -99,6 +99,9 @@ public class NewExperimentActivity extends AppCompatActivity {
     private SwitchCompat batterySwitch;
 
     private TextView activityTitle;
+    private EditText activityActive;
+    private EditText activityInactive;
+    private EditText activityWindows;
     private SwitchCompat activitySwitch;
 
     private TextView bluetoothLeAdvertiseTitle;
@@ -174,6 +177,10 @@ public class NewExperimentActivity extends AppCompatActivity {
         batterySwitch = findViewById(R.id.battery_switch);
 
         activityTitle = findViewById(R.id.activity_title);
+        activityActive = findViewById(R.id.activity_active);
+        activityInactive = findViewById(R.id.activity_inactive);
+        activityWindows = findViewById(R.id.activity_windows);
+        activityTitle = findViewById(R.id.activity_title);
         activitySwitch = findViewById(R.id.activity_switch);
 
 
@@ -228,7 +235,8 @@ public class NewExperimentActivity extends AppCompatActivity {
                         !sensorsSwitch.isChecked()&&
                         !cellSwitch.isChecked() &&
                         !gpsSwitch.isChecked() &&
-                        !batterySwitch.isChecked()){
+                        !batterySwitch.isChecked() &&
+                        !activitySwitch.isChecked()){
                     errorMessage = errorMessage.concat(getResources().getString(R.string.at_least_one_configuration));
                     success = false;
                 } else {
@@ -289,8 +297,12 @@ public class NewExperimentActivity extends AppCompatActivity {
                         }
                     }
                     if(activitySwitch.isChecked()) {
-                        saveActivityConfig(experimentId);
-
+                        if (validateActivityConfig()) {
+                            saveActivityConfig(experimentId);
+                        } else {
+                            errorMessage = errorMessage.concat(getResources().getString(R.string.activity_error));
+                            success = false;
+                        }
                     }
                     if(bluetoothLeAdvertiseSwitch.isChecked()) {
                         if (validateBluetoothLeAdvertiseConfig()) {
@@ -384,6 +396,15 @@ public class NewExperimentActivity extends AppCompatActivity {
             batteryTitle.setTextColor(getColor(color));
         });
 
+        activitySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            activityActive.setEnabled(isChecked);
+            activityInactive.setEnabled(isChecked);
+            activityWindows.setEnabled(isChecked);
+            int color;
+            color = isChecked ? R.color.black : R.color.grey;
+            activityTitle.setTextColor(getColor(color));
+        });
+
         bluetoothLeAdvertiseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             bluetoothLeAdvertiseActive.setEnabled(isChecked);
             bluetoothLeAdvertiseInactive.setEnabled(isChecked);
@@ -402,6 +423,7 @@ public class NewExperimentActivity extends AppCompatActivity {
         cellSwitch.setChecked(false);
         gpsSwitch.setChecked(false);
         batterySwitch.setChecked(false);
+        activitySwitch.setChecked(false);
         bluetoothLeAdvertiseSwitch.setChecked(false);
 
         long experimentId = getIntent().getLongExtra(EXTRA_EXPERIMENT_ID, 0);
@@ -512,7 +534,14 @@ public class NewExperimentActivity extends AppCompatActivity {
                 (Integer.parseInt(batteryInactive.getText().toString()) > 0) &&
                 (Integer.parseInt(batteryWindows.getText().toString()) > 0);
     }
-
+    private boolean validateActivityConfig() {
+        return !activityActive.getText().toString().isEmpty() &&
+                !activityInactive.getText().toString().isEmpty() &&
+                !activityWindows.getText().toString().isEmpty() &&
+                (Integer.parseInt(activityActive.getText().toString()) > 0) &&
+                (Integer.parseInt(activityInactive.getText().toString()) > 0) &&
+                (Integer.parseInt(activityWindows.getText().toString()) > 0);
+    }
     private long saveExperiment() {
         int randTime;
         if (randomTime.getText().toString().isEmpty())
@@ -596,10 +625,13 @@ public class NewExperimentActivity extends AppCompatActivity {
     }
 
     private void saveActivityConfig(long experimentId) {
+        long active = Long.parseLong(activityActive.getText().toString());
+        long inactive = Long.parseLong(activityInactive.getText().toString());
+        long windows = Long.parseLong(activityWindows.getText().toString());
         long sourceId = sourceTypeRepository.getByType(SourceTypeEnum.ACTIVITY.name()).id;
-        /*WindowConfiguration configuration = new WindowConfiguration(active,
+        WindowConfiguration configuration = new WindowConfiguration(active,
                 inactive, windows, sourceId, experimentId);
-        configurationRepository.insert(configuration);*/
+        configurationRepository.insert(configuration);
     }
 
     private void saveBluetoothLeAdvertiseConfig(long experimentId) {
@@ -712,6 +744,13 @@ public class NewExperimentActivity extends AppCompatActivity {
                 batteryActive.setText(longOrNullToEmpty(experiment.battery.get(ExperimentRepresentation.ACTIVE)));
                 batteryInactive.setText(longOrNullToEmpty(experiment.battery.get(ExperimentRepresentation.INACTIVE)));
                 batteryWindows.setText(longOrNullToEmpty(experiment.battery.get(ExperimentRepresentation.WINDOWS)));
+            }
+
+            if(!experiment.activity.isEmpty()) {
+                activitySwitch.setChecked(true);
+                activityActive.setText(longOrNullToEmpty(experiment.activity.get(ExperimentRepresentation.ACTIVE)));
+                activityInactive.setText(longOrNullToEmpty(experiment.activity.get(ExperimentRepresentation.INACTIVE)));
+                activityWindows.setText(longOrNullToEmpty(experiment.activity.get(ExperimentRepresentation.WINDOWS)));
             }
 
             if(!experiment.bluetoothLeAdvertise.isEmpty()) {

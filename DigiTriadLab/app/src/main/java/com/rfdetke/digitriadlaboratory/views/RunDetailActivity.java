@@ -36,6 +36,7 @@ import com.rfdetke.digitriadlaboratory.database.AppDatabase;
 import com.rfdetke.digitriadlaboratory.database.DatabaseSingleton;
 import com.rfdetke.digitriadlaboratory.database.entities.Run;
 import com.rfdetke.digitriadlaboratory.export.FileWriter;
+import com.rfdetke.digitriadlaboratory.export.csv.ActivityCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BatteryCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothCsvFileWriter;
 import com.rfdetke.digitriadlaboratory.export.csv.BluetoothLeCsvFileWriter;
@@ -85,6 +86,7 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
         TextView cellCount = findViewById(R.id.cell_count);
         TextView gpsCount = findViewById(R.id.gps_count);
         TextView batteryCount = findViewById(R.id.battery_count);
+        TextView activityCount = findViewById(R.id.activity_count);
 
         ProgressBar progressBar = findViewById(R.id.progress_bar);
 
@@ -131,6 +133,12 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
                 batteryCount.setText(String.format(Locale.ENGLISH, "%d", count));
             else
                 batteryCount.setText("0");
+        });
+        runDetailViewModel.getActivityCount().observe(this, count -> {
+            if (count != null)
+                activityCount.setText(String.format(Locale.ENGLISH, "%d", count));
+            else
+                activityCount.setText("0");
         });
 
         runDetailViewModel.getWifiCount().observe(this, count -> {
@@ -219,6 +227,9 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
         if (modules.contains(SourceTypeEnum.BATTERY.name()))
             new BatteryCsvFileWriter(runs, database, context).execute();
 
+        if (modules.contains(SourceTypeEnum.ACTIVITY.name()))
+            new ActivityCsvFileWriter(runs, database, context).execute();
+
         new JsonExperimentFileWriter(currentRun.experimentId, database, context).execute();
         Toast.makeText(this, R.string.files_exported, Toast.LENGTH_SHORT).show();
     }
@@ -256,6 +267,9 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
         if (modules.contains(SourceTypeEnum.BATTERY.name()))
             writeDriveFile(folderId, new BatteryCsvFileWriter(runs, database, context));
 
+        if (modules.contains(SourceTypeEnum.ACTIVITY.name()))
+            writeDriveFile(folderId, new ActivityCsvFileWriter(runs, database, context));
+
         writeDriveFile(folderId, new JsonExperimentFileWriter(currentRun.experimentId, database, context));
     }
 
@@ -281,6 +295,10 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
                     runDetailViewModel.getCurrentLiveRun().removeObservers(this);
                     runDetailViewModel.getSensorCount().removeObservers(this);
                     runDetailViewModel.getWifiCount().removeObservers(this);
+                    runDetailViewModel.getCellCount().removeObservers(this);
+                    runDetailViewModel.getGpsCount().removeObservers(this);
+                    runDetailViewModel.getBatteryCount().removeObservers(this);
+                    runDetailViewModel.getActivityCount().removeObservers(this);
                     runDetailViewModel.getBluetoothCount().removeObservers(this);
                     runDetailViewModel.getBluetoothLeCount().removeObservers(this);
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -315,7 +333,8 @@ public class RunDetailActivity extends GoogleSessionAppCompatActivity {
                             runDetailViewModel.getBluetoothLeCount().removeObservers(this);
                             runDetailViewModel.getCellCount().removeObservers(this);
                             runDetailViewModel.getGpsCount().removeObservers(this);
-                            runDetailViewModel.getBatteryCount().removeObservers(this);
+                        runDetailViewModel.getBatteryCount().removeObservers(this);
+                        runDetailViewModel.getActivityCount().removeObservers(this);
                             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
                             alarmIntent.putExtra(NewRunActivity.EXTRA_RUN_ID, currentRun.id);

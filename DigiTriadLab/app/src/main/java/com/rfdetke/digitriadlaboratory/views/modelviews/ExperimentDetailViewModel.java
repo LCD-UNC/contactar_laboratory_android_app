@@ -122,12 +122,14 @@ public class ExperimentDetailViewModel extends AndroidViewModel {
         WindowConfiguration sensorWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.SENSORS.name());
         WindowConfiguration cellWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.CELL.name());
         WindowConfiguration gpsWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.GPS.name());
+        WindowConfiguration batteryWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.BATTERY.name());
+        WindowConfiguration activityWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.ACTIVITY.name());
         WindowConfiguration advertiseWindow = configurationRepository.getConfigurationForExperimentByType(currentExperiment.id, SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name());
         AdvertiseConfiguration advertiseConfiguration = configurationRepository.getBluetoothLeAdvertiseConfigurationFor(currentExperiment.id);
         List<String> tags =  experimentRepository.getTagList(currentExperiment.id);
 
         return new ExperimentRepresentation(currentExperiment, wifiWindow, bluetoothWindow,
-                bluetoothLeWindow, sensorWindow, cellWindow, gpsWindow, advertiseWindow, advertiseConfiguration, tags, null);
+                bluetoothLeWindow, sensorWindow, cellWindow, gpsWindow, batteryWindow, activityWindow, advertiseWindow, advertiseConfiguration, tags, null);
 
     }
 }

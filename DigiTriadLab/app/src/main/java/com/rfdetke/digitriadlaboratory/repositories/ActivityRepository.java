@@ -7,7 +7,6 @@ import com.rfdetke.digitriadlaboratory.database.daos.ActivityRecordDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WindowDao;
 import com.rfdetke.digitriadlaboratory.database.daos.WindowDao.ActivitySampleRecord;
 import com.rfdetke.digitriadlaboratory.database.entities.ActivityRecord;
-import com.rfdetke.digitriadlaboratory.database.entities.BatteryRecord;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class ActivityRepository {
     }
 
     public LiveData<Long> getLiveCount(long runId) {
-        return windowDao.getBatteryLiveCount(runId);
+        return windowDao.getActivityLiveCount(runId);
     }
 
     public long[] insert(List<ActivityRecord> activityRecords) {

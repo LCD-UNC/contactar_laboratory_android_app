@@ -49,12 +49,14 @@
     <string name="cell_error">Algún campo de  la configuración de Celdas está vacío.\n</string>
     <string name="gps_error">Algún campo de  la configuración de GPS está vacío.\n</string>
     <string name="battery_error">Algún campo de  la configuración de Batería está vacío.\n</string>
+    <string name="activity_error">"Algún campo de  la configuración de Actividad está vacío.\n"</string>
     <string name="bluetooth_le_advertise_error">Algún campo de la configuración de Baliza BLE es inválido o está vacío. Recuerda que la Potencia Tx debe estar en un rango de [-127, 1] y el Intervalo debe estar en un rango de [100, 10485759]\n</string>
     <string name="copy_experiment">Copiar Experimento</string>
     <string name="sensors">Sensores</string>
     <string name="cell">Celdas</string>
     <string name="gps">GPS</string>
     <string name="battery">Battery</string>
+    <string name="activity">Activity</string>
     <string name="collected_records">Registros recolectados</string>
     <string name="export">Exportar</string>
     <string name="dialog_confirm_delete">¿Estás seguro de que querés borrar?</string>
