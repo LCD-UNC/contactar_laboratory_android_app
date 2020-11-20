@@ -138,7 +138,7 @@ public interface WindowDao {
     // ------------------- ACTIVITIES -----------------------------------------------------------------
 
 
-    @Query("SELECT rn.number as run, s.number as window, r.activity, r.transition " +
+    @Query("SELECT rn.number as run, s.number as window, s.timestamp, r.activity, r.transition " +
             "FROM window as s " +
             "LEFT JOIN activity_record as r ON r.window_id=s.id " +
             "INNER JOIN run as rn ON rn.id=s.run_id " +

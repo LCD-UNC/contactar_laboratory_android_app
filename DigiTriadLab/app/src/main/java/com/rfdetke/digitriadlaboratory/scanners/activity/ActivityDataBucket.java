@@ -130,31 +130,16 @@ public class ActivityDataBucket extends BroadcastReceiver implements DataBucket 
 
         Log.d("reg", "enableActivityTransitions()");
 
-
-        // TODO: Create request and listen for activity changes.
         ActivityTransitionRequest request = new ActivityTransitionRequest(activityTransitionList);
-// Register for Transitions Updates.
         Task<Void> task =
                 ActivityRecognition.getClient(context)
                         .requestActivityTransitionUpdates(request, mActivityTransitionsPendingIntent);
 
 
         task.addOnSuccessListener(
-                new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void result) {
-                        Log.d("reg", "Transitions Api was successfully registered.");
-
-                    }
-                });
+                result -> Log.d("reg", "Transitions Api was successfully registered."));
         task.addOnFailureListener(
-                new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("reg", "Transitions Api could NOT be registered: " + e);
-
-                    }
-                });
+                e -> Log.d("reg", "Transitions Api could NOT be registered: " + e));
 
     }
 }

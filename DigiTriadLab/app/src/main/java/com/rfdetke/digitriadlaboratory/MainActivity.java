@@ -153,7 +153,10 @@ public class MainActivity extends GoogleSessionAppCompatActivity {
                 Manifest.permission.CAMERA));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissionsList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+            permissionsList.add(Manifest.permission.ACTIVITY_RECOGNITION);
         }
+
+
 
         permissionsArray = new String[permissionsList.size()];
         for (String permission : permissionsList) {

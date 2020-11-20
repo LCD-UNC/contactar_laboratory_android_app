@@ -22,11 +22,6 @@ public class ActivityScanScheduler extends Scheduler {
     private final ActivityRepository activityRepository;
     ActivityDataBucket activityDataBucket;
 
-    private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 45;
-
-    private boolean runningQOrLater =
-            android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
-
     public ActivityScanScheduler(long runId, long randomTime, WindowConfiguration windowConfiguration, Context context,
                                  AppDatabase database) {
 
@@ -40,7 +35,7 @@ public class ActivityScanScheduler extends Scheduler {
         long sampleId = windowRepository.insert(runId, this.windowCount, key);
 
         activityDataBucket = new ActivityDataBucket(sampleId, context);
-        enableActivityRecognition();
+        activityDataBucket.enableActivityTransitions(context);
     };
 
     @Override
@@ -63,35 +58,4 @@ public class ActivityScanScheduler extends Scheduler {
         }
     }
 
-    public void enableActivityRecognition() {
-
-        if (activityRecognitionPermissionApproved()) {
-                activityDataBucket.enableActivityTransitions(context);
-
-        } else {
-            // Request permission and start activity for result. If the permission is approved, we
-            // want to make sure we start activity recognition tracking.
-            Log.d("reg", "registrando permisos");
-            ActivityCompat.requestPermissions((Activity)context,
-                    new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
-                    PERMISSION_REQUEST_ACTIVITY_RECOGNITION);
-
-        }
-
-    }
-
-
-
-    private boolean activityRecognitionPermissionApproved() {
-
-        if (runningQOrLater) {
-
-            return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACTIVITY_RECOGNITION
-            );
-        } else {
-            return true;
-        }
-    }
 }

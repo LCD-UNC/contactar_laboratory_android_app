@@ -18,9 +18,7 @@ public class ActivityRecord {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-    @ColumnInfo(name = "activity")
     public int activity;
-
     public int transition;
 
 
