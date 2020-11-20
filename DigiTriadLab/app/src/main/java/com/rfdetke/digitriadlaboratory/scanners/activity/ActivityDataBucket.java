@@ -32,8 +32,7 @@ public class ActivityDataBucket extends BroadcastReceiver implements DataBucket 
     private List<Object> records;
     private List<ActivityTransition> activityTransitionList;
     private PendingIntent mActivityTransitionsPendingIntent;
-    private boolean runningQOrLater =
-            android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
+
     private final String TRANSITIONS_RECEIVER_ACTION =
             BuildConfig.APPLICATION_ID + "TRANSITIONS_RECEIVER_ACTION";
 
