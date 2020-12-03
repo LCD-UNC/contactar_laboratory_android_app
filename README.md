@@ -1,20 +1,10 @@
-# DigiTriad Laboratory
+# Contactar Laboratory
 
-Contiene todo lo desarrollado como mi proyecto integrador final de carrera de Ingeniería en Computación.
+This Android application can store data of different communication peripherals available on the device, it is intended to use with debugging and experimental purposes.
 
-Los primeros avances de este proyecto se encuentran en otro [repositorio](https://gitlab.com/ramirofd/prototipo-recolector-android). 
-Se tomó la decisión de utilizar un repositorio nuevo debido a que la primera etapa de
-desarrollo fue exploratoria e introductoria. 
-El trabajo disponible aquí, parte de esa base de conocimiento pero planteando la
-aplicación con una arquitectura de sistema nueva y con enfoque en la realización
-de experimentos de laboratorio.
+## Build
 
-## Descripcion de la App
-
-Es una aplicación prototipo para Android que, utilizando el Hardware de comunicación
-del dispositivo, guarda información de las redes Wi-Fi, dispositivos Bluetooth y
-sensores que trae incorporado.
-
-Esta información podría ser de gran importancia para determinar el contexto o el
-entorno en el que se encuentra el dispositivo. Principal motivación del desarrollo
-de esta aplicación.
+1. Clone this repo or download and unzip.
+2. Open the project folder with Android Studio.
+3. Select target device (It will work **only** with **physical devices** because Bluetooth hardware is not emulated on virtual devices).
+4. Run or Debug application.
