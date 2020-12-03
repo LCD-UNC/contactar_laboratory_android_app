@@ -1,0 +1,107 @@
+<resources>
+    <string name="app_name" translatable="false">ContactAR Lab</string>
+    <string name="title_goes_here">Title goes here</string>
+    <string name="add_experiment">Add Experiment</string>
+    <string name="experiments">Experiments</string>
+    <string name="new_experiment">New Experiment</string>
+    <string name="experiment_detail">"Experiment: %s"</string>
+    <string name="codename">Codename</string>
+    <string name="description">Description</string>
+    <string name="run_label">"Run %d"</string>
+    <string name="run_date">"Scheduled: %s"</string>
+    <string name="save">Save</string>
+    <string name="no_description">No description found</string>
+    <string name="description_text">"Description:\n%s\n\nConfigurations:\n%s"</string>
+    <string name="loading_data">Loading data…</string>
+    <string name="scheduled_runs">Scheduled Runs</string>
+    <string name="active_time">Active [s]</string>
+    <string name="inactive_time">Inactive [s]</string>
+    <string name="windows">Windows</string>
+    <string name="wifi_configuration">WiFi Scan</string>
+    <string name="bluetooth_configuration">Bluetooth Scan</string>
+    <string name="bluetooth_le_configuration">BLE Scan</string>
+    <string name="sensor_configuration">Sensors Scan</string>
+    <string name="cell_configuration">Cells Scan</string>
+    <string name="gps_configuration">GPS Scan</string>
+    <string name="battery_configuration">Battery Scan</string>
+    <string name="activity_configuration">Activity Scan</string>
+    <string name="bluetooth_le_advertise_configuration">BLE Advertise</string>
+    <string name="new_run">New Run</string>
+    <string name="schedule_run">Schedule this to:</string>
+    <string name="invalid_datetime">Invalid datetime</string>
+    <string name="device_info_title">Device information</string>
+    <string name="save_update">Save / Update</string>
+    <string name="device_uuid_title" translatable="false">UUID</string>
+    <string name="no_information">No information available.</string>
+    <string name="device_brand_title">Brand</string>
+    <string name="device_model_title">Model</string>
+    <string name="new_uuid">Generate New UUID</string>
+    <string name="dialog_enable_wifi">WiFi is required to run experiments</string>
+    <string name="enable">Enable</string>
+    <string name="tx_power_dbm">Tx Power [dBm]</string>
+    <string name="interval">Interval [ms]</string>
+    <string name="experiment_codename_error">"Experiment requires a codename.\n"</string>
+    <string name="at_least_one_configuration">"Experiment requires at least 1 configuration.\n"</string>
+    <string name="wifi_error">"Some WiFi configuration is empty.\n"</string>
+    <string name="bluetooth_error">"Some Bluetooth configuration is empty.\n"</string>
+    <string name="bluetooth_le_error">"Some BLE configuration is empty.\n"</string>
+    <string name="sensors_error">"Some Sensors configuration is empty.\n"</string>
+    <string name="cell_error">"Some Cell configuration is empty.\n"</string>
+    <string name="gps_error">"Some GPS configuration is empty.\n"</string>
+    <string name="battery_error">"Some Battery configuration is empty.\n"</string>
+    <string name="activity_error">"Some Activity configuration is empty.\n"</string>
+    <string name="bluetooth_le_advertise_error">"Some BLE configuration is wrong or empty. Remember that Tx Power should be in range of [-127, 1] and Interval should be in range of [100, 10485759]\n"</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="copy_experiment">Copy experiment</string>
+    <string name="wifi" translatable="false">Wi-Fi</string>
+    <string name="bluetooth" translatable="false">Bluetooth</string>
+    <string name="bluetooth_le" translatable="false">Bluetooth LE</string>
+    <string name="sensors">Sensors</string>
+    <string name="cell">Cell</string>
+    <string name="gps">GPS</string>
+    <string name="battery">Battery</string>
+    <string name="activity">Activity</string>
+    <string name="collected_records">Collected records</string>
+    <string name="export">Export</string>
+    <string name="dialog_confirm_delete">Are you sure you want to delete?</string>
+    <string name="dialog_confirm_cancel">Are you sure you want to cancel?</string>
+    <string name="yes">Yes</string>
+    <string name="no" translatable="false">No</string>
+    <string name="tags">Tags</string>
+    <string name="add_tag">Search or create tag</string>
+    <string name="scan_qr">Scan QR Code</string>
+    <string name="delete">Delete Item</string>
+    <string name="cancel_run">Cancel this Run</string>
+    <string name="delete_run">Delete this Run</string>
+    <string name="about">About App</string>
+    <string name="application_logo">Application Logo</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="upload">Upload to Google Drive</string>
+    <string name="my_drive">My Drive</string>
+    <string name="shared_drives">Shared Drives</string>
+    <string name="cancel_run_message">Cancel Run first!</string>
+    <string name="files_exported">Files exported…</string>
+    <string name="signed_out">Signed out…</string>
+    <string name="failed_getting_drives">Something failed getting drives!</string>
+    <string name="failed_getting_folders">Something failed getting folders</string>
+    <string name="pick_a_folder">Pick a Folder</string>
+    <string name="add_folder">New Folder</string>
+    <string name="select_drive">Select a Drive</string>
+    <string name="select_folder">Select a Folder</string>
+    <string name="selected_path">Selected Path</string>
+    <string name="not_implemented_yet">Not implemented yet!</string>
+    <string name="pick_folder_message">Please pick a folder!</string>
+    <string name="uploading_to_folder">Uploading to %s</string>
+    <string name="failed_uploading">Failed uploading data!</string>
+    <string name="failed_creating">Failed creating Google Drive File</string>
+    <string name="go_back">Go Back</string>
+    <string name="signed_as">Signed in as %s</string>
+    <string name="unc_edu_ar_account">Remember to sign in with an unc.edu.ar account</string>
+    <string name="sign_in_first">Please sign in to Google first!</string>
+    <string name="cancel_run_first">Cancel the ongoing Run first!</string>
+    <string name="invalid_uuid">Invalid UUID</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="edit">Edit</string>
+    <string name="max_random_time">Random Time [min]</string>
+    <string name="change_screen_behaviour">Change Screen Behaviour</string>
+</resources>

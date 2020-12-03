@@ -1,0 +1,1119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.NewExperimentActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolbarTheme"
+        app:liftOnScroll="true"
+        >
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/top_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/new_experiment_menu"
+            app:title="@string/new_experiment" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <ScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/big_padding"
+            app:layout_constraintBottom_toTopOf="@id/save_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tags_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/tags"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/description_input_layout" />
+
+
+                <Button
+                    android:id="@+id/add_button"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:backgroundTint="@color/white"
+                    android:gravity="center"
+                    android:paddingStart="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="5dp"
+                    app:icon="@drawable/ic_baseline_add_24"
+                    app:iconTint="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/tags_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tags_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tags_layout"
+                    style="@style/OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    android:hint="@string/add_tag"
+                    app:layout_constraintEnd_toStartOf="@id/add_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tags_title">
+
+                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                        android:id="@+id/add_tag"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingStart="@dimen/small_padding"
+                        android:paddingEnd="@dimen/small_padding" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tags_layout">
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/codename_input_layout"
+                    style="@style/OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    android:hint="@string/codename"
+                    app:layout_constraintEnd_toStartOf="@id/random_input_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/experiment_codename"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/random_input_layout"
+                    style="@style/OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:layout_marginStart="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:hint="@string/max_random_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/codename_input_layout"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/random_initial_time"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/description_input_layout"
+                    style="@style/OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/big_padding"
+                    android:hint="@string/description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/codename_input_layout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/experiment_description"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="textMultiLine"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/wifi_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:text="@string/wifi_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tags" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/wifi_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/wifi_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/wifi_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/wifi_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_padding"
+
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/wifi_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/wifi_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/wifi_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_padding"
+
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/wifi_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/wifi_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/bluetooth_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/bluetooth_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/wifi_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/bluetooth_le_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/bluetooth_le_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/sensors_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/sensor_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/sensors_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/sensors_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/sensors_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/sensors_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/sensors_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/sensors_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/sensors_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/sensors_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/sensors_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/cell_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/cell_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sensors_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cell_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/cell_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cell_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cell_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/cell_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cell_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cell_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/cell_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cell_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/gps_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/gps_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cell_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gps_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/gps_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/gps_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gps_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/gps_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/gps_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gps_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/gps_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/gps_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/battery_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/battery_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/gps_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/battery_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/battery_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/battery_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/battery_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/battery_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/battery_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/battery_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/battery_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/battery_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/activity_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/activity_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/battery_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/activity_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/activity_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/activity_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/activity_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/activity_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/activity_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/activity_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/activity_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/activity_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/bluetooth_le_advertise_title"
+                    style="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_marginTop="@dimen/big_padding"
+                    android:text="@string/bluetooth_le_advertise_configuration"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/activity_active_input_layout" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_advertise_active_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/active_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_active_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_active_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_advertise_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_advertise_active"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_advertise_inactive_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/inactive_time"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_inactive_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_advertise_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_advertise_inactive"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_advertise_windows_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+
+                    android:hint="@string/windows"
+                    app:layout_constraintEnd_toEndOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintStart_toStartOf="@id/wifi_windows_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_advertise_title">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_advertise_windows"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_advertise_tx_power_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/big_padding"
+
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/small_padding"
+                    android:hint="@string/tx_power_dbm"
+                    app:layout_constraintEnd_toStartOf="@id/bluetooth_le_advertise_interval_input_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_advertise_active_input_layout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_advertise_tx_power"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:backgroundTint="@color/white"
+                        android:inputType="numberSigned|number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/bluetooth_le_advertise_interval_input_layout"
+                    style="@style/OutlinedBox.Dense"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_padding"
+
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:hint="@string/interval"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/bluetooth_le_advertise_tx_power_input_layout"
+                    app:layout_constraintTop_toBottomOf="@id/bluetooth_le_advertise_active_input_layout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/bluetooth_le_advertise_interval"
+                        style="@android:style/Widget.Material.EditText"
+                        android:layout_width="match_parent"
+
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/wifi_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/wifi_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/wifi_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/bluetooth_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/bluetooth_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/bluetooth_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/bluetooth_le_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/bluetooth_le_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/bluetooth_le_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sensors_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/sensors_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/sensors_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/cell_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/cell_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/cell_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/gps_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/gps_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/gps_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/battery_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/battery_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/battery_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/activity_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/activity_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/activity_title" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/bluetooth_le_advertise_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:checked="true"
+                    app:layout_constraintBottom_toBottomOf="@id/bluetooth_le_advertise_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/bluetooth_le_advertise_title" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/save_button"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginStart="@dimen/big_padding"
+            android:layout_marginEnd="@dimen/big_padding"
+            android:layout_marginBottom="@dimen/small_padding"
+            android:text="@string/save"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
