@@ -1,6 +1,6 @@
 # ContactAR Lab
 
-This Android application can store data of different communication peripherals available on the device, it is intended to use with debugging and experimental purposes.
+Android application that can retrieve data from different communication peripherals available on the device, persist them to a local database and perform exporting operations in CSV file format to external storage memory. It is intended to use with debugging and experimental purposes.
 
 ## Build
 
