@@ -1,4 +1,4 @@
-# Contactar Laboratory
+# ContactAR Lab
 
 This Android application can store data of different communication peripherals available on the device, it is intended to use with debugging and experimental purposes.
 
