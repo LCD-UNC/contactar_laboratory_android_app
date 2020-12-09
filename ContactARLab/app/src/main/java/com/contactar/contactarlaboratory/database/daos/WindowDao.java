@@ -357,9 +357,8 @@ public interface WindowDao {
         public long run;
         public long window;
 
-        @ColumnInfo(name = "activity")
-        public int activity;
-        public int transition;
+        public String activity;
+        public String transition;
 
         @Override
         public String csvHeader() {
@@ -368,7 +367,7 @@ public interface WindowDao {
 
         @Override
         public String toCsv() {
-            return String.format(Locale.ENGLISH, "%d,%d,%d,%d,%d\n",
+            return String.format(Locale.ENGLISH, "%d,%d,%d,%s,%s\n",
                     DateConverter.dateToTimestamp(timestamp), run, window, activity, transition);
         }
     }

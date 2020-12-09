@@ -91,36 +91,6 @@ public class ActivityDataBucket extends BroadcastReceiver implements DataBucket 
         return records;
     }
 
-    private static String toActivityString(int activity) {
-        switch (activity) {
-            case DetectedActivity.IN_VEHICLE:
-                return "IN_VEHICLE";
-            case DetectedActivity.ON_BICYCLE:
-                return "ON_BICYCLE";
-            case DetectedActivity.ON_FOOT:
-                return "ON_FOOT";
-            case DetectedActivity.STILL:
-                return "STILL";
-            case DetectedActivity.WALKING:
-                return "WALKING";
-            case DetectedActivity.RUNNING:
-                return "RUNNING";
-            default:
-                return "UNKNOWN";
-
-        }
-    }
-    private static String toTransitionType(int transitionType) {
-        switch (transitionType) {
-            case ActivityTransition.ACTIVITY_TRANSITION_ENTER:
-                return "ENTER";
-            case ActivityTransition.ACTIVITY_TRANSITION_EXIT:
-                return "EXIT";
-            default:
-                return "UNKNOWN";
-        }
-    }
-
     public void enableActivityTransitions(Context context) {
 
         Log.d("reg", "enableActivityTransitions()");

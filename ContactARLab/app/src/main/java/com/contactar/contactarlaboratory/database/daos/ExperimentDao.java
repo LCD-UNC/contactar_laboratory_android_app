@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface ExperimentDao {
 
-    @Query("SELECT e.*, d.done, t.total, r.running, c.canceled FROM experiment as e " +
+    @Query("SELECT e.id, e.codename, e.description, e.device_id, d.done, t.total, r.running, c.canceled FROM experiment as e " +
             "LEFT JOIN (SELECT COUNT(id) as done, experiment_id " +
                         "FROM (SELECT r.id, r.experiment_id " +
                                 "FROM run as r WHERE r.state=\"DONE\") " +
