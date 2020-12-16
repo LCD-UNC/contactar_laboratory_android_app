@@ -2,7 +2,6 @@ package com.contactar.contactarlaboratory.database.entities;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
-import android.os.ParcelUuid;
 import android.os.SystemClock;
 
 import androidx.room.ColumnInfo;
@@ -11,16 +10,11 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.contactar.contactarlaboratory.export.representations.DeviceRepresentation;
-
 import java.util.Date;
-import java.util.UUID;
-
-import static com.contactar.contactarlaboratory.advertisers.BluetoothLeAdvertiseScheduler.EXPERIMENT_SERVICE_UUID;
 
 @Entity(tableName = "bluetooth_le_record",
         indices = {@Index(value = "id", unique = true),
-                   @Index(value = "window_id")},
+                @Index(value = "window_id")},
         foreignKeys = @ForeignKey(entity = Window.class,
                 parentColumns = "id",
                 childColumns = "window_id",
@@ -44,10 +38,6 @@ public class BluetoothLeRecord {
     public double periodicAdvertisingInterval;
     public int connectable;
     public int legacy;
-    @ColumnInfo(name = "device_uuid")
-    public ParcelUuid deviceUuid;
-    @ColumnInfo(name = "device_codename")
-    public String deviceCodename;
 
     @ColumnInfo(name = "window_id")
     public long windowId;
@@ -57,12 +47,6 @@ public class BluetoothLeRecord {
         this.rssi = result.getRssi();
         if(result.getScanRecord() != null) {
             this.txPower = result.getScanRecord().getTxPowerLevel();
-            byte[] serviceData = result.getScanRecord().getServiceData(EXPERIMENT_SERVICE_UUID);
-            if (serviceData!=null) {
-                DeviceRepresentation device = DeviceRepresentation.fromJson(new String(serviceData));
-                this.deviceUuid = new ParcelUuid(UUID.fromString(device.uuid));
-                this.deviceCodename = device.codename;
-            }
         } else {
             this.txPower = Integer.MIN_VALUE;
         }

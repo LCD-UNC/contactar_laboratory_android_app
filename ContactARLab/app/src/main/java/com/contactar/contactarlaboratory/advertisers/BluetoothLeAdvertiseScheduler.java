@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.ParcelUuid;
 
 import com.contactar.contactarlaboratory.constants.SourceTypeEnum;
-import com.contactar.contactarlaboratory.export.representations.DeviceRepresentation;
 import com.contactar.contactarlaboratory.scanners.Scheduler;
 import com.contactar.contactarlaboratory.database.AppDatabase;
 import com.contactar.contactarlaboratory.database.entities.AdvertiseConfiguration;
@@ -35,19 +34,20 @@ public class BluetoothLeAdvertiseScheduler extends Scheduler {
 
         advertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
         parameters = (new AdvertisingSetParameters.Builder())
-                .setLegacyMode(false)
+                .setLegacyMode(true)
+                .setConnectable(true)
+                .setScannable(true)
                 .setInterval((int)(advertiseConfiguration.interval/0.625))
                 .setTxPowerLevel(advertiseConfiguration.txPower)
                 .build();
         this.key = SourceTypeEnum.BLUETOOTH_LE_ADVERTISE.name();
 
         Device device = new DeviceRepository(database).getDevice();
-        byte[] deviceJson = new DeviceRepresentation(device).toJson().getBytes();
 
         data = (new AdvertiseData.Builder())
-                .addServiceUuid(EXPERIMENT_SERVICE_UUID)
-                .addServiceData(EXPERIMENT_SERVICE_UUID, deviceJson)
-                .setIncludeTxPowerLevel(true).build();
+                .setIncludeTxPowerLevel(true)
+                .addServiceUuid(device.uuid)
+                .build();
 
         callback = new AdvertisingSetCallback(){
             // TODO: AdvertiseCallback:Puede implementarse en caso de que sea necesario hacer algo aca.

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 20,
-    "identityHash": "2a2268816356bb6008910fff20a0cefd",
+    "identityHash": "a03a759e0b59144ab034f13f255d738a",
     "entities": [
       {
         "tableName": "bluetooth_le_record",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `rssi` REAL NOT NULL, `tx_power` REAL NOT NULL, `advertising_set_id` INTEGER NOT NULL, `primary_physical_layer` TEXT, `seconary_physical_layer` TEXT, `periodic_advertising_interval` REAL NOT NULL, `connectable` INTEGER NOT NULL, `legacy` INTEGER NOT NULL, `device_uuid` TEXT, `device_codename` TEXT, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER, `address` TEXT, `rssi` REAL NOT NULL, `tx_power` REAL NOT NULL, `advertising_set_id` INTEGER NOT NULL, `primary_physical_layer` TEXT, `seconary_physical_layer` TEXT, `periodic_advertising_interval` REAL NOT NULL, `connectable` INTEGER NOT NULL, `legacy` INTEGER NOT NULL, `window_id` INTEGER NOT NULL, FOREIGN KEY(`window_id`) REFERENCES `window`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -73,18 +73,6 @@
             "columnName": "legacy",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "deviceUuid",
-            "columnName": "device_uuid",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "deviceCodename",
-            "columnName": "device_codename",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "windowId",
@@ -1377,7 +1365,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2a2268816356bb6008910fff20a0cefd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a03a759e0b59144ab034f13f255d738a')"
     ]
   }
 }

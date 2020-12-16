@@ -43,15 +43,9 @@ public class BluetoothLeScanScheduler extends Scheduler {
         long sampleId = windowRepository.insert(runId, this.windowCount, key);
         bluetoothLeDataBucket = new BluetoothLeDataBucket(sampleId, context);
 
-        ScanFilter filter = new ScanFilter.Builder().setServiceUuid(EXPERIMENT_SERVICE_UUID, EXPERIMENT_SERVICE_UUID_MASK).build();
-        ArrayList<ScanFilter> scanFilterList = new ArrayList<>();
-        scanFilterList.add(filter);
-
-        ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).setLegacy(false).setReportDelay(0).build();
-
         // TODO: Implementar un mutex para hacer escaneo despues porque no se pueden hacer escaneos
         //       clasicos y low energy al mismo tiempo.
-        BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanFilterList, scanSettings, bluetoothLeDataBucket);
+        BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(bluetoothLeDataBucket);
     }
 
     @Override
